@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-12-09T03:49:37.000Z</updated>
+  <updated>2016-12-13T12:21:42.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,15 +16,47 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>React-Router 遇到的那些坑</title>
+    <link href="http://yoursite.com/2016/12/13/React-Router-%E9%81%87%E5%88%B0%E7%9A%84%E9%82%A3%E4%BA%9B%E5%9D%91/"/>
+    <id>http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/</id>
+    <published>2016-12-13T09:36:06.000Z</published>
+    <updated>2016-12-13T12:21:42.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
+<h2 id="indexRoute-嵌套问题"><a href="#indexRoute-嵌套问题" class="headerlink" title="indexRoute 嵌套问题"></a>indexRoute 嵌套问题</h2><p>  indexRoute的设定是，必须为叶节点，而不能作为父级元素，在下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
+<pre><code>&lt;Router&gt;
+  &lt;IndexRoute&gt;
+    &lt;IndexRoute&gt;&lt;/IndexRoute&gt;
+  &lt;/IndexRoute&gt;
+  &lt;Route&gt;&lt;/Route&gt;
+&lt;/Router&gt;
+</code></pre><p>  而在实际的业务需求中，经常会遇到下面这种情况：<img src="/img/react-router/a.png" alt="">   上图为想要看到的效果，而实际情况是：<br>  <img src="/img/react-router/b.png" alt=""></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;有的东西不总结，永远不是自己的。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="React" scheme="http://yoursite.com/tags/React/"/>
+    
+  </entry>
+  
+  <entry>
     <title>个人收藏夹整理</title>
     <link href="http://yoursite.com/2016/12/07/%E4%B8%AA%E4%BA%BA%E6%94%B6%E8%97%8F%E5%A4%B9%E6%95%B4%E7%90%86/"/>
     <id>http://yoursite.com/2016/12/07/个人收藏夹整理/</id>
     <published>2016-12-07T09:50:32.000Z</published>
-    <updated>2016-12-09T03:49:37.000Z</updated>
+    <updated>2016-12-13T11:47:40.000Z</updated>
     
     <content type="html"><![CDATA[<p>把平时工作和学习中查阅资料和学习知识的站点整理一下，有的值得看第二遍，还有的今后遇到类似的问题时可以快速查阅和参考。<br><a id="more"></a></p>
 <hr>
-<h3 id="HTML-方面"><a href="#HTML-方面" class="headerlink" title="HTML 方面"></a>HTML 方面</h3><h4 id="标签相关"><a href="#标签相关" class="headerlink" title="标签相关"></a>标签相关</h4><ul>
+<h3 id="HTML-方面"><a href="#HTML-方面" class="headerlink" title="HTML 方面"></a>HTML 方面</h3><h4 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h4><ul>
+<li><a href="http://www.zhangxinxu.com/wordpress/2010/08/%e7%bf%bb%e8%af%91-%e4%bd%a0%e5%bf%85%e9%a1%bb%e7%9f%a5%e9%81%93%e7%9a%8428%e4%b8%aahtml5%e7%89%b9%e5%be%81%e3%80%81%e7%aa%8d%e9%97%a8%e5%92%8c%e6%8a%80%e6%9c%af/" target="_blank" rel="external">翻译-你必须知道的28个HTML5特征、窍门和技术</a></li>
+</ul>
+<h4 id="标签相关"><a href="#标签相关" class="headerlink" title="标签相关"></a>标签相关</h4><ul>
 <li><code>&lt;head&gt;</code>标签<ul>
 <li><a href="http://www.css88.com/archives/6410" target="_blank" rel="external">移动前端不得不了解的HTML5 head 头标签（2016最新版）</a></li>
 <li><a href="http://gethead.info/" target="_blank" rel="external">A list of everything that could go in the <code>&lt;head&gt;</code> of your document</a></li>
@@ -32,6 +64,10 @@
 </li>
 <li><code>&lt;label&gt;</code>标签<ul>
 <li><a href="http://www.topcss.org/%e8%a1%a8%e5%8d%95%e6%98%be%e5%bc%8flabel%e5%92%8c%e9%9a%90%e5%bc%8flabel%e5%af%b9%e5%b1%8f%e5%b9%95%e9%98%85%e8%af%bb%e5%99%a8%e7%94%a8%e6%88%b7%e7%9a%84%e5%bd%b1%e5%93%8d/" target="_blank" rel="external">表单显式label和隐式label对屏幕阅读器用户的影响</a></li>
+</ul>
+</li>
+<li><code>&lt;fieldset&gt;</code>和<code>&lt;legend&gt;</code>标签<ul>
+<li><a href="http://www.zhangxinxu.com/wordpress/2016/11/html-fieldset-legend-element-css-layout/" target="_blank" rel="external">HTML可访问性fieldset,legend元素及CSS布局应用</a></li>
 </ul>
 </li>
 </ul>
@@ -42,20 +78,24 @@
 <h4 id="本地存储"><a href="#本地存储" class="headerlink" title="本地存储"></a>本地存储</h4><ul>
 <li><a href="http://www.cnblogs.com/yuzhongwusan/archive/2011/12/19/2293347.html" target="_blank" rel="external">HTMl5的sessionStorage和localStorage</a></li>
 <li><a href="https://github.com/nbubna/store" target="_blank" rel="external">A better way to use localStorage and sessionStorage</a></li>
+<li><a href="http://mp.weixin.qq.com/s/QayrQWL8qyEtT8xhDcA2fQ" target="_blank" rel="external">cookie从哪里来到哪里去</a></li>
 </ul>
 <h4 id="模板语言"><a href="#模板语言" class="headerlink" title="模板语言"></a>模板语言</h4><ul>
 <li><a href="https://github.com/slim-template/slim" target="_blank" rel="external">slim</a></li>
 <li><a href="https://naltatis.github.io/jade-syntax-docs/" target="_blank" rel="external">jade</a></li>
 </ul>
-<h4 id="语意化"><a href="#语意化" class="headerlink" title="语意化"></a>语意化</h4><ul>
-<li><a href="http://www.cnblogs.com/rising-fay/archive/2013/02/25/2932592.html" target="_blank" rel="external">html页面的CSS、DIV命名规则</a></li>
-</ul>
 <h4 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h4><ul>
 <li><a href="https://gold.xitu.io/post/5843a0e861ff4b006b97f5d5" target="_blank" rel="external">emmet, 让你的 html 飞起来</a></li>
+</ul>
+<h4 id="HTTP知识"><a href="#HTTP知识" class="headerlink" title="HTTP知识"></a>HTTP知识</h4><ul>
+<li><a href="http://itbilu.com/other/relate/EkwKysXIl.html" target="_blank" rel="external">HTTP请求方法：GET、HEAD、POST、PUT、DELETE、CONNECT、OPTIONS、TRACE</a></li>
+<li><a href="http://itbilu.com/other/relate/E1T0q4EIe.html" target="_blank" rel="external">HTTP消息头（HTTP headers）－HTTP请求头与HTTP响应头</a></li>
+<li><a href="http://itbilu.com/other/relate/EJ3fKUwUx.html" target="_blank" rel="external">HTTP消息头（HTTP headers）－常用的HTTP请求头与响应头</a></li>
 </ul>
 <h3 id="问答"><a href="#问答" class="headerlink" title="问答"></a>问答</h3><ul>
 <li><a href="https://www.zhihu.com/question/24398907" target="_blank" rel="external">HTML5 有哪些让你惊艳的 demo？</a></li>
 <li><a href="https://www.zhihu.com/question/28478379" target="_blank" rel="external">前端工程师一般都喜欢去哪些网站逛？</a></li>
+<li><a href="https://www.zhihu.com/question/19651401" target="_blank" rel="external">关于 JavaScript 学习，有哪些好的博客或者网站推荐？</a></li>
 </ul>
 <h3 id="兼容性方面"><a href="#兼容性方面" class="headerlink" title="兼容性方面"></a>兼容性方面</h3><ul>
 <li><a href="http://caniuse.com/#index" target="_blank" rel="external">can I use</a></li>
@@ -73,14 +113,16 @@
 <h4 id="思想、观点和鸡汤"><a href="#思想、观点和鸡汤" class="headerlink" title="思想、观点和鸡汤"></a>思想、观点和鸡汤</h4><ul>
 <li><a href="http://www.zhangxinxu.com/wordpress/2012/07/bottleneck-css-study/" target="_blank" rel="external">说说CSS学习中的瓶颈(张鑫旭)</a></li>
 <li><a href="https://segmentfault.com/a/1190000005775934" target="_blank" rel="external">提升你的CSS姿势</a></li>
+<li>CSS最佳实践——成为CSS忍者的十四步（<a href="http://chuansong.me/n/1100837351768" target="_blank" rel="external">上</a>）（<a href="http://chuansong.me/n/1100837451753" target="_blank" rel="external">下</a>）</li>
 </ul>
 <h4 id="命名规则"><a href="#命名规则" class="headerlink" title="命名规则"></a>命名规则</h4><ul>
 <li><a href="http://www.w3cplus.com/css/mindbemding-getting-your-head-round-bem-syntax.html" target="_blank" rel="external">BEM思想之彻底弄清BEM语法（大漠） </a></li>
+<li><a href="http://www.cnblogs.com/rising-fay/archive/2013/02/25/2932592.html" target="_blank" rel="external">html页面的CSS、DIV命名规则</a></li>
 </ul>
 <h4 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h4><ul>
 <li>参考资料<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS" target="_blank" rel="external">MDN–CSS</a></li>
 <li><a href="http://cssreference.io/?utm_source=mybridge&amp;utm_medium=email&amp;utm_campaign=read_more" target="_blank" rel="external">图解CSS属性</a></li>
-<li>[]</li>
 </ul>
 </li>
 <li>flex 布局<ul>
@@ -98,26 +140,32 @@
 <li><a href="http://blog.csdn.net/freshlover/article/details/11579669" target="_blank" rel="external">盘点8种CSS实现垂直居中水平居中的绝对定位居中技术</a></li>
 <li><a href="http://www.zhangxinxu.com/wordpress/2013/06/%e4%bc%aa%e5%85%83%e7%b4%a0-%e8%a1%a8%e5%8d%95%e6%a0%b7%e5%bc%8f-pseudo-elements-style-form-controls/" target="_blank" rel="external">伪元素表单控件默认样式重置与自定义大全(张鑫旭)</a></li>
 <li><a href="http://www.zhangxinxu.com/wordpress/2011/03/displayinline-blocktext-alignjustify%e4%b8%8b%e5%88%97%e8%a1%a8%e7%9a%84%e4%b8%a4%e7%ab%af%e5%af%b9%e9%bd%90%e5%b8%83%e5%b1%80/" target="_blank" rel="external">display:inline-block/text-align:justify下列表的两端对齐布局(张鑫旭)</a></li>
+<li><a href="http://www.cnblogs.com/PeunZhang/p/3289493.html" target="_blank" rel="external">css实现两端对齐的3种方法</a></li>
 <li><a href="http://imweb.io/topic/555a92f76da9e441601d6e94" target="_blank" rel="external">css中如何做到容器按比例缩放【padding的妙用】</a></li>
 </ul>
 <h4 id="开源库"><a href="#开源库" class="headerlink" title="开源库"></a>开源库</h4><ul>
 <li>loading效果<ul>
 <li>css动画做的loading图标~~~<a href="https://github.com/tobiasahlin/SpinKit" target="_blank" rel="external">Github</a>&nbsp;&nbsp;&nbsp;<a href="http://tobiasahlin.com/spinkit/" target="_blank" rel="external">Dome</a></li>
 <li><a href="http://www.raphaelfabeni.com.br/css-loader/" target="_blank" rel="external">各种loading</a></li>
+<li><a href="https://github.com/ConnorAtherton/loaders.css/tree/master" target="_blank" rel="external">loaders.css</a>【<a href="https://connoratherton.com/loaders" target="_blank" rel="external">Dome</a>】</li>
 </ul>
 </li>
 <li>css渐变实现的纯色背景~~~ <a href="https://github.com/evankarageorgos/hue" target="_blank" rel="external">Github</a>&nbsp;&nbsp;&nbsp;<a href="http://evankarageorgos.github.io/hue/grid.html" target="_blank" rel="external">Dome</a></li>
+<li>页面切换的css动画~~~ <a href="https://github.com/codrops/PageTransitions" target="_blank" rel="external">Github</a>&nbsp;&nbsp;&nbsp;<a href="http://tympanus.net/Development/PageTransitions/" target="_blank" rel="external">Dome</a></li>
+<li><a href="http://alloyteam.github.io/gopng/###" target="_blank" rel="external">AlloyTeam雪碧图制作工具</a></li>
 <li>css框架<ul>
 <li>轻量级<ul>
 <li><a href="http://hackcss.com/" target="_blank" rel="external">hack.css</a></li>
 <li><a href="http://corecss.io/" target="_blank" rel="external">core.css</a></li>
 <li><a href="http://usewing.ml/" target="_blank" rel="external">WING</a></li>
 <li><a href="https://picturepan2.github.io/spectre/" target="_blank" rel="external">Spectre.css</a></li>
+<li><a href="http://tachyons.io/" target="_blank" rel="external">tachyons</a></li>
 </ul>
 </li>
 <li>普通<ul>
 <li><a href="http://www.bootcss.com/" target="_blank" rel="external">Bootstrap</a></li>
-<li><a href="http://dropbox.github.io/scooter/" target="_blank" rel="external">Scooter</a><br>*</li>
+<li><a href="http://dropbox.github.io/scooter/" target="_blank" rel="external">Scooter</a></li>
+<li><a href="http://semantic-ui.com/" target="_blank" rel="external">Semantic UI</a></li>
 </ul>
 </li>
 <li>重量级<ul>
@@ -127,27 +175,108 @@
 </ul>
 </li>
 </ul>
+<h3 id="移动端"><a href="#移动端" class="headerlink" title="移动端"></a>移动端</h3><ul>
+<li><a href="https://github.com/amfe/lib-flexible" target="_blank" rel="external">可伸缩的布局方案lib-flexible</a></li>
+<li><a href="https://github.com/amfe/article/issues/17" target="_blank" rel="external">使用Flexible实现手淘H5页面的终端适配(大漠)</a></li>
+<li><a href="http://www.cnblogs.com/lyzg/p/5058356.html" target="_blank" rel="external">淘宝弹性布局方案lib-flexible实践</a></li>
+<li><a href="http://www.cnblogs.com/lyzg/p/4877277.html" target="_blank" rel="external">从网易与淘宝的font-size思考前端设计稿与工作流</a></li>
+</ul>
 <h3 id="动画库"><a href="#动画库" class="headerlink" title="动画库"></a>动画库</h3><h4 id="css动画"><a href="#css动画" class="headerlink" title="css动画"></a>css动画</h4><ul>
 <li><a href="https://github.com/daneden/animate.css/" target="_blank" rel="external">animate.css</a>【<a href="https://daneden.github.io/animate.css/" target="_blank" rel="external">Dome</a>】</li>
 <li><a href="https://github.com/h5bp/Effeckt.css" target="_blank" rel="external">effeckt</a>【<a href="http://h5bp.github.io/Effeckt.css/" target="_blank" rel="external">Dome</a>】</li>
 <li><a href="https://github.com/IanLunn/Hover" target="_blank" rel="external">hover.css</a>【<a href="http://ianlunn.github.io/Hover/" target="_blank" rel="external">Dome</a>】</li>
 <li><a href="https://github.com/leaverou/animatable" target="_blank" rel="external">animatable</a>【<a href="http://leaverou.github.io/animatable/" target="_blank" rel="external">Dome</a>】</li>
+<li><a href="https://tympanus.net/Development/HoverEffectIdeas/" target="_blank" rel="external">一些微妙的悬停效果</a>【<a href="https://github.com/codrops/HoverEffectIdeas" target="_blank" rel="external">Code</a>】</li>
+<li><a href="https://tympanus.net/Development/ArrowNavigationStyles/" target="_blank" rel="external">左右切换箭头的效果</a>【<a href="https://github.com/codrops/ArrowNavigationStyles" target="_blank" rel="external">Code</a>】</li>
 </ul>
 <h4 id="js动画"><a href="#js动画" class="headerlink" title="js动画"></a>js动画</h4><ul>
 <li><a href="http://thednp.github.io/kute.js/index.html" target="_blank" rel="external">KUTE.js</a></li>
+<li><a href="https://tympanus.net/Tutorials/FourBoxes/" target="_blank" rel="external">独特的幻灯片切换</a>【<a href="https://github.com/codrops/FourBoxes" target="_blank" rel="external">Code</a>】</li>
 </ul>
 <h3 id="播放器"><a href="#播放器" class="headerlink" title="播放器"></a>播放器</h3><ul>
 <li>B站开源——<a href="https://github.com/Bilibili/flv.js" target="_blank" rel="external">Flv.js</a></li>
 </ul>
+<h3 id="SVG"><a href="#SVG" class="headerlink" title="SVG"></a>SVG</h3><ul>
+<li><a href="https://github.com/riccardoscalco/textures" target="_blank" rel="external">Textures.js—js生成svg</a>【<a href="http://riccardoscalco.github.io/textures/" target="_blank" rel="external">Dome</a>】</li>
+<li><a href="https://github.com/maxwellito/vivus" target="_blank" rel="external">vivus.js—svg绘制的动画</a>【<a href="http://maxwellito.github.io/vivus" target="_blank" rel="external">Dome</a>】</li>
+</ul>
 <h3 id="JS方面"><a href="#JS方面" class="headerlink" title="JS方面"></a>JS方面</h3><h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><ul>
 <li><a href="http://javascript.ruanyifeng.com/" target="_blank" rel="external">JavaScript 标准参考教程</a></li>
 <li><a href="http://es6.ruanyifeng.com/" target="_blank" rel="external">ECMAScript 6入门</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide" target="_blank" rel="external">MDN–JS</a></li>
 </ul>
 <h4 id="开源库-1"><a href="#开源库-1" class="headerlink" title="开源库"></a>开源库</h4><ul>
 <li>轻量的动画背景——<a href="https://github.com/VincentGarreau/particles.js/" target="_blank" rel="external">particles.js</a>&nbsp;&nbsp;&nbsp;<a href="http://vincentgarreau.com/particles.js/" target="_blank" rel="external">Dome</a></li>
+<li><a href="http://www.css88.com/doc/underscore/" target="_blank" rel="external">underscore.js</a></li>
+<li><a href="https://github.com/blueimp/JavaScript-MD5" target="_blank" rel="external">javascript-MD5</a></li>
+<li><a href="https://github.com/stefanpenner/es6-promise" target="_blank" rel="external">es6–promise(A polyfill for ES6-style Promises)</a></li>
+</ul>
+<h4 id="代码规范"><a href="#代码规范" class="headerlink" title="代码规范"></a>代码规范</h4><ul>
+<li><a href="http://eslint.cn/" target="_blank" rel="external">ESLint</a></li>
+</ul>
+<h4 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h4><ul>
+<li><a href="http://www.alloyteam.com/2012/11/javascript-throttle/" target="_blank" rel="external">AlloyTeam—浅谈javascript的函数节流</a></li>
+<li><a href="http://i.jakeyu.top/2016/11/26/%E5%AE%9E%E7%8E%B0%E5%9B%BE%E7%89%87%E6%87%92%E5%8A%A0%E8%BD%BD/" target="_blank" rel="external">实现图片的懒加载</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/23812134" target="_blank" rel="external">深入了解 JavaScript 中的 for 循环</a></li>
+</ul>
+<h4 id="你本该知道的js"><a href="#你本该知道的js" class="headerlink" title="你本该知道的js"></a>你本该知道的js</h4><ul>
+<li><a href="http://bonsaiden.github.io/JavaScript-Garden/zh/" target="_blank" rel="external">JavaScript秘密花园</a></li>
+<li><a href="http://www.jstips.co/" target="_blank" rel="external">有用的JS tips</a></li>
+<li><a href="http://www.jianshu.com/users/4801d203ede4/latest_articles" target="_blank" rel="external">你不知道的JS中文</a></li>
+<li><a href="http://chuansong.me/n/2712930" target="_blank" rel="external">提高你的Javascript水平</a></li>
 </ul>
 <h3 id="React-全家桶"><a href="#React-全家桶" class="headerlink" title="React 全家桶"></a>React 全家桶</h3><ul>
-<li>环境通用框架——<a href="https://zeit.co/blog/next" target="_blank" rel="external">Next.js</a></li>
+<li>环境通用框架之一——<a href="https://zeit.co/blog/next" target="_blank" rel="external">Next.js</a><ul>
+<li>相关文章【<a href="https://auth0.com/blog/building-universal-apps-with-nextjs/" target="_blank" rel="external">Build a Universal JavaScript App with Next.js</a>】</li>
+</ul>
+</li>
+<li>react生态系统的收集——<a href="https://github.com/enaqx/awesome-react" target="_blank" rel="external">awesome-react</a></li>
+</ul>
+<h4 id="文档与资料"><a href="#文档与资料" class="headerlink" title="文档与资料"></a>文档与资料</h4><ul>
+<li><a href="https://github.com/carlleton/reactjs101/tree/zh-CN" target="_blank" rel="external">从零开始学 ReactJS（ReactJS 101）</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/09/react-technology-stack.html" target="_blank" rel="external">阮一峰React技术栈</a></li>
+<li><a href="https://facebook.github.io/react/" target="_blank" rel="external">react官网</a></li>
+<li><a href="http://devnacho.com/2016/02/15/different-ways-to-add-if-else-statements-in-JSX/" target="_blank" rel="external">在JSX中写判断的四种方法</a></li>
+<li><a href="http://www.alloyteam.com/2016/01/reactjs-best-practices-for-2016/" target="_blank" rel="external">AlloyTeam—React.js 2016 最佳实践</a></li>
+<li><a href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/" target="_blank" rel="external">FED—高性能 React 组件</a></li>
+<li><a href="http://www.jianshu.com/p/002636591590" target="_blank" rel="external">ReactJS组件state的最佳实践</a></li>
+<li><a href="https://segmentfault.com/a/1190000005013207" target="_blank" rel="external">React 最佳实践——那些 React 没告诉你但很重要的事</a></li>
+<li><a href="http://itbilu.com/javascript/react" target="_blank" rel="external">一个写react知识比较系统的博客(IT笔录)</a></li>
+</ul>
+<h4 id="组件与组件库"><a href="#组件与组件库" class="headerlink" title="组件与组件库"></a>组件与组件库</h4><ul>
+<li>蚂蚁金服【<a href="https://ant.design/" target="_blank" rel="external">ant design</a>】，对应移动端【<a href="https://mobile.ant.design/" target="_blank" rel="external">ant design mobile</a>】</li>
+<li>其他组件库<ul>
+<li><a href="https://www.zhihu.com/question/39452825" target="_blank" rel="external">React 有哪些优秀实用的组件？</a></li>
+</ul>
+</li>
+<li>轮播组件【<a href="https://github.com/akiran/react-slick" target="_blank" rel="external">react-slick</a>】【Dome】(<a href="http://neostack.com/opensource/react-slick" target="_blank" rel="external">http://neostack.com/opensource/react-slick</a>)</li>
+<li><a href="https://github.com/SoAanyip/React-FileUpload#%E7%AE%80%E4%BB%8B" target="_blank" rel="external">React-FillUploader—文件上传组件</a></li>
+</ul>
+<h4 id="React-Router"><a href="#React-Router" class="headerlink" title="React-Router"></a>React-Router</h4><ul>
+<li><a href="https://segmentfault.com/a/1190000006063554#articleHeader25" target="_blank" rel="external">React Router最新指南与异步加载实践</a></li>
+</ul>
+<h3 id="Webpack"><a href="#Webpack" class="headerlink" title="Webpack"></a>Webpack</h3><ul>
+<li><a href="https://webpack.github.io/docs/" target="_blank" rel="external">官方文档</a></li>
+<li><a href="https://segmentfault.com/a/1190000005995267#articleHeader3" target="_blank" rel="external">webpack教程资源收集</a></li>
+<li><a href="https://webpack.toobug.net/zh-cn/" target="_blank" rel="external">gitbook–webpack指南</a></li>
+<li><a href="https://www.zfanw.com/blog/webpack-assets-cache.html" target="_blank" rel="external">webpack与资源缓存</a></li>
+<li><a href="http://yincheng.site/webpack" target="_blank" rel="external">webpack从入门到上线</a></li>
+<li><a href="http://zhaoda.net/webpack-handbook/index.html" target="_blank" rel="external">webpack中文指南</a></li>
+<li><a href="http://zhizhi.betahouse.us/2015/09/27/yi-webpackde-demos/" target="_blank" rel="external">[译] webpack 的 demos</a></li>
+<li><a href="http://yj1438.github.io/2016/06/11/webpack.html" target="_blank" rel="external">完整的 webpack 开发环境与生产环境打包配置</a></li>
+<li><a href="http://www.cnblogs.com/haogj/p/5160821.html" target="_blank" rel="external">webpack 插件： html-webpack-plugin</a></li>
+<li><a href="https://segmentfault.com/a/1190000002552008" target="_blank" rel="external">Webpack 怎么用(题叶)</a></li>
+<li><a href="https://qiutc.me/post/webpack-best-practice-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5-%E9%83%A8%E7%BD%B2%E7%94%9F%E4%BA%A7.html" target="_blank" rel="external">webpack-best-practice-最佳实践-部署生产</a></li>
+<li><a href="http://guoyongfeng.github.io/idoc/html/React%E8%AF%BE%E7%A8%8B%E4%B8%93%E9%A2%98/%E4%BD%BF%E7%94%A8Webpack%E6%90%AD%E5%BB%BA%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E5%B7%A5%E4%BD%9C%E6%B5%81.html" target="_blank" rel="external">使用Webpack搭建生产环境工作流</a></li>
+<li><a href="https://segmentfault.com/a/1190000002551952#articleHeader5" target="_blank" rel="external">Webpack 入门指迷(题叶)</a></li>
+<li><a href="http://fakefish.github.io/react-webpack-cookbook/" target="_blank" rel="external">react和webpack小书</a></li>
+</ul>
+<h3 id="Ajax"><a href="#Ajax" class="headerlink" title="Ajax"></a>Ajax</h3><ul>
+<li><a href="https://github.com/mzabriskie/axios" target="_blank" rel="external">axios</a></li>
+</ul>
+<h3 id="好文章"><a href="#好文章" class="headerlink" title="好文章"></a>好文章</h3><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/24094812" target="_blank" rel="external">《致设计师》来自前端工程师</a></li>
+<li><a href="http://chuansong.me/n/1246543551539" target="_blank" rel="external">天猫即将不支持IE8</a></li>
 </ul>
 <h3 id="好工作"><a href="#好工作" class="headerlink" title="好工作"></a>好工作</h3><ul>
 <li><a href="https://gold.xitu.io/post/5842c27c61ff4b006c2a55d7?utm_source=gold_browser_extension" target="_blank" rel="external">从培训班出来之后找工作的经历，教会了我这五件事</a></li>
@@ -171,29 +300,21 @@
     <link href="http://yoursite.com/2016/12/05/SVG%E7%AC%94%E8%AE%B0/"/>
     <id>http://yoursite.com/2016/12/05/SVG笔记/</id>
     <published>2016-12-05T09:45:25.000Z</published>
-    <updated>2016-12-06T07:28:49.000Z</updated>
+    <updated>2016-12-13T08:18:00.000Z</updated>
     
     <content type="html"><![CDATA[<p>SVG 已经不是什么新鲜技术了，天猫也即将不支持IE8.所以SVG在今后的使用场景肯定会更加广泛。之前用SVG实现一个环形统计图，比用canvas渲染的图表性能更好。下面对一些SVG的知识点进行整理，以便今后使用查阅方便。<br><a id="more"></a></p>
 <hr>
 <h4 id="零、SVG简介"><a href="#零、SVG简介" class="headerlink" title="零、SVG简介"></a>零、SVG简介</h4><ol>
-<li><p>SVG 即 Scalable Vector Graphics (可伸缩矢量图形)</p>
-</li>
-<li><p>优点</p>
-<ul>
-<li><p>可以随意放大或改变尺寸, 同时其图形质量不会有损失</p>
-</li>
-<li><p>比JPEG和GIF尺寸更小</p>
-</li>
-<li><p>图像中文本可选可搜索</p>
-</li>
-<li><p>能在任何分辨率下被高质量打印</p>
-</li>
-<li><p>开放, 兼容, 易读取</p>
-</li>
+<li>SVG 即 Scalable Vector Graphics (可伸缩矢量图形)<br><br></li>
+<li>优点<ul>
+<li>可以随意放大或改变尺寸, 同时其图形质量不会有损失</li>
+<li>比JPEG和GIF尺寸更小</li>
+<li>图像中文本可选可搜索</li>
+<li>能在任何分辨率下被高质量打印</li>
+<li>开放, 兼容, 易读取<br><br></li>
 </ul>
 </li>
-<li><p>SVG 可以单独作为一个文件书写, 在这里只介绍编写在HTML里的SVG</p>
-</li>
+<li>SVG 可以单独作为一个文件书写, 在这里只介绍编写在HTML里的SVG</li>
 </ol>
 <h4 id="一、SVG-标签"><a href="#一、SVG-标签" class="headerlink" title="一、SVG 标签"></a>一、SVG 标签</h4><pre><code>&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot;&gt;
     {some svg code}
@@ -202,22 +323,14 @@
 <p>在现代浏览器中, svg标签的<em>xmlns</em>属性和<em>version</em>属性都可以省略。</p>
 <p>svg 标签默认的宽高是 <em>300 * 150</em> , 如果不设置<em>width</em>和<em>height</em>属性, SVG图像就在这个尺寸的画布中绘制。</p>
 <h4 id="二、SVG-元素"><a href="#二、SVG-元素" class="headerlink" title="二、SVG 元素"></a>二、SVG 元素</h4><ul>
-<li><p>矩形 <code>&lt;rect&gt;</code></p>
-</li>
-<li><p>圆形 <code>&lt;circle&gt;</code></p>
-</li>
-<li><p>椭圆 <code>&lt;ellipse&gt;</code></p>
-</li>
-<li><p>线 <code>&lt;line&gt;</code></p>
-</li>
-<li><p>折线 <code>&lt;polyline&gt;</code></p>
-</li>
-<li><p>多边形 <code>&lt;polygon&gt;</code></p>
-</li>
-<li><p>路径 <code>&lt;path&gt;</code></p>
-</li>
-<li><p>文本 <code>&lt;text&gt;</code></p>
-</li>
+<li>矩形 <code>&lt;rect&gt;</code><br><br></li>
+<li>圆形 <code>&lt;circle&gt;</code><br><br></li>
+<li>椭圆 <code>&lt;ellipse&gt;</code><br><br></li>
+<li>线 <code>&lt;line&gt;</code><br><br></li>
+<li>折线 <code>&lt;polyline&gt;</code><br><br></li>
+<li>多边形 <code>&lt;polygon&gt;</code><br><br></li>
+<li>路径 <code>&lt;path&gt;</code><br><br></li>
+<li>文本 <code>&lt;text&gt;</code></li>
 </ul>
 <h4 id="三、SVG-元素属性"><a href="#三、SVG-元素属性" class="headerlink" title="三、SVG 元素属性"></a>三、SVG 元素属性</h4><p>下面用表格的形式对一些常见的元素属性进行这里：</p>
 <p><table style="width: 100%;text-align: center;tabel-layout:fixed;border:1px solid gray;"><thead><tr><td style="width:16%">属性描述</td><td style="width:20%">属性名</td><td style="width:32%">属性值</td><td style="width:32%">备注</td></tr></thead><tbody><tr><td rowspan="3">位置</td><td><p><code>x</code> <code>y</code></p><p>(矩形位置)</p></td><td>相对于<em>svg</em>标签的绘制区域的左侧和顶端距离。类似于css中的top和left属性。</td><td>位置的属性是将元素的内容区域进行定位（边框是不属于内容区域的，这一点需要注意）</td></tr><tr><td><p><code>cx</code> <code>cy</code></p><p>(圆形位置)</p></td><td>圆形坐标。默认值为（0，0）</td><td></td></tr><tr><td><p><code>x1</code> <code>x2</code> <code>y1</code> <code>y2</code></p><p>(直线开始和结束的位置)</p></td><td></td><td></td></tr><tr><td rowspan="3">尺寸</td><td><p><code>width</code> <code>height</code></p><p>(矩形尺寸)</p></td><td rowspan="3"><p>同css中width和height的值</p><p>可以直接为数字（相当于px)</p><p>使用em和rem效果似乎是一样的</p><p>百分比为单位时，是相对于<em>svg</em>标签的尺寸</p></td><td></td></tr><tr><td><p><code>r</code></p><p>(圆形半径)</p></td><td></td></tr><tr><td><p><code>rx</code> <code>ry</code></p><p>(椭圆的水平、垂直半径)</p></td><td></td></tr><tr><td>圆角</td><td><code>rx</code> <code>ry</code></td><td>同css中</td><td></td></tr><tr><td>多边形、曲线</td><td><code>points</code></td><td>字符串，包含至少三个坐标值，用空格分割。如<code>points=&quot;200,10 250,190 160,210&quot;</code></td><td></td></tr><tr><td>变换</td><td><code>transform</code></td><td><p>translate（位移）</p><p>rotate（旋转）</p><p>scale（缩放）</p><p>skew（斜切）</p></td><td><a href="http://www.zhangxinxu.com/wordpress/2015/10/understand-svg-transform/" target="_blank" rel="external">一切尽在这里</a></td></tr><tr><td colspan="4"><p>以下属性需要写在<em>style</em>属性中, 如</p><p><code>&lt;rect x=1 y=1 height＝&quot;100px&quot; width=10 style=&quot;下面的属性&quot; /&gt;</code></p></td></tr><tr><td rowspan="3">填充</td><td><p><code>fill-rule</code></p><p>(填充规则)</p></td><td><p>nonzero(默认值)</p><p>evenodd</p><p>inherit</p></td><td></td></tr><tr><td><p><code>fill-opacity</code></p><p>(填充透明度)</p></td><td></td><td></td></tr><tr><td><p><code>fill</code></p><p>(填充颜色)</p></td><td rowspan="2">颜色同css中，颜色名，十六进制，rgb(a)等等</td><td></td></tr><tr><td rowspan="4">描边(边框、直线)属性</td><td><p><code>stroke</code></p><p>(颜色)</p></td><td rowspan="2">关于<em>stroke</em>及其他的属性，张鑫旭大神有<a href="http://www.zhangxinxu.com/wordpress/2014/04/animateion-line-drawing-svg-path-%e5%8a%a8%e7%94%bb-%e8%b7%af%e5%be%84/" target="_blank" rel="external">一篇博文</a>介绍</td></tr><tr><td><p><code>stroke-opacity</code></p><p>(透明度)</p></td><td></td></tr><tr><td><p><code>stroke-width</code></p><p>(宽度)</p></td><td></td><td>矩形边框的宽度不属于元素的宽高</td></tr><tr><td><p><code>stroke-dasharray</code></p><p>(用于创建虚线)</p></td><td>指定一个虚线规则的数组，偶数项为实体宽度，奇数项为空白宽度。之后一直循环这个数组，形成一个虚线</td><td>需要渲染大量环形图表，用echart会很卡，用SVG的这个属性就很轻松的实现了，也是张大神的文章——<a href="http://www.zhangxinxu.com/wordpress/2015/07/svg-circle-loading/" target="_blank" rel="external">小tip: 使用SVG寥寥数行实现圆环loading进度效果</a></td></tr><tr><td rowspan="3">透明度</td><td><p><code>opacity</code></p><p>(元素透明度)</p></td><td rowspan="3">同css中，范围为0-1</td><td rowspan="3">显而易见，设置了<em>opacity</em>属性，也就同时设置了<em>fill-opacity</em>和<em>stroke-opacity</em>属性</td></tr><tr><td><p><code>fill-opacity</code></p><p>(填充透明度)</p></td></tr><tr><td><p><code>fill</code></p><p>(填充颜色)</p></td></tr></tbody></table></p>

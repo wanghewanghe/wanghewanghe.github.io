@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="有的东西不总结，永远不是自己的。"><meta name="keywords" content="React"><title>React-Router 遇到的那些坑 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'Your Google Analytics ID', 'auto');
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">React-Router 遇到的那些坑</h1><span class="post-time">2016年12月13日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#indexRoute-嵌套问题"><span class="toc-text">indexRoute 嵌套问题</span></a></li></ol></div><div class="post-content"><p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
+<h2 id="indexRoute-嵌套问题"><a href="#indexRoute-嵌套问题" class="headerlink" title="indexRoute 嵌套问题"></a>indexRoute 嵌套问题</h2><p>  indexRoute的设定是，必须为叶节点，而不能作为父级元素，在下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
+<pre><code>&lt;Router&gt;
+  &lt;IndexRoute&gt;
+    &lt;IndexRoute&gt;&lt;/IndexRoute&gt;
+  &lt;/IndexRoute&gt;
+  &lt;Route&gt;&lt;/Route&gt;
+&lt;/Router&gt;
+</code></pre><p>  而在实际的业务需求中，经常会遇到下面这种情况：<img src="/img/react-router/a.png" alt="">   上图为想要看到的效果，而实际情况是：<br>  <img src="/img/react-router/b.png" alt=""></p>
+</div></article><div class="tags"><a href="/tags/React/">React</a></div><div class="paginator"><a id="next" href="/2016/12/07/个人收藏夹整理/" data-title="个人收藏夹整理" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div id="disqus_thread"></div></section><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/';
+    this.page.identifier = '2016/12/13/React-Router-遇到的那些坑/';
+    this.page.title = 'React-Router 遇到的那些坑';
+};
+(function() {
+var d = document, s = d.createElement('script');
+
+s.src = '//Your disqus ID.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();</script></section><footer><div class="social"><a href="mailto:893079286@qq.com" title="email" class="iconfont icon-email"></a><a href="/atom.xml" title="rss" class="iconfont icon-rss"></a></div><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2016<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Wang He</span></p></div><div id="back2top"><i class="iconfont icon-up"></i></div></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
