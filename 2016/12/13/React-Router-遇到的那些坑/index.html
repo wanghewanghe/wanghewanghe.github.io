@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="有的东西不总结，永远不是自己的。"><meta name="keywords" content="React"><title>React-Router 遇到的那些坑 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="有的东西不总结，永远不是自己的。"><meta name="keywords" content="React"><title>React-Router 遇到的那些坑——IndexRoute 嵌套问题 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
 (function() {
   var hm = document.createElement("script");
   hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
@@ -11,16 +11,46 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'Your Google Analytics ID', 'auto');
-ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">React-Router 遇到的那些坑</h1><span class="post-time">2016年12月13日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#indexRoute-嵌套问题"><span class="toc-text">indexRoute 嵌套问题</span></a></li></ol></div><div class="post-content"><p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
-<h2 id="indexRoute-嵌套问题"><a href="#indexRoute-嵌套问题" class="headerlink" title="indexRoute 嵌套问题"></a>indexRoute 嵌套问题</h2><p>  indexRoute的设定是，必须为叶节点，而不能作为父级元素，在下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">React-Router 遇到的那些坑——IndexRoute 嵌套问题</h1><span class="post-time">2016年12月13日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题概述"><span class="toc-text">问题概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题还原"><span class="toc-text">问题还原</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试解决"><span class="toc-text">尝试解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#后记"><span class="toc-text">后记</span></a></li></ol></div><div class="post-content"><p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
+<h2 id="问题概述"><a href="#问题概述" class="headerlink" title="问题概述"></a>问题概述</h2><p>  IndexRoute的设定是，必须为叶节点，而要是作为父级元素，在IndexRoute下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
 <pre><code>&lt;Router&gt;
   &lt;IndexRoute&gt;
     &lt;IndexRoute&gt;&lt;/IndexRoute&gt;
   &lt;/IndexRoute&gt;
   &lt;Route&gt;&lt;/Route&gt;
 &lt;/Router&gt;
-</code></pre><p>  而在实际的业务需求中，经常会遇到下面这种情况：<img src="/img/react-router/a.png" alt=""><br>上图为想要看到的效果，而实际情况是：<br>  <img src="/img/react-router/b.png" alt=""><br>需要一层一层进行点击才能得到想要的结果。</p>
-</div></article><div class="tags"><a href="/tags/React/">React</a></div><div class="paginator"><a id="next" href="/2016/12/07/个人收藏夹整理/" data-title="个人收藏夹整理" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/index.html" data-title="React-Router 遇到的那些坑" data-url="http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+</code></pre><h2 id="问题还原"><a href="#问题还原" class="headerlink" title="问题还原"></a>问题还原</h2><p>  而在实际的业务需求中，经常会遇到下面这种情况：当我从这个入口进入：<br>  <img src="/img/react-router/d.png" alt=""><br>想要看到<br>  <img src="/img/react-router/a.png" alt=""><br>而实际情况是：<br>  <img src="/img/react-router/b.png" alt=""><br>需要一层一层进行点击才能得到想要的结果。(图中的是React-Router官方的<a href="https://github.com/ReactTraining/react-router/tree/master/examples" target="_blank" rel="external">示例</a>运行后看到的)  </p>
+<p>  （因为实际业务中都用到异步路由，按需加载，所以照着官方的huge-app示例进行修改和描述。看官如果觉得描述的有点混乱，可以下载源码，npm install后npm start，结合页面跳转进行理解。）</p>
+<h2 id="尝试解决"><a href="#尝试解决" class="headerlink" title="尝试解决"></a>尝试解决</h2><p>  我们先用应用IndexRouter，在<code>huge-apps/routes/Course/index.js</code>中添加<code>getIndexRoute</code>方法，完整代码如下：</p>
+<pre><code>module.exports = {
+  path: &apos;course/:courseId&apos;,
+
+  getChildRoutes(partialNextState, cb) {
+    require.ensure([], (require) =&gt; {
+      cb(null, [
+        require(&apos;./routes/Announcements&apos;),
+        require(&apos;./routes/Assignments&apos;),
+        require(&apos;./routes/Grades&apos;)
+      ])
+    })
+  },
+
+  getIndexRoute(location, cb) {
+    require.ensure([], require =&gt;
+      cb(null, require(&apos;./routes/Announcements&apos;))
+    )
+  },
+
+  getComponent(nextState, cb) {
+    require.ensure([], (require) =&gt; {
+      cb(null, require(&apos;./components/Course&apos;))
+    })
+  }
+}
+</code></pre><p>从入口进入后，如图<img src="/img/react-router/c.png" alt=""></p>
+<p>可以看到，上图和第二张图的 url 是一样的，而显示的效果和这个url（<em> localhost:8080/huge-apps/course/0/announcements</em>）的结果是一样的，这就是IndexRoute的基本用法。这个时候，点击<em>Announcements</em>这个按钮，会发现url改变了，这个时候该死的强迫症就来了——明明页面没有改变，为什么 url 里多了一个字段！！</p>
+<p>为了解决这个问题，尝试将</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2></div></article><div class="tags"><a href="/tags/React/">React</a></div><div class="paginator"><a id="prev" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="prev"><i class="iconfont icon-left"></i><span>Prev</span></a><a id="next" href="/2016/12/07/个人收藏夹整理/" data-title="个人收藏夹整理" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/index.html" data-title="React-Router 遇到的那些坑——IndexRoute 嵌套问题" data-url="http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;

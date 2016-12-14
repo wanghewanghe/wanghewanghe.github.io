@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-12-13T13:20:07.000Z</updated>
+  <updated>2016-12-14T13:39:46.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,22 +16,88 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>React-Router 遇到的那些坑</title>
+    <title>CSS点滴</title>
+    <link href="http://yoursite.com/2016/12/14/CSS%E7%82%B9%E6%BB%B4/"/>
+    <id>http://yoursite.com/2016/12/14/CSS点滴/</id>
+    <published>2016-12-14T13:26:26.000Z</published>
+    <updated>2016-12-14T13:39:46.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
+<h3 id="transition-属性"><a href="#transition-属性" class="headerlink" title="transition 属性"></a>transition 属性</h3><p>  属性详解：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition" target="_blank" rel="external">https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition</a></p>
+<p>  这里值得一提的是，在设置</p>
+<pre><code>div {
+
+  some code...
+
+  &amp;.active {
+    position: relative;
+    top: 5px;
+
+    transition: top .3s;      
+  }  
+}
+</code></pre><p>  时，如果没有之前声明<code>position: relative</code>，这里的top渐变会失效。即使<code>transition: all .3s</code>也没办法实现。</p>
+<p>  说明 transition-property 属性值不能是 position</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;有的东西不总结，永远不是自己的。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="CSS" scheme="http://yoursite.com/tags/CSS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>React-Router 遇到的那些坑——IndexRoute 嵌套问题</title>
     <link href="http://yoursite.com/2016/12/13/React-Router-%E9%81%87%E5%88%B0%E7%9A%84%E9%82%A3%E4%BA%9B%E5%9D%91/"/>
     <id>http://yoursite.com/2016/12/13/React-Router-遇到的那些坑/</id>
     <published>2016-12-13T09:36:06.000Z</published>
-    <updated>2016-12-13T13:20:07.000Z</updated>
+    <updated>2016-12-14T05:01:46.000Z</updated>
     
     <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
-<h2 id="indexRoute-嵌套问题"><a href="#indexRoute-嵌套问题" class="headerlink" title="indexRoute 嵌套问题"></a>indexRoute 嵌套问题</h2><p>  indexRoute的设定是，必须为叶节点，而不能作为父级元素，在下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
+<h2 id="问题概述"><a href="#问题概述" class="headerlink" title="问题概述"></a>问题概述</h2><p>  IndexRoute的设定是，必须为叶节点，而要是作为父级元素，在IndexRoute下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
 <pre><code>&lt;Router&gt;
   &lt;IndexRoute&gt;
     &lt;IndexRoute&gt;&lt;/IndexRoute&gt;
   &lt;/IndexRoute&gt;
   &lt;Route&gt;&lt;/Route&gt;
 &lt;/Router&gt;
-</code></pre><p>  而在实际的业务需求中，经常会遇到下面这种情况：<img src="/img/react-router/a.png" alt=""><br>上图为想要看到的效果，而实际情况是：<br>  <img src="/img/react-router/b.png" alt=""><br>需要一层一层进行点击才能得到想要的结果。</p>
-]]></content>
+</code></pre><h2 id="问题还原"><a href="#问题还原" class="headerlink" title="问题还原"></a>问题还原</h2><p>  而在实际的业务需求中，经常会遇到下面这种情况：当我从这个入口进入：<br>  <img src="/img/react-router/d.png" alt=""><br>想要看到<br>  <img src="/img/react-router/a.png" alt=""><br>而实际情况是：<br>  <img src="/img/react-router/b.png" alt=""><br>需要一层一层进行点击才能得到想要的结果。(图中的是React-Router官方的<a href="https://github.com/ReactTraining/react-router/tree/master/examples" target="_blank" rel="external">示例</a>运行后看到的)  </p>
+<p>  （因为实际业务中都用到异步路由，按需加载，所以照着官方的huge-app示例进行修改和描述。看官如果觉得描述的有点混乱，可以下载源码，npm install后npm start，结合页面跳转进行理解。）</p>
+<h2 id="尝试解决"><a href="#尝试解决" class="headerlink" title="尝试解决"></a>尝试解决</h2><p>  我们先用应用IndexRouter，在<code>huge-apps/routes/Course/index.js</code>中添加<code>getIndexRoute</code>方法，完整代码如下：</p>
+<pre><code>module.exports = {
+  path: &apos;course/:courseId&apos;,
+
+  getChildRoutes(partialNextState, cb) {
+    require.ensure([], (require) =&gt; {
+      cb(null, [
+        require(&apos;./routes/Announcements&apos;),
+        require(&apos;./routes/Assignments&apos;),
+        require(&apos;./routes/Grades&apos;)
+      ])
+    })
+  },
+
+  getIndexRoute(location, cb) {
+    require.ensure([], require =&gt;
+      cb(null, require(&apos;./routes/Announcements&apos;))
+    )
+  },
+
+  getComponent(nextState, cb) {
+    require.ensure([], (require) =&gt; {
+      cb(null, require(&apos;./components/Course&apos;))
+    })
+  }
+}
+</code></pre><p>从入口进入后，如图<img src="/img/react-router/c.png" alt=""></p>
+<p>可以看到，上图和第二张图的 url 是一样的，而显示的效果和这个url（<em> localhost:8080/huge-apps/course/0/announcements</em>）的结果是一样的，这就是IndexRoute的基本用法。这个时候，点击<em>Announcements</em>这个按钮，会发现url改变了，这个时候该死的强迫症就来了——明明页面没有改变，为什么 url 里多了一个字段！！</p>
+<p>为了解决这个问题，尝试将</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2>]]></content>
     
     <summary type="html">
     

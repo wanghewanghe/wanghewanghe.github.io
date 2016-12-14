@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="有的东西不总结，永远不是自己的。"><meta name="keywords" content="CSS"><title>CSS点滴 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://yoursite.com/2016/12/14/CSS点滴/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'Your Google Analytics ID', 'auto');
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">CSS点滴</h1><span class="post-time">2016年12月14日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#transition-属性"><span class="toc-text">transition 属性</span></a></li></ol></div><div class="post-content"><p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
+<h3 id="transition-属性"><a href="#transition-属性" class="headerlink" title="transition 属性"></a>transition 属性</h3><p>  属性详解：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition" target="_blank" rel="external">https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition</a></p>
+<p>  这里值得一提的是，在设置</p>
+<pre><code>div {
+
+  some code...
+
+  &amp;.active {
+    position: relative;
+    top: 5px;
+
+    transition: top .3s;      
+  }  
+}
+</code></pre><p>  时，如果没有之前声明<code>position: relative</code>，这里的top渐变会失效。即使<code>transition: all .3s</code>也没办法实现。</p>
+<p>  说明 transition-property 属性值不能是 position</p>
+</div></article><div class="tags"><a href="/tags/CSS/">CSS</a></div><div class="paginator"><a id="next" href="/2016/12/13/React-Router-遇到的那些坑/" data-title="React-Router 遇到的那些坑——IndexRoute 嵌套问题" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://yoursite.com/2016/12/14/CSS点滴/index.html" data-title="CSS点滴" data-url="http://yoursite.com/2016/12/14/CSS点滴/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();</script></section></section><footer><div class="social"><a href="mailto:893079286@qq.com" title="email" class="iconfont icon-email"></a><a href="https://github.com/wanghewanghe" title="github" class="iconfont icon-github"></a><a href="/atom.xml" title="rss" class="iconfont icon-rss"></a></div><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2016<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Wang He</span></p></div><div id="back2top"><i class="iconfont icon-up"></i></div></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
