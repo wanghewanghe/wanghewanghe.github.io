@@ -48,8 +48,11 @@ ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/."
   }
 }
 </code></pre><p>从入口进入后，如图<img src="/img/react-router/c.png" alt=""></p>
-<p>可以看到，上图和第二张图的 url 是一样的，而显示的效果和这个url（<em> localhost:8080/huge-apps/course/0/announcements</em>）的结果是一样的，这就是IndexRoute的基本用法。这个时候，点击<em>Announcements</em>这个按钮，会发现url改变了，这个时候该死的强迫症就来了——明明页面没有改变，为什么 url 里多了一个字段！！</p>
-<p>为了解决这个问题，尝试将<br>(未完待续)</p>
+<p>可以看到，上图和第二张图的 url 是一样的，而显示的效果和这个url（<em> localhost:8080/huge-apps/course/0/announcements</em>）的结果是一样的，这就是IndexRoute的基本用法。这个时候，点击<em>Announcements</em>这个按钮，会发现url改变了，这个时候该死的强迫症就来了——明明页面没有改变，为什么 url 里多了一个字段！！与此同时，控制台会报一个<em>Warning</em>：<code>[react-router] Index routes should not have paths</code>!!</p>
+<p>为了解决这个问题，尝试将<code>/Announcement/index.js</code>的<code>path</code>去掉，然后需要修改<code>activeClassName</code>，链接这个路径需要用<code>IndexLink</code>组件，或者<code>Link</code>组件加上<code>onlyActiveOnIndex</code>属性（详见<a href="http://www.ruanyifeng.com/blog/2016/05/react_router.html" target="_blank" rel="external">阮一峰React-Router教程</a>（九））。这样的话，用map遍历出来的<code>Link</code>组件就需要加入若干个判断，比较麻烦。</p>
+<p>这个支线问题只是为了解决强迫症，而且上面的解决方案并不够优雅。下面回到主线问题（工期要紧）。这个时候，如果再用同样的方法，在<code>/Announcement/index.js</code>中使用<code>getIndexRoute</code>方法，结果发现，怎么也进不到第三张图的页面了，控制台只是说没有匹配到相应的路由（那只是没有修改<code>Link</code>组件中to的链接导致的，我们想要的是在<code>/huge-apps/course/0</code>路径下得到第三张图的效果）。</p>
+<p>之后想到另一种解决方法，因为<code>IndexRoute</code>想解决的问题是</p>
+<p>(未完待续)</p>
 <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2></div></article><div class="tags"><a href="/tags/React/">React</a></div><div class="paginator"><a id="prev" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="prev"><i class="iconfont icon-left"></i><span>Prev</span></a><a id="next" href="/2016/12/07/个人收藏夹整理/" data-title="个人收藏夹整理" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/13/React-Router-遇到的那些坑/index.html" data-title="React-Router 遇到的那些坑——IndexRoute 嵌套问题" data-url="http://wanghewanghe.github.io/2016/12/13/React-Router-遇到的那些坑/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
 (function() {
     var ds = document.createElement('script');
