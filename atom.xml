@@ -120,7 +120,7 @@
     <link href="http://wanghewanghe.github.io/2016/12/07/%E4%B8%AA%E4%BA%BA%E6%94%B6%E8%97%8F%E5%A4%B9%E6%95%B4%E7%90%86/"/>
     <id>http://wanghewanghe.github.io/2016/12/07/个人收藏夹整理/</id>
     <published>2016-12-07T09:50:32.000Z</published>
-    <updated>2016-12-15T05:53:50.000Z</updated>
+    <updated>2016-12-19T12:36:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>把平时工作和学习中查阅资料和学习知识的站点整理一下，有的值得看第二遍，还有的今后遇到类似的问题时可以快速查阅和参考。<br><a id="more"></a></p>
 <hr>
@@ -146,10 +146,12 @@
 <li><a href="http://www.fileformat.info/format/w3c/entitytest.htm" target="_blank" rel="external">http://www.fileformat.info/format/w3c/entitytest.htm</a></li>
 <li><a href="http://114.xixik.com/character/" target="_blank" rel="external">http://114.xixik.com/character/</a></li>
 </ul>
-<h4 id="本地存储"><a href="#本地存储" class="headerlink" title="本地存储"></a>本地存储</h4><ul>
+<h4 id="缓存和本地存储"><a href="#缓存和本地存储" class="headerlink" title="缓存和本地存储"></a>缓存和本地存储</h4><ul>
 <li><a href="http://www.cnblogs.com/yuzhongwusan/archive/2011/12/19/2293347.html" target="_blank" rel="external">HTMl5的sessionStorage和localStorage</a></li>
 <li><a href="https://github.com/nbubna/store" target="_blank" rel="external">A better way to use localStorage and sessionStorage</a></li>
 <li><a href="http://mp.weixin.qq.com/s/QayrQWL8qyEtT8xhDcA2fQ" target="_blank" rel="external">cookie从哪里来到哪里去</a></li>
+<li><a href="http://www.alloyteam.com/2016/03/discussion-on-web-caching/" target="_blank" rel="external">AlloyTeam—<br>浅谈Web缓存
+</a></li>
 </ul>
 <h4 id="模板语言"><a href="#模板语言" class="headerlink" title="模板语言"></a>模板语言</h4><ul>
 <li><a href="https://github.com/slim-template/slim" target="_blank" rel="external">slim</a></li>
@@ -349,6 +351,7 @@
 <h3 id="好文章"><a href="#好文章" class="headerlink" title="好文章"></a>好文章</h3><ul>
 <li><a href="https://zhuanlan.zhihu.com/p/24094812" target="_blank" rel="external">《致设计师》来自前端工程师</a></li>
 <li><a href="http://chuansong.me/n/1246543551539" target="_blank" rel="external">天猫即将不支持IE8</a></li>
+<li><a href="http://www.jianshu.com/p/7246f993e990" target="_blank" rel="external">第三届CSS中国开发者大会纪实</a></li>
 </ul>
 <h3 id="好工作"><a href="#好工作" class="headerlink" title="好工作"></a>好工作</h3><ul>
 <li><a href="https://gold.xitu.io/post/5842c27c61ff4b006c2a55d7?utm_source=gold_browser_extension" target="_blank" rel="external">从培训班出来之后找工作的经历，教会了我这五件事</a></li>
