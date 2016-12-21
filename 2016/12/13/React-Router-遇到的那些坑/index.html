@@ -11,7 +11,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'Your Google Analytics ID', 'auto');
-ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">React-Router 遇到的那些坑——IndexRoute 嵌套问题</h1><span class="post-time">2016年12月13日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题概述"><span class="toc-text">问题概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题还原"><span class="toc-text">问题还原</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试解决"><span class="toc-text">尝试解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#后记"><span class="toc-text">后记</span></a></li></ol></div><div class="post-content"><p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">React-Router 遇到的那些坑——IndexRoute 嵌套问题</h1><span class="post-time">2016年12月13日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题概述"><span class="toc-text">问题概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题还原"><span class="toc-text">问题还原</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试解决"><span class="toc-text">尝试解决</span></a></li></ol></div><div class="post-content"><p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
 <h2 id="问题概述"><a href="#问题概述" class="headerlink" title="问题概述"></a>问题概述</h2><p>  IndexRoute的设定是，必须为叶节点，而要是作为父级元素，在IndexRoute下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
 <pre><code>&lt;Router&gt;
   &lt;IndexRoute&gt;
@@ -51,9 +51,38 @@ ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/."
 <p>可以看到，上图和第二张图的 url 是一样的，而显示的效果和这个url（<em> localhost:8080/huge-apps/course/0/announcements</em>）的结果是一样的，这就是IndexRoute的基本用法。这个时候，点击<em>Announcements</em>这个按钮，会发现url改变了，这个时候该死的强迫症就来了——明明页面没有改变，为什么 url 里多了一个字段！！与此同时，控制台会报一个<em>Warning</em>：<code>[react-router] Index routes should not have paths</code>!!</p>
 <p>为了解决这个问题，尝试将<code>/Announcement/index.js</code>的<code>path</code>去掉，然后需要修改<code>activeClassName</code>，链接这个路径需要用<code>IndexLink</code>组件，或者<code>Link</code>组件加上<code>onlyActiveOnIndex</code>属性（详见<a href="http://www.ruanyifeng.com/blog/2016/05/react_router.html" target="_blank" rel="external">阮一峰React-Router教程</a>（九））。这样的话，用map遍历出来的<code>Link</code>组件就需要加入若干个判断，比较麻烦。</p>
 <p>这个支线问题只是为了解决强迫症，而且上面的解决方案并不够优雅。下面回到主线问题（工期要紧）。这个时候，如果再用同样的方法，在<code>/Announcement/index.js</code>中使用<code>getIndexRoute</code>方法，结果发现，怎么也进不到第三张图的页面了，控制台只是说没有匹配到相应的路由（那只是没有修改<code>Link</code>组件中to的链接导致的，我们想要的是在<code>/huge-apps/course/0</code>路径下得到第三张图的效果）。</p>
-<p>之后想到另一种解决方法，因为<code>IndexRoute</code>想解决的问题是</p>
-<p>(未完待续)</p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2></div></article><div class="tags"><a href="/tags/React/">React</a></div><div class="paginator"><a id="prev" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="prev"><i class="iconfont icon-left"></i><span>Prev</span></a><a id="next" href="/2016/12/07/个人收藏夹整理/" data-title="个人收藏夹整理" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/13/React-Router-遇到的那些坑/index.html" data-title="React-Router 遇到的那些坑——IndexRoute 嵌套问题" data-url="http://wanghewanghe.github.io/2016/12/13/React-Router-遇到的那些坑/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+<p>之后想到另一种解决方法，因为<code>IndexRoute</code>想解决的问题是<code>this.props.children</code>为<code>undefined</code>（详见<a href="http://www.ruanyifeng.com/blog/2016/05/react_router.html" target="_blank" rel="external">阮一峰React-Router教程</a>（五）），那我们是不是可以写成<code>{this.props.children || &lt;Announcement/&gt;}</code>呢。</p>
+<p>经过实践，是可以实现需求的，但是和antd的面包屑组件结合起来就会有问题。具体问题是：想要显示的面包屑是三级的，但实际只显示了二级面包屑，而且点击一级面包屑后，面包屑变为一级，但是显示的并不改变，虽然这本来就不会改变，但是这样的体验很不好。。</p>
+<p>最后，想出用重定向的方式，即解决了强迫症的问题，又满足了需求，与antd的面包屑组件结合也没有冲突。下面贴上代码：</p>
+<pre><code>class SomeApp extends React.Component {
+    redirect() {
+        if (!this.props.children) {
+            this.context.router.push(&apos;some url&apos;)
+        }
+    }
+
+    componentWillMount() {
+        this.redirect()
+    }
+
+    componentDidUpdate() {
+        this.redirect()
+    }
+
+    render() {
+        return (
+            &lt;div&gt;
+                {this.props.children}
+            &lt;/div&gt;
+        )
+    }
+}
+
+SomeApp.contextTypes = {
+    router: React.PropTypes.object
+}
+</code></pre><p>这里遇到的最后一个坑是关于生命周期的问题，要把重定向函数写在<code>componentWillMount</code>和<code>componentDidUpdate</code>两个方法里。</p>
+</div></article><div class="tags"><a href="/tags/React/">React</a></div><div class="paginator"><a id="prev" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="prev"><i class="iconfont icon-left"></i><span>Prev</span></a><a id="next" href="/2016/12/07/个人收藏夹整理/" data-title="个人收藏夹整理" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/13/React-Router-遇到的那些坑/index.html" data-title="React-Router 遇到的那些坑——IndexRoute 嵌套问题" data-url="http://wanghewanghe.github.io/2016/12/13/React-Router-遇到的那些坑/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;

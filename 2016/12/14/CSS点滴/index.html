@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="有的东西不总结，永远不是自己的。"><meta name="keywords" content="CSS"><title>CSS点滴 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://wanghewanghe.github.io/2016/12/14/CSS点滴/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="有的东西不总结，永远不是自己的。主要内容：transition属性||关于三列布局+垂直居中"><meta name="keywords" content="CSS,transition,垂直居中,多列布局"><title>CSS点滴 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://wanghewanghe.github.io/2016/12/14/CSS点滴/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
 (function() {
   var hm = document.createElement("script");
   hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
@@ -11,8 +11,9 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'Your Google Analytics ID', 'auto');
-ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">CSS点滴</h1><span class="post-time">2016年12月14日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#transition-属性"><span class="toc-text">transition 属性</span></a></li></ol></div><div class="post-content"><p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
-<h3 id="transition-属性"><a href="#transition-属性" class="headerlink" title="transition 属性"></a>transition 属性</h3><p>  属性详解：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition" target="_blank" rel="external">https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition</a></p>
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">CSS点滴</h1><span class="post-time">2016年12月14日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#transition-属性"><span class="toc-text">transition 属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关于三列布局-垂直居中"><span class="toc-text">关于三列布局+垂直居中</span></a></li></ol></div><div class="post-content"><p>有的东西不总结，永远不是自己的。<br>主要内容：transition 属性 | | 关于三列布局+垂直居中<br><a id="more"></a></p>
+<h3 id="transition-属性"><a href="#transition-属性" class="headerlink" title="transition 属性"></a>transition 属性</h3><p>  12.14</p>
+<p>  属性详解：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition" target="_blank" rel="external">https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition</a></p>
 <p>  这里值得一提的是，在设置</p>
 <pre><code>div {
 
@@ -29,7 +30,24 @@ ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/."
 }
 </code></pre><p>  时，如果没在div中声明<code>position: relative;</code> 以及<code>top: 0;</code>，这里的top渐变会失效。即使<code>transition: all .3s;</code>也没办法实现。</p>
 <p>  说明 transition-property 属性值不能是 position。<br>  但是<code>top: 0;</code>的声明也必不可少，这个原因还不清楚。而div中不声明border属性，border的渐变还是可以看到的。。。这点很奇怪。。待我研究到原因再补上。</p>
-</div></article><div class="tags"><a href="/tags/CSS/">CSS</a></div><div class="paginator"><a id="next" href="/2016/12/13/React-Router-遇到的那些坑/" data-title="React-Router 遇到的那些坑——IndexRoute 嵌套问题" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/14/CSS点滴/index.html" data-title="CSS点滴" data-url="http://wanghewanghe.github.io/2016/12/14/CSS点滴/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+<h3 id="关于三列布局-垂直居中"><a href="#关于三列布局-垂直居中" class="headerlink" title="关于三列布局+垂直居中"></a>关于三列布局+垂直居中</h3><p>  12.20</p>
+<p>  今天遇到了三列布局的需求，之前看到的相关文章没怎么在意，今天亲自实践才发现，这里还是有很多值得记录的地方的。</p>
+<p>  这篇文章大致写了三列布局实现的方法（<a href="http://www.jackpu.com/san-lie-bu-ju-zuo-you-gu-ding-zhong-jian-lie-zi-gua-ying-tan-jiu/" target="_blank" rel="external">《三列布局面试题延伸》</a>）,主要分为表格（table）布局，浮动（float）布局（或者inline-block），绝对定位（absolute）布局，弹性盒子（flex）布局和网格（grid）布局。</p>
+<p>  但是，我们的需求并不简单，如下图<img src="/img/css/want.png" alt=""></p>
+<p>  中间一列高度不定，左右黄色部分为两列，而且内容垂直居中。</p>
+<p>  下面写出几种方案，是基于上文的思路结合自己的经验进行扩展。希望能找到最优的方案。</p>
+<p>  1、表格、类表格法<br>  表格法即最原始的表格实现：<img src="/img/css/table1.png" alt=""></p>
+<p>  类表格法就用<code>display: table-cell</code>的方法<a href="http://www.zhangxinxu.com/wordpress/2010/10/%e6%88%91%e6%89%80%e7%9f%a5%e9%81%93%e7%9a%84%e5%87%a0%e7%a7%8ddisplaytable-cell%e7%9a%84%e5%ba%94%e7%94%a8/" target="_blank" rel="external">（具体原理）</a>：<img src="/img/css/table2.png" alt=""></p>
+<p>  这种类表格的方法在内容宽度不够时，需要设置宽度，否则撑不开，原因有待研究。。</p>
+<p>  2、利用js计算<br>  简单粗暴的方法，没有多少技术含量。</p>
+<p>  3、浮动法<br>  用浮动实现等高效果有几种方法（详见大漠的<a href="http://www.w3cplus.com/css/creaet-equal-height-columns" target="_blank" rel="external">《八种创建等高列布局》</a>），但是在等高的同时垂直居中，目前还没想到好的办法。。</p>
+<p>  4、绝对定位<br>  绝对定位的方法是可行的，如图：<img src="/img/css/absolute.png" alt=""></p>
+<p>  5、flex方法<br>  <img src="/img/css/flex.png" alt=""><br>  flex方法可以做到，不过有个缺点，左右两列的高度是需要设置的，否则只能用父容器的背景来实现左右两列的相同背景（不同的话就麻烦一点）</p>
+<p>  6、grid布局<br>  grid布局是一种相对新的技术，浏览器支持不太好，不过据说明年三月就可以被现代浏览器支持。大漠老师在中国第三届CSS大会上做了分享。正好通过这个问题，了解一下grid布局～～</p>
+<p>  <img src="/img/css/grid.png" alt=""></p>
+<p>  grid布局的垂直居中效果上和flex的有点类似，不过可以用<code>height:100%</code>撑开高度，然后就可以用<a href="https://my.oschina.net/u/2282680/blog/784838" target="_blank" rel="external">许多方法</a>在这个独立的容器里面来垂直居中了。</p>
+<p>  grid布局还是很强大的，需要好好深入一下～</p>
+</div></article><div class="tags"><a href="/tags/CSS/">CSS</a><a href="/tags/transition/">transition</a><a href="/tags/垂直居中/">垂直居中</a><a href="/tags/多列布局/">多列布局</a></div><div class="paginator"><a id="next" href="/2016/12/13/React-Router-遇到的那些坑/" data-title="React-Router 遇到的那些坑——IndexRoute 嵌套问题" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/14/CSS点滴/index.html" data-title="CSS点滴" data-url="http://wanghewanghe.github.io/2016/12/14/CSS点滴/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;

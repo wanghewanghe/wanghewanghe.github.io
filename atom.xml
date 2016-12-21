@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wanghewanghe.github.io/"/>
-  <updated>2016-12-14T13:50:10.000Z</updated>
+  <updated>2016-12-21T03:22:57.000Z</updated>
   <id>http://wanghewanghe.github.io/</id>
   
   <author>
@@ -20,10 +20,11 @@
     <link href="http://wanghewanghe.github.io/2016/12/14/CSS%E7%82%B9%E6%BB%B4/"/>
     <id>http://wanghewanghe.github.io/2016/12/14/CSS点滴/</id>
     <published>2016-12-14T13:26:26.000Z</published>
-    <updated>2016-12-14T13:50:10.000Z</updated>
+    <updated>2016-12-21T03:22:57.000Z</updated>
     
-    <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
-<h3 id="transition-属性"><a href="#transition-属性" class="headerlink" title="transition 属性"></a>transition 属性</h3><p>  属性详解：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition" target="_blank" rel="external">https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition</a></p>
+    <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br>主要内容：transition 属性 | | 关于三列布局+垂直居中<br><a id="more"></a></p>
+<h3 id="transition-属性"><a href="#transition-属性" class="headerlink" title="transition 属性"></a>transition 属性</h3><p>  12.14</p>
+<p>  属性详解：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition" target="_blank" rel="external">https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition</a></p>
 <p>  这里值得一提的是，在设置</p>
 <pre><code>div {
 
@@ -40,16 +41,39 @@
 }
 </code></pre><p>  时，如果没在div中声明<code>position: relative;</code> 以及<code>top: 0;</code>，这里的top渐变会失效。即使<code>transition: all .3s;</code>也没办法实现。</p>
 <p>  说明 transition-property 属性值不能是 position。<br>  但是<code>top: 0;</code>的声明也必不可少，这个原因还不清楚。而div中不声明border属性，border的渐变还是可以看到的。。。这点很奇怪。。待我研究到原因再补上。</p>
+<h3 id="关于三列布局-垂直居中"><a href="#关于三列布局-垂直居中" class="headerlink" title="关于三列布局+垂直居中"></a>关于三列布局+垂直居中</h3><p>  12.20</p>
+<p>  今天遇到了三列布局的需求，之前看到的相关文章没怎么在意，今天亲自实践才发现，这里还是有很多值得记录的地方的。</p>
+<p>  这篇文章大致写了三列布局实现的方法（<a href="http://www.jackpu.com/san-lie-bu-ju-zuo-you-gu-ding-zhong-jian-lie-zi-gua-ying-tan-jiu/" target="_blank" rel="external">《三列布局面试题延伸》</a>）,主要分为表格（table）布局，浮动（float）布局（或者inline-block），绝对定位（absolute）布局，弹性盒子（flex）布局和网格（grid）布局。</p>
+<p>  但是，我们的需求并不简单，如下图<img src="/img/css/want.png" alt=""></p>
+<p>  中间一列高度不定，左右黄色部分为两列，而且内容垂直居中。</p>
+<p>  下面写出几种方案，是基于上文的思路结合自己的经验进行扩展。希望能找到最优的方案。</p>
+<p>  1、表格、类表格法<br>  表格法即最原始的表格实现：<img src="/img/css/table1.png" alt=""></p>
+<p>  类表格法就用<code>display: table-cell</code>的方法<a href="http://www.zhangxinxu.com/wordpress/2010/10/%e6%88%91%e6%89%80%e7%9f%a5%e9%81%93%e7%9a%84%e5%87%a0%e7%a7%8ddisplaytable-cell%e7%9a%84%e5%ba%94%e7%94%a8/" target="_blank" rel="external">（具体原理）</a>：<img src="/img/css/table2.png" alt=""></p>
+<p>  这种类表格的方法在内容宽度不够时，需要设置宽度，否则撑不开，原因有待研究。。</p>
+<p>  2、利用js计算<br>  简单粗暴的方法，没有多少技术含量。</p>
+<p>  3、浮动法<br>  用浮动实现等高效果有几种方法（详见大漠的<a href="http://www.w3cplus.com/css/creaet-equal-height-columns" target="_blank" rel="external">《八种创建等高列布局》</a>），但是在等高的同时垂直居中，目前还没想到好的办法。。</p>
+<p>  4、绝对定位<br>  绝对定位的方法是可行的，如图：<img src="/img/css/absolute.png" alt=""></p>
+<p>  5、flex方法<br>  <img src="/img/css/flex.png" alt=""><br>  flex方法可以做到，不过有个缺点，左右两列的高度是需要设置的，否则只能用父容器的背景来实现左右两列的相同背景（不同的话就麻烦一点）</p>
+<p>  6、grid布局<br>  grid布局是一种相对新的技术，浏览器支持不太好，不过据说明年三月就可以被现代浏览器支持。大漠老师在中国第三届CSS大会上做了分享。正好通过这个问题，了解一下grid布局～～</p>
+<p>  <img src="/img/css/grid.png" alt=""></p>
+<p>  grid布局的垂直居中效果上和flex的有点类似，不过可以用<code>height:100%</code>撑开高度，然后就可以用<a href="https://my.oschina.net/u/2282680/blog/784838" target="_blank" rel="external">许多方法</a>在这个独立的容器里面来垂直居中了。</p>
+<p>  grid布局还是很强大的，需要好好深入一下～</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;有的东西不总结，永远不是自己的。&lt;br&gt;
+      &lt;p&gt;有的东西不总结，永远不是自己的。&lt;br&gt;主要内容：transition 属性 | | 关于三列布局+垂直居中&lt;br&gt;
     
     </summary>
     
     
       <category term="CSS" scheme="http://wanghewanghe.github.io/tags/CSS/"/>
+    
+      <category term="transition" scheme="http://wanghewanghe.github.io/tags/transition/"/>
+    
+      <category term="垂直居中" scheme="http://wanghewanghe.github.io/tags/%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD/"/>
+    
+      <category term="多列布局" scheme="http://wanghewanghe.github.io/tags/%E5%A4%9A%E5%88%97%E5%B8%83%E5%B1%80/"/>
     
   </entry>
   
@@ -58,7 +82,7 @@
     <link href="http://wanghewanghe.github.io/2016/12/13/React-Router-%E9%81%87%E5%88%B0%E7%9A%84%E9%82%A3%E4%BA%9B%E5%9D%91/"/>
     <id>http://wanghewanghe.github.io/2016/12/13/React-Router-遇到的那些坑/</id>
     <published>2016-12-13T09:36:06.000Z</published>
-    <updated>2016-12-15T14:17:38.000Z</updated>
+    <updated>2016-12-21T06:40:42.000Z</updated>
     
     <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
 <h2 id="问题概述"><a href="#问题概述" class="headerlink" title="问题概述"></a>问题概述</h2><p>  IndexRoute的设定是，必须为叶节点，而要是作为父级元素，在IndexRoute下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
@@ -100,9 +124,38 @@
 <p>可以看到，上图和第二张图的 url 是一样的，而显示的效果和这个url（<em> localhost:8080/huge-apps/course/0/announcements</em>）的结果是一样的，这就是IndexRoute的基本用法。这个时候，点击<em>Announcements</em>这个按钮，会发现url改变了，这个时候该死的强迫症就来了——明明页面没有改变，为什么 url 里多了一个字段！！与此同时，控制台会报一个<em>Warning</em>：<code>[react-router] Index routes should not have paths</code>!!</p>
 <p>为了解决这个问题，尝试将<code>/Announcement/index.js</code>的<code>path</code>去掉，然后需要修改<code>activeClassName</code>，链接这个路径需要用<code>IndexLink</code>组件，或者<code>Link</code>组件加上<code>onlyActiveOnIndex</code>属性（详见<a href="http://www.ruanyifeng.com/blog/2016/05/react_router.html" target="_blank" rel="external">阮一峰React-Router教程</a>（九））。这样的话，用map遍历出来的<code>Link</code>组件就需要加入若干个判断，比较麻烦。</p>
 <p>这个支线问题只是为了解决强迫症，而且上面的解决方案并不够优雅。下面回到主线问题（工期要紧）。这个时候，如果再用同样的方法，在<code>/Announcement/index.js</code>中使用<code>getIndexRoute</code>方法，结果发现，怎么也进不到第三张图的页面了，控制台只是说没有匹配到相应的路由（那只是没有修改<code>Link</code>组件中to的链接导致的，我们想要的是在<code>/huge-apps/course/0</code>路径下得到第三张图的效果）。</p>
-<p>之后想到另一种解决方法，因为<code>IndexRoute</code>想解决的问题是</p>
-<p>(未完待续)</p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2>]]></content>
+<p>之后想到另一种解决方法，因为<code>IndexRoute</code>想解决的问题是<code>this.props.children</code>为<code>undefined</code>（详见<a href="http://www.ruanyifeng.com/blog/2016/05/react_router.html" target="_blank" rel="external">阮一峰React-Router教程</a>（五）），那我们是不是可以写成<code>{this.props.children || &lt;Announcement/&gt;}</code>呢。</p>
+<p>经过实践，是可以实现需求的，但是和antd的面包屑组件结合起来就会有问题。具体问题是：想要显示的面包屑是三级的，但实际只显示了二级面包屑，而且点击一级面包屑后，面包屑变为一级，但是显示的并不改变，虽然这本来就不会改变，但是这样的体验很不好。。</p>
+<p>最后，想出用重定向的方式，即解决了强迫症的问题，又满足了需求，与antd的面包屑组件结合也没有冲突。下面贴上代码：</p>
+<pre><code>class SomeApp extends React.Component {
+    redirect() {
+        if (!this.props.children) {
+            this.context.router.push(&apos;some url&apos;)
+        }
+    }
+
+    componentWillMount() {
+        this.redirect()
+    }
+
+    componentDidUpdate() {
+        this.redirect()
+    }
+
+    render() {
+        return (
+            &lt;div&gt;
+                {this.props.children}
+            &lt;/div&gt;
+        )
+    }
+}
+
+SomeApp.contextTypes = {
+    router: React.PropTypes.object
+}
+</code></pre><p>这里遇到的最后一个坑是关于生命周期的问题，要把重定向函数写在<code>componentWillMount</code>和<code>componentDidUpdate</code>两个方法里。</p>
+]]></content>
     
     <summary type="html">
     
@@ -120,7 +173,7 @@
     <link href="http://wanghewanghe.github.io/2016/12/07/%E4%B8%AA%E4%BA%BA%E6%94%B6%E8%97%8F%E5%A4%B9%E6%95%B4%E7%90%86/"/>
     <id>http://wanghewanghe.github.io/2016/12/07/个人收藏夹整理/</id>
     <published>2016-12-07T09:50:32.000Z</published>
-    <updated>2016-12-19T12:36:13.000Z</updated>
+    <updated>2016-12-20T10:16:50.000Z</updated>
     
     <content type="html"><![CDATA[<p>把平时工作和学习中查阅资料和学习知识的站点整理一下，有的值得看第二遍，还有的今后遇到类似的问题时可以快速查阅和参考。<br><a id="more"></a></p>
 <hr>
@@ -150,8 +203,9 @@
 <li><a href="http://www.cnblogs.com/yuzhongwusan/archive/2011/12/19/2293347.html" target="_blank" rel="external">HTMl5的sessionStorage和localStorage</a></li>
 <li><a href="https://github.com/nbubna/store" target="_blank" rel="external">A better way to use localStorage and sessionStorage</a></li>
 <li><a href="http://mp.weixin.qq.com/s/QayrQWL8qyEtT8xhDcA2fQ" target="_blank" rel="external">cookie从哪里来到哪里去</a></li>
-<li><a href="http://www.alloyteam.com/2016/03/discussion-on-web-caching/" target="_blank" rel="external">AlloyTeam—<br>浅谈Web缓存
+<li><a href="http://www.alloyteam.com/2016/03/discussion-on-web-caching/" target="_blank" rel="external">AlloyTeam–浅谈Web缓存
 </a></li>
+<li><a href="https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ" target="_blank" rel="external">彻底弄懂 Http 缓存机制 - 基于缓存策略三要素分解法</a></li>
 </ul>
 <h4 id="模板语言"><a href="#模板语言" class="headerlink" title="模板语言"></a>模板语言</h4><ul>
 <li><a href="https://github.com/slim-template/slim" target="_blank" rel="external">slim</a></li>
@@ -225,6 +279,7 @@
 </li>
 <li>css渐变实现的纯色背景~~~ <a href="https://github.com/evankarageorgos/hue" target="_blank" rel="external">Github</a>&nbsp;&nbsp;&nbsp;<a href="http://evankarageorgos.github.io/hue/grid.html" target="_blank" rel="external">Dome</a></li>
 <li>页面切换的css动画~~~ <a href="https://github.com/codrops/PageTransitions" target="_blank" rel="external">Github</a>&nbsp;&nbsp;&nbsp;<a href="http://tympanus.net/Development/PageTransitions/" target="_blank" rel="external">Dome</a></li>
+<li><a href="https://www.awesomes.cn/csshub" target="_blank" rel="external">awasome.cn-&gt;CSS Hub</a></li>
 <li><a href="http://alloyteam.github.io/gopng/###" target="_blank" rel="external">AlloyTeam雪碧图制作工具</a></li>
 <li>css框架<ul>
 <li>轻量级<ul>
@@ -265,9 +320,11 @@
 <h4 id="js动画"><a href="#js动画" class="headerlink" title="js动画"></a>js动画</h4><ul>
 <li><a href="http://thednp.github.io/kute.js/index.html" target="_blank" rel="external">KUTE.js</a></li>
 <li><a href="https://tympanus.net/Tutorials/FourBoxes/" target="_blank" rel="external">独特的幻灯片切换</a>【<a href="https://github.com/codrops/FourBoxes" target="_blank" rel="external">Code</a>】</li>
+<li><a href="https://sarcadass.github.io/granim.js/examples.html" target="_blank" rel="external">js渐变动画</a></li>
 </ul>
-<h3 id="播放器"><a href="#播放器" class="headerlink" title="播放器"></a>播放器</h3><ul>
+<h3 id="播放器和地图"><a href="#播放器和地图" class="headerlink" title="播放器和地图"></a>播放器和地图</h3><ul>
 <li>B站开源——<a href="https://github.com/Bilibili/flv.js" target="_blank" rel="external">Flv.js</a></li>
+<li><a href="http://leafletjs.com/index.html" target="_blank" rel="external">Leaflet–开源交互式地图</a></li>
 </ul>
 <h3 id="SVG"><a href="#SVG" class="headerlink" title="SVG"></a>SVG</h3><ul>
 <li><a href="https://github.com/riccardoscalco/textures" target="_blank" rel="external">Textures.js—js生成svg</a>【<a href="http://riccardoscalco.github.io/textures/" target="_blank" rel="external">Dome</a>】</li>
@@ -284,6 +341,7 @@
 <li><a href="http://www.css88.com/doc/underscore/" target="_blank" rel="external">underscore.js</a></li>
 <li><a href="https://github.com/blueimp/JavaScript-MD5" target="_blank" rel="external">javascript-MD5</a></li>
 <li><a href="https://github.com/stefanpenner/es6-promise" target="_blank" rel="external">es6–promise(A polyfill for ES6-style Promises)</a></li>
+<li><a href="https://kimmobrunfeldt.github.io/progressbar.js/" target="_blank" rel="external">进度条</a></li>
 </ul>
 <h4 id="代码规范"><a href="#代码规范" class="headerlink" title="代码规范"></a>代码规范</h4><ul>
 <li><a href="http://eslint.cn/" target="_blank" rel="external">ESLint</a></li>
@@ -292,6 +350,8 @@
 <li><a href="http://www.alloyteam.com/2012/11/javascript-throttle/" target="_blank" rel="external">AlloyTeam—浅谈javascript的函数节流</a></li>
 <li><a href="http://i.jakeyu.top/2016/11/26/%E5%AE%9E%E7%8E%B0%E5%9B%BE%E7%89%87%E6%87%92%E5%8A%A0%E8%BD%BD/" target="_blank" rel="external">实现图片的懒加载</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/23812134" target="_blank" rel="external">深入了解 JavaScript 中的 for 循环</a></li>
+<li><a href="http://jdc.jd.com/archives/2942" target="_blank" rel="external">JavaScript写类的前世今生</a></li>
+<li><a href="https://github.com/gomeplusFED/blog/blob/master/2016-04/do-you-really-understand-how-to-write-a-countdown-by-javascript.md" target="_blank" rel="external">你真的知道怎么用javascript来写一个倒计时吗 ?</a></li>
 </ul>
 <h4 id="你本该知道的js"><a href="#你本该知道的js" class="headerlink" title="你本该知道的js"></a>你本该知道的js</h4><ul>
 <li><a href="http://bonsaiden.github.io/JavaScript-Garden/zh/" target="_blank" rel="external">JavaScript秘密花园</a></li>
@@ -345,8 +405,12 @@
 <li><a href="https://segmentfault.com/a/1190000002551952#articleHeader5" target="_blank" rel="external">Webpack 入门指迷(题叶)</a></li>
 <li><a href="http://fakefish.github.io/react-webpack-cookbook/" target="_blank" rel="external">react和webpack小书</a></li>
 </ul>
-<h3 id="Ajax"><a href="#Ajax" class="headerlink" title="Ajax"></a>Ajax</h3><ul>
+<h3 id="Ajax与跨域"><a href="#Ajax与跨域" class="headerlink" title="Ajax与跨域"></a>Ajax与跨域</h3><ul>
 <li><a href="https://github.com/mzabriskie/axios" target="_blank" rel="external">axios</a></li>
+<li><a href="http://react-china.org/t/topic/7258/1" target="_blank" rel="external">前后端分离实践 — 如何解决跨域问题</a></li>
+</ul>
+<h3 id="工作流"><a href="#工作流" class="headerlink" title="工作流"></a>工作流</h3><ul>
+<li><a href="https://github.com/weixin/tmt-workflow" target="_blank" rel="external">微信基于 Gulp 高效、可定制的 Web 前端工作流</a></li>
 </ul>
 <h3 id="好文章"><a href="#好文章" class="headerlink" title="好文章"></a>好文章</h3><ul>
 <li><a href="https://zhuanlan.zhihu.com/p/24094812" target="_blank" rel="external">《致设计师》来自前端工程师</a></li>
