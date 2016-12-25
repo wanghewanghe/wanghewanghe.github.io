@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="有些知识不总结，永远不是自己的。这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。"><meta name="keywords" content="js基础"><title>那些年我们一起学习的js基础 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'Your Google Analytics ID', 'auto');
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">那些年我们一起学习的js基础</h1><span class="post-time">2016年12月25日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array的map方法"><span class="toc-text">Array的map方法</span></a></li></ol></div><div class="post-content"><p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
+<h3 id="Array的map方法"><a href="#Array的map方法" class="headerlink" title="Array的map方法"></a>Array的map方法</h3><blockquote>
+<p>map() 方法返回一个由原数组中的每个元素调用一个指定方法后的返回值组成的新数组。<br>  <br><br>① map 方法会给原数组中的每个元素都按顺序调用一次 callback 函数。callback 每次执行后的返回值（包括 undefined）组合起来形成一个新数组。 callback 函数只会在有值的索引上被调用；那些从来没被赋过值或者使用 delete 删除的索引则不会被调用。<br>  <br><br>② callback 函数会被自动传入三个参数：数组元素，元素索引，原数组本身。<br>  <br><br>③ 如果 thisArg 参数有值，则每次 callback 函数被调用的时候，this 都会指向 thisArg 参数上的这个对象。如果省略了 thisArg 参数,或者赋值为 null 或 undefined，则 this 指向全局对象。<br>  <br><br>④ map 不修改调用它的原数组本身（当然可以在 callback 执行时改变原数组）。<br>  <br><br>⑤ 使用 map 方法处理数组时，数组元素的范围是在 callback 方法第一次调用之前就已经确定了。在 map 方法执行的过程中：原数组中新增加的元素将不会被 callback 访问到；若已经存在的元素被改变或删除了，则它们的传递到 callback 的值是 map 方法遍历到它们的那一时刻的值；而被删除的元素将不会被访问到。</p>
+</blockquote>
+<p>  以上描述来自MDN–<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank" rel="external">Array.prototype.map()</a></p>
+<p>  写这篇文章之前，还没有认真阅读过，但是我当把这段描述贴上后，发现接下来的内容都没必要写了-_-#。。MDN大法好。。。既然起了笔，就继续写下去吧。。</p>
+<p>  示例1：</p>
+<pre><code>orders.map((obj, i) =&gt; {
+  obj.key = i + 1
+  obj.num = i + 1
+  obj.operate_status = obj.operate_status.length &gt; 10 ? &apos;&apos; : obj.operate_status
+  obj.status = obj.status.length &gt; 10 ? &apos;&apos; :obj.status
+})
+</code></pre><p>  正如描述中第④条所述。上面这段代码是将一个对象数组进行后续处理。给这个对象数组每一项加上key和num的字段，修改它的operate_status和status字段。</p>
+<p>  <em>(因为这个orders是后台传过来的信息，用在react表格中，需要加上key，然后表格需要一个序号。后面的两个status，后台有时候会返回一段很长的乱码，所以加上了判断)</em></p>
+<p>  !!! 又是写出来才发现，这个例子用map方法实现需求其实不好，因为map方法是返回一个新数组，这里只是为了修改原数组，用forEach方法更合适。已在项目代码中改为forEach，看来这篇总结是很有价值的～～哈哈哈</p>
+<p>  示例2：</p>
+<pre><code>const select_ids = this.selected_rows.map(obj =&gt; obj.order_id )
+</code></pre><p>  如描述①。上面的代码从select_rows这个对象数组中，提取出了key为order_id的值，返回了一个新的数组并赋值给select_ids</p>
+<p>  <em>这段代码利用es6的箭头函数，显得十分简洁。</em></p>
+<p>  示例3：（先写这么多，加班去了，圣诞快乐）</p>
+</div></article><div class="tags"><a href="/tags/js基础/">js基础</a></div><div class="paginator"><a id="next" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" data-title="那些年我们一起学习的js基础" data-url="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();</script></section></section><footer><div class="social"><a href="mailto:893079286@qq.com" title="email" class="iconfont icon-email"></a><a href="https://github.com/wanghewanghe" title="github" class="iconfont icon-github"></a><a href="/atom.xml" title="rss" class="iconfont icon-rss"></a></div><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2016<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Wang He</span></p></div><div id="back2top"><i class="iconfont icon-up"></i></div></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
