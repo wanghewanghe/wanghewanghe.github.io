@@ -11,8 +11,10 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'Your Google Analytics ID', 'auto');
-ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">那些年我们一起学习的js基础</h1><span class="post-time">2016年12月25日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array的map方法"><span class="toc-text">Array的map方法</span></a></li></ol></div><div class="post-content"><p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
-<h3 id="Array的map方法"><a href="#Array的map方法" class="headerlink" title="Array的map方法"></a>Array的map方法</h3><blockquote>
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">那些年我们一起学习的js基础</h1><span class="post-time">2016年12月25日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array的map方法"><span class="toc-text">Array的map方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用遍历判断空对象"><span class="toc-text">用遍历判断空对象</span></a></li></ol></div><div class="post-content"><p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
+<hr>
+<h3 id="Array的map方法"><a href="#Array的map方法" class="headerlink" title="Array的map方法"></a>Array的map方法</h3><p>  11.25</p>
+<blockquote>
 <p>map() 方法返回一个由原数组中的每个元素调用一个指定方法后的返回值组成的新数组。<br>  <br><br>① map 方法会给原数组中的每个元素都按顺序调用一次 callback 函数。callback 每次执行后的返回值（包括 undefined）组合起来形成一个新数组。 callback 函数只会在有值的索引上被调用；那些从来没被赋过值或者使用 delete 删除的索引则不会被调用。<br>  <br><br>② callback 函数会被自动传入三个参数：数组元素，元素索引，原数组本身。<br>  <br><br>③ 如果 thisArg 参数有值，则每次 callback 函数被调用的时候，this 都会指向 thisArg 参数上的这个对象。如果省略了 thisArg 参数,或者赋值为 null 或 undefined，则 this 指向全局对象。<br>  <br><br>④ map 不修改调用它的原数组本身（当然可以在 callback 执行时改变原数组）。<br>  <br><br>⑤ 使用 map 方法处理数组时，数组元素的范围是在 callback 方法第一次调用之前就已经确定了。在 map 方法执行的过程中：原数组中新增加的元素将不会被 callback 访问到；若已经存在的元素被改变或删除了，则它们的传递到 callback 的值是 map 方法遍历到它们的那一时刻的值；而被删除的元素将不会被访问到。</p>
 </blockquote>
 <p>  以上描述来自MDN–<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank" rel="external">Array.prototype.map()</a></p>
@@ -32,6 +34,149 @@ ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/."
 </code></pre><p>  如描述①。上面的代码从select_rows这个对象数组中，提取出了key为order_id的值，返回了一个新的数组并赋值给select_ids</p>
 <p>  <em>这段代码利用es6的箭头函数，显得十分简洁。</em></p>
 <p>  示例3：（先写这么多，加班去了，圣诞快乐）</p>
+<hr>
+<hr>
+<h3 id="用遍历判断空对象"><a href="#用遍历判断空对象" class="headerlink" title="用遍历判断空对象"></a>用遍历判断空对象</h3><p>  11.26</p>
+<p>  场景：（这段可以不看）</p>
+<blockquote>
+<p>从后台得到这样一个的数据：</p>
+</blockquote>
+<pre><code>const data = {
+  order_items: [],
+  id: &apos;&apos;,
+  extra: {},
+  operators: []
+}
+</code></pre><blockquote>
+<p>这个时候需要在<em>react</em>中根据<em>order_items</em>和<em>operators</em>渲染出一些信息，可能会在<code>render()</code>方法中这么写</p>
+</blockquote>
+<pre><code>this.state.order_items.map(obj =&gt; {...})
+this.state.operators.map(obj =&gt; {...})
+</code></pre><blockquote>
+<p>这样需要根据后台返回的数据设置许多<em>state</em>的默认值，然后需要用<code>setState()</code>方法设置许多<em>state</em>，很麻烦：</p>
+</blockquote>
+<pre><code>constructor() {
+  this.state = {
+    order_items: [],
+    operators: []
+  }
+}
+
+componentDidMount() {
+  httpRequest().then(res =&gt;
+      this.setState({
+        order_items: res.order_items,
+        operators: res.operators
+      })
+    )
+}
+</code></pre><blockquote>
+<p>如果想只在<em>state</em>里设置一个<em>data</em>，然后只需要用<code>setState({data})</code>来控制data的改变，进而控制<em>render</em>渲染，这个时候就需要：</p>
+</blockquote>
+<pre><code>constructor() {
+  this.state = {
+    data: {}
+  }
+}
+
+componentDidMount() {
+  httpRequest().then(res =&gt;
+      this.setState({data})
+    )
+}
+
+render() {
+  return() {
+    &lt;div&gt;
+      {
+        this.state.data.order_items.map(obj =&gt; {...})
+      }
+    &lt;/div&gt;
+  }
+}
+</code></pre><blockquote>
+<p>这么写会报错！因为第一次<em>render</em>的时候，<code>this.state.date</code>为<code>{}</code>。<br>可以这样解决：</p>
+</blockquote>
+<pre><code>this.state = {
+  data: {
+    order_items: [],
+    operators: []
+  }
+}
+</code></pre><blockquote>
+<p>但是这么做和感觉和之前的并没有差别。</p>
+</blockquote>
+<hr>
+<p>  这个时候，需要判断一下这个data对象是不是<code>{}</code>，下面是正文。。。。。</p>
+<p>  通常基础不扎实的（such as me），会这么写。。：</p>
+<pre><code>if (data) {}
+</code></pre><p>  或者这么写</p>
+<pre><code>if (data.length) {}
+</code></pre><p>  或者这么写</p>
+<pre><code>if (data === {}) {}
+</code></pre><p>  或者用什么<code>typeof</code>、<code>instanceof</code>之类之类。。。最后发现，然并卵。。一脸蒙逼。。</p>
+<p>  下面是正确的打开方式</p>
+<p>  ES5方法：</p>
+<pre><code>function isEmptyObject(obj) {
+  for (var x in obj) {
+    return false;
+  }
+  return true;
+}
+
+if (isEmptyObject(data)) {}
+</code></pre><p>  ES6方法：</p>
+<pre><code>if (Object.keys(data).length) {}
+</code></pre><p>  上面两种方法其核心都是对对象进行遍历。<code>Object.keys()</code>解释如下：</p>
+<blockquote>
+<p>Object.keys 返回一个所有元素为字符串的数组，其元素来自于从给定的对象上面可直接枚举的属性。这些属性的顺序与手动遍历该对象属性时的一致。</p>
+</blockquote>
+<p>  下面再列举一些遍历对象的方法(详细解释戳<a href="http://es6.ruanyifeng.com/#docs/object#%E5%B1%9E%E6%80%A7%E7%9A%84%E9%81%8D%E5%8E%86" target="_blank" rel="external">这里</a>)：</p>
+<ul>
+<li><code>Object.getOwnPropertyNames(obj)</code></li>
+<li><code>Object.getOwnPropertySymbols(obj)</code></li>
+<li><code>Reflect.ownKeys(obj)</code></li>
+</ul>
+<hr>
+<blockquote>
+<p>下面继续废话。。。<br>之前的代码，现在改为：</p>
+</blockquote>
+<pre><code>constructor() {
+  this.state = {
+    data: {}
+  }
+}
+
+componentDidMount() {
+  httpRequest().then(res =&gt;
+      this.setState({ data })
+    )
+}
+
+render() {
+  let data
+  if (Object.keys(this.state.data).length) {
+    data = this.state.data
+  }
+  return (
+    &lt;div&gt;
+      {
+        data &amp;&amp;
+        data.order_items.map()
+      }
+
+      {
+        data &amp;&amp;
+        data.operators.map()
+      }
+    &lt;/div&gt;
+  )
+}
+</code></pre><blockquote>
+<p>项目中的这个问题目前用这种方法解决（现在我觉得是比较好的方法了）。。之后发现更好的解决方式，再继续在下面废话吧。。。。</p>
+</blockquote>
+<hr>
+<hr>
 </div></article><div class="tags"><a href="/tags/js基础/">js基础</a></div><div class="paginator"><a id="next" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" data-title="那些年我们一起学习的js基础" data-url="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
 (function() {
     var ds = document.createElement('script');
