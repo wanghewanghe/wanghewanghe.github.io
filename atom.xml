@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wanghewanghe.github.io/"/>
-  <updated>2016-12-27T02:31:20.000Z</updated>
+  <updated>2017-01-14T13:07:44.000Z</updated>
   <id>http://wanghewanghe.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://wanghewanghe.github.io/2016/12/25/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E5%AD%A6%E4%B9%A0%E7%9A%84js%E5%9F%BA%E7%A1%80/"/>
     <id>http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/</id>
     <published>2016-12-25T05:27:36.000Z</published>
-    <updated>2016-12-27T02:31:20.000Z</updated>
+    <updated>2017-01-14T13:07:44.000Z</updated>
     
     <content type="html"><![CDATA[<p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
 <hr>
@@ -44,7 +44,19 @@
 <pre><code>const select_ids = this.selected_rows.map(obj =&gt; obj.order_id )
 </code></pre><p>  如描述①。上面的代码从select_rows这个对象数组中，提取出了key为order_id的值，返回了一个新的数组并赋值给select_ids</p>
 <p>  <em>这段代码利用es6的箭头函数，显得十分简洁。</em></p>
-<p>  示例3：（先写这么多，加班去了，圣诞快乐）</p>
+<p>  示例3：（先写这么多，加班去了，圣诞快乐）<br>  10.27</p>
+<pre><code>orders.map(obj =&gt; {
+  return {
+    order_name: obj.name,
+    order_time: obj.create_at
+  }
+})
+</code></pre><p>  上面的代码从orders里提取出name，create_at字段，组成了一个新的对象数组：</p>
+<pre><code>[
+  { order_name: &apos;&apos;, order_time: &apos;&apos; },
+  { order_name: &apos;&apos;, order_time: &apos;&apos; }
+]
+</code></pre><p>  可以和示例1，示例2进行对比，就能更加深刻的理解map方法，以及ES6箭头函数的使用方法。</p>
 <hr>
 <hr>
 <h3 id="用遍历判断空对象"><a href="#用遍历判断空对象" class="headerlink" title="用遍历判断空对象"></a>用遍历判断空对象</h3><p>  11.26</p>
@@ -188,6 +200,19 @@ render() {
 </blockquote>
 <hr>
 <hr>
+<h3 id="用短路操作判断"><a href="#用短路操作判断" class="headerlink" title="用短路操作判断"></a>用短路操作判断</h3><p>1.14</p>
+<p><code>&amp;&amp;</code>和<code>||</code>属于布尔运算符，所谓布尔运算符，就会讲表达式转换为<strong>布尔值</strong></p>
+<p>所谓的短路操作指的是：<br>且运算符(<code>&amp;&amp;</code>)会返回第一个布尔值为<code>false</code>的运算对象的值，其后的运算对象会被忽略。如果每个运算对象的布尔值都是<code>true</code>，则返回最后一个运算对象的值（不是布尔值）。</p>
+<p>或运算符(<code>||</code>)会返回第一个布尔值为<code>true</code>的运算对象的值，其后的运算对象会被忽略。如果每个运算对象的布尔值都是<code>false</code>，则返回最后一个运算对象的值（不是布尔值）。</p>
+<p>jQuery的源码中，用了很多<code>&amp;&amp;</code>来代替<code>if</code>语句</p>
+<pre><code>i &amp;&amp; doSomething();
+
+if (i) {
+  doSomething();
+}
+</code></pre><p>一般来说，这两种写法是等价的。但是有一点不同的是，既然<code>&amp;&amp;</code>是个布尔运算符，那么它就会返回一个布尔值为false的值。当在不需要返回值的时候，还是用<code>if</code>语句比较稳妥。或者用三元运算符表示</p>
+<pre><code>i ? doSomething() : null
+</code></pre><p><code>||</code>运算符同理也可以代替<code>if</code>语句，不过常用来给变量设置默认值。</p>
 ]]></content>
     
     <summary type="html">
@@ -361,7 +386,7 @@ SomeApp.contextTypes = {
     <link href="http://wanghewanghe.github.io/2016/12/07/%E4%B8%AA%E4%BA%BA%E6%94%B6%E8%97%8F%E5%A4%B9%E6%95%B4%E7%90%86/"/>
     <id>http://wanghewanghe.github.io/2016/12/07/个人收藏夹整理/</id>
     <published>2016-12-07T09:50:32.000Z</published>
-    <updated>2016-12-26T04:01:37.000Z</updated>
+    <updated>2017-01-14T13:07:46.000Z</updated>
     
     <content type="html"><![CDATA[<p>把平时工作和学习中查阅资料和学习知识的站点整理一下，有的值得看第二遍，还有的今后遇到类似的问题时可以快速查阅和参考。<br><a id="more"></a></p>
 <hr>
@@ -437,7 +462,7 @@ SomeApp.contextTypes = {
 <h4 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h4><ul>
 <li>参考资料<ul>
 <li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS" target="_blank" rel="external">MDN–CSS</a></li>
-<li><a href="http://cssreference.io/?utm_source=mybridge&amp;utm_medium=email&amp;utm_campaign=read_more" target="_blank" rel="external">图解CSS属性</a></li>
+<li><a href="http://cssreference.io/?utm_source=mybridge&amp;utm_medium=email&amp;utm_campaign=read_more" target="_blank" rel="external">图解CSS属性</a>（<a href="http://cssreference.parryqiu.com/" target="_blank" rel="external">翻译</a>）</li>
 </ul>
 </li>
 <li>flex 布局<ul>
@@ -457,6 +482,7 @@ SomeApp.contextTypes = {
 <li><a href="http://www.zhangxinxu.com/wordpress/2011/03/displayinline-blocktext-alignjustify%e4%b8%8b%e5%88%97%e8%a1%a8%e7%9a%84%e4%b8%a4%e7%ab%af%e5%af%b9%e9%bd%90%e5%b8%83%e5%b1%80/" target="_blank" rel="external">display:inline-block/text-align:justify下列表的两端对齐布局(张鑫旭)</a></li>
 <li><a href="http://www.cnblogs.com/PeunZhang/p/3289493.html" target="_blank" rel="external">css实现两端对齐的3种方法</a></li>
 <li><a href="http://imweb.io/topic/555a92f76da9e441601d6e94" target="_blank" rel="external">css中如何做到容器按比例缩放【padding的妙用】</a></li>
+<li><a href="https://github.com/chokcoco/iCSS" target="_blank" rel="external">有趣的css题目</a></li>
 </ul>
 <h4 id="开源库"><a href="#开源库" class="headerlink" title="开源库"></a>开源库</h4><ul>
 <li>loading效果<ul>
@@ -531,8 +557,9 @@ SomeApp.contextTypes = {
 <li><a href="https://github.com/stefanpenner/es6-promise" target="_blank" rel="external">es6–promise(A polyfill for ES6-style Promises)</a></li>
 <li><a href="https://kimmobrunfeldt.github.io/progressbar.js/" target="_blank" rel="external">进度条</a></li>
 </ul>
-<h4 id="代码规范"><a href="#代码规范" class="headerlink" title="代码规范"></a>代码规范</h4><ul>
+<h4 id="代码规范与最佳实践"><a href="#代码规范与最佳实践" class="headerlink" title="代码规范与最佳实践"></a>代码规范与最佳实践</h4><ul>
 <li><a href="http://eslint.cn/" target="_blank" rel="external">ESLint</a></li>
+<li><a href="https://www.h5jun.com/post/how-to-write-better-js-code.html" target="_blank" rel="external">如何写出好的 JavaScript —— 浅谈 API 设计</a></li>
 </ul>
 <h4 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h4><ul>
 <li><a href="http://www.alloyteam.com/2012/11/javascript-throttle/" target="_blank" rel="external">AlloyTeam—浅谈javascript的函数节流</a></li>
@@ -540,6 +567,7 @@ SomeApp.contextTypes = {
 <li><a href="https://zhuanlan.zhihu.com/p/23812134" target="_blank" rel="external">深入了解 JavaScript 中的 for 循环</a></li>
 <li><a href="http://jdc.jd.com/archives/2942" target="_blank" rel="external">JavaScript写类的前世今生</a></li>
 <li><a href="https://github.com/gomeplusFED/blog/blob/master/2016-04/do-you-really-understand-how-to-write-a-countdown-by-javascript.md" target="_blank" rel="external">你真的知道怎么用javascript来写一个倒计时吗 ?</a></li>
+<li><a href="https://www.toobug.net/article/array_unique_in_javascript.html" target="_blank" rel="external">也谈JavaScript数组去重</a></li>
 </ul>
 <h4 id="你本该知道的js"><a href="#你本该知道的js" class="headerlink" title="你本该知道的js"></a>你本该知道的js</h4><ul>
 <li><a href="http://bonsaiden.github.io/JavaScript-Garden/zh/" target="_blank" rel="external">JavaScript秘密花园</a></li>
@@ -563,6 +591,7 @@ SomeApp.contextTypes = {
 <li><a href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/" target="_blank" rel="external">FED—高性能 React 组件</a></li>
 <li><a href="http://www.jianshu.com/p/002636591590" target="_blank" rel="external">ReactJS组件state的最佳实践</a></li>
 <li><a href="https://segmentfault.com/a/1190000005013207" target="_blank" rel="external">React 最佳实践——那些 React 没告诉你但很重要的事</a></li>
+<li><a href="http://wangfupeng.coding.me/share/2016/08/06/restruct-bdnews-webapp-by-react.html" target="_blank" rel="external">使用React重构百度新闻webapp前端</a></li>
 <li><a href="http://itbilu.com/javascript/react" target="_blank" rel="external">一个写react知识比较系统的博客(IT笔录)</a></li>
 </ul>
 <h4 id="组件与组件库"><a href="#组件与组件库" class="headerlink" title="组件与组件库"></a>组件与组件库</h4><ul>
@@ -601,16 +630,17 @@ SomeApp.contextTypes = {
 <li><a href="https://segmentfault.com/a/1190000007104372" target="_blank" rel="external">webpack多页应用架构系列（十一）：预打包Dll，实现webpack音速编译</a></li>
 <li><a href="https://blog.zp25.ninja/%E5%B7%A5%E5%85%B7/2016/10/02/webpack-code-splitting.html" target="_blank" rel="external">Webpack代码拆分</a></li>
 <li><a href="https://segmentfault.com/a/1190000005969643" target="_blank" rel="external">Webpack的dll功能</a></li>
-<li></li>
 </ul>
 </li>
+<li><a href="https://segmentfault.com/a/1190000007891318" target="_blank" rel="external">webpack 构建性能优化策略小结</a></li>
 </ul>
 <h3 id="Ajax与跨域"><a href="#Ajax与跨域" class="headerlink" title="Ajax与跨域"></a>Ajax与跨域</h3><ul>
 <li><a href="https://github.com/mzabriskie/axios" target="_blank" rel="external">axios</a></li>
 <li><a href="http://react-china.org/t/topic/7258/1" target="_blank" rel="external">前后端分离实践 — 如何解决跨域问题</a></li>
 </ul>
-<h3 id="工作流"><a href="#工作流" class="headerlink" title="工作流"></a>工作流</h3><ul>
+<h3 id="工作流与优化"><a href="#工作流与优化" class="headerlink" title="工作流与优化"></a>工作流与优化</h3><ul>
 <li><a href="https://github.com/weixin/tmt-workflow" target="_blank" rel="external">微信基于 Gulp 高效、可定制的 Web 前端工作流</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/21417465" target="_blank" rel="external">【译】唯快不破：Web 应用的 13 个优化步骤</a></li>
 </ul>
 <h3 id="好文章"><a href="#好文章" class="headerlink" title="好文章"></a>好文章</h3><ul>
 <li><a href="https://zhuanlan.zhihu.com/p/24094812" target="_blank" rel="external">《致设计师》来自前端工程师</a></li>
