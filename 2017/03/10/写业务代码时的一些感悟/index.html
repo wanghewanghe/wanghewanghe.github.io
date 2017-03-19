@@ -14,13 +14,14 @@ ga('create', 'Your Google Analytics ID', 'auto');
 ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">写业务代码时的一些感悟</h1><span class="post-time">2017年3月10日</span><div class="post-content"><p>这篇文章记录了写业务代码和重构业务代码时候的感悟。<br><a id="more"></a></p>
 <hr>
 <ol>
-<li><p>案例：解析后台数据，用一个循环又一个循环去预处理数据，然后将用到的数据换一个“通俗易懂”的名字。</p>
-<p>感悟：直接拿来用就可以，在用的时候需要什么取什么。</p>
+<li><p>案例：解析后台数据，用一个循环又一个循环去预处理数据，然后将用到的数据换一个“通俗易懂”的名字，同时加上自己便于实现业务逻辑的数据，比如对数据的描述和对数据内容的判断</p>
+<p>感悟：直接拿来用就可以，在用的时候需要什么取什么。关于业务逻辑的数据，应该和后台返回数据分开维护，混杂在一起很麻烦</p>
 <p>理由：</p>
 <ul>
 <li>增加额外不必要工作量</li>
 <li>增加代码复杂度</li>
 <li>相当于将接口返回值换名字，给前后端调试接口带来不便</li>
+<li>使代码可读性变得很差</li>
 </ul>
 </li>
 <li><p>案例：业务代码中变量名取的不好</p>
@@ -29,7 +30,7 @@ ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/."
 <li>根据用户抽象操作取名（如select_data）</li>
 <li>还有map等方法遍历数组的时候形参名（如obj）</li>
 </ul>
-<p>感悟：取名还是越具象越贴切越和接口保持一致越好</p>
+<p>感悟：取名还是越具象越贴切越和接口保持一致越好。直接具体描述这个对象是什么，如orders, school_info，最好和接口返回的名字保持一致</p>
 <p>理由：能够为重构代码和阅读代码提供很大便利</p>
 </li>
 </ol>
