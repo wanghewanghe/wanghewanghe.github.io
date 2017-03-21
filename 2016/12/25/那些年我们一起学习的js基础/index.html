@@ -11,7 +11,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'Your Google Analytics ID', 'auto');
-ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">首页</a></li><li class="nav-link"><a href="/archives/" target="_self">归档</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">那些年我们一起学习的js基础</h1><span class="post-time">2016年12月25日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">目录</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array的map方法"><span class="toc-text">Array的map方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用遍历判断空对象"><span class="toc-text">用遍历判断空对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用短路操作判断"><span class="toc-text">用短路操作判断</span></a></li></ol></div><div class="post-content"><p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">那些年我们一起学习的js基础</h1><span class="post-time">2016年12月25日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array的map方法"><span class="toc-text">Array的map方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用遍历判断空对象"><span class="toc-text">用遍历判断空对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用短路操作判断"><span class="toc-text">用短路操作判断</span></a></li></ol></div><div class="post-content"><p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
 <hr>
 <h3 id="Array的map方法"><a href="#Array的map方法" class="headerlink" title="Array的map方法"></a>Array的map方法</h3><p>  12.25</p>
 <blockquote>
@@ -143,12 +143,13 @@ if (isEmptyObject(data)) {}
 <blockquote>
 <p>Object.keys 返回一个所有元素为字符串的数组，其元素来自于从给定的对象上面可直接枚举的属性。这些属性的顺序与手动遍历该对象属性时的一致。</p>
 </blockquote>
-<p>  下面再列举一些遍历对象的方法(详细解释戳<a href="http://es6.ruanyifeng.com/#docs/object#%E5%B1%9E%E6%80%A7%E7%9A%84%E9%81%8D%E5%8E%86" target="_blank" rel="external">这里</a>)：</p>
+<p>  下面再列举一些遍历对象属性的方法(详细解释戳<a href="http://es6.ruanyifeng.com/#docs/object" target="_blank" rel="external">这里</a>)：</p>
 <ul>
 <li><code>Object.getOwnPropertyNames(obj)</code></li>
 <li><code>Object.getOwnPropertySymbols(obj)</code></li>
 <li><code>Reflect.ownKeys(obj)</code></li>
 </ul>
+<p>  此外，与<code>Object.keys()</code> 相关的方法是<code>Object.value()</code>和<code>Object.entries()</code>。<br>  他们返回都是对象<strong>非继承的</strong>所有<strong>可遍历的</strong>属性或属性值的<strong>数组</strong>。<br>  具体差别是，keys方法返回<strong>属性</strong>的数组，value方法返回<strong>属性值</strong>的数组，entries方法返回<strong>键值对</strong>的数组。</p>
 <hr>
 <blockquote>
 <p>下面继续废话。。。<br>之前的代码，现在改为：</p>
@@ -187,6 +188,7 @@ render() {
 </code></pre><blockquote>
 <p>项目中的这个问题目前用这种方法解决（现在我觉得是比较好的方法了）。。之后发现更好的解决方式，再继续在下面废话吧。。。。</p>
 </blockquote>
+<p>  3.22补充：ES7中有个关于null传导运算符的<strong>提案</strong>，提供了一个判断对象属性是否存在的简写方法，具体在<a href="http://es6.ruanyifeng.com/#docs/object" target="_blank" rel="external">阮老师ECMAScript6入门9.12</a>中提到。<br>  因此，上面的短路判断就可以改写为<code>data?.order_items</code></p>
 <hr>
 <hr>
 <h3 id="用短路操作判断"><a href="#用短路操作判断" class="headerlink" title="用短路操作判断"></a>用短路操作判断</h3><p>1.14</p>
@@ -202,7 +204,7 @@ if (i) {
 </code></pre><p>一般来说，这两种写法是等价的。但是有一点不同的是，既然<code>&amp;&amp;</code>是个布尔运算符，那么它就会返回一个布尔值为false的值。当在不需要返回值的时候，还是用<code>if</code>语句比较稳妥。或者用三元运算符表示</p>
 <pre><code>i ? doSomething() : null
 </code></pre><p><code>||</code>运算符同理也可以代替<code>if</code>语句，不过常用来给变量设置默认值。</p>
-</div></article><div class="tags"><a href="/tags/js基础/">js基础</a></div><div class="paginator"><a id="prev" href="/2017/03/10/写业务代码时的一些感悟/" data-title="写业务代码时的一些感悟" class="prev"><i class="iconfont icon-left"></i><span>上一篇</span></a><a id="next" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="next"><span>下一篇</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" data-title="那些年我们一起学习的js基础" data-url="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+</div></article><div class="tags"><a href="/tags/js基础/">js基础</a></div><div class="paginator"><a id="prev" href="/2017/03/10/写业务代码时的一些感悟/" data-title="写业务代码时的一些感悟" class="prev"><i class="iconfont icon-left"></i><span>Prev</span></a><a id="next" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" data-title="那些年我们一起学习的js基础" data-url="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;

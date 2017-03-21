@@ -101,7 +101,7 @@
     <link href="http://wanghewanghe.github.io/2016/12/25/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E5%AD%A6%E4%B9%A0%E7%9A%84js%E5%9F%BA%E7%A1%80/"/>
     <id>http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/</id>
     <published>2016-12-25T05:27:36.000Z</published>
-    <updated>2017-01-15T03:55:20.000Z</updated>
+    <updated>2017-03-21T17:45:29.000Z</updated>
     
     <content type="html"><![CDATA[<p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
 <hr>
@@ -235,12 +235,13 @@ if (isEmptyObject(data)) {}
 <blockquote>
 <p>Object.keys 返回一个所有元素为字符串的数组，其元素来自于从给定的对象上面可直接枚举的属性。这些属性的顺序与手动遍历该对象属性时的一致。</p>
 </blockquote>
-<p>  下面再列举一些遍历对象的方法(详细解释戳<a href="http://es6.ruanyifeng.com/#docs/object#%E5%B1%9E%E6%80%A7%E7%9A%84%E9%81%8D%E5%8E%86" target="_blank" rel="external">这里</a>)：</p>
+<p>  下面再列举一些遍历对象属性的方法(详细解释戳<a href="http://es6.ruanyifeng.com/#docs/object" target="_blank" rel="external">这里</a>)：</p>
 <ul>
 <li><code>Object.getOwnPropertyNames(obj)</code></li>
 <li><code>Object.getOwnPropertySymbols(obj)</code></li>
 <li><code>Reflect.ownKeys(obj)</code></li>
 </ul>
+<p>  此外，与<code>Object.keys()</code> 相关的方法是<code>Object.value()</code>和<code>Object.entries()</code>。<br>  他们返回都是对象<strong>非继承的</strong>所有<strong>可遍历的</strong>属性或属性值的<strong>数组</strong>。<br>  具体差别是，keys方法返回<strong>属性</strong>的数组，value方法返回<strong>属性值</strong>的数组，entries方法返回<strong>键值对</strong>的数组。</p>
 <hr>
 <blockquote>
 <p>下面继续废话。。。<br>之前的代码，现在改为：</p>
@@ -279,6 +280,7 @@ render() {
 </code></pre><blockquote>
 <p>项目中的这个问题目前用这种方法解决（现在我觉得是比较好的方法了）。。之后发现更好的解决方式，再继续在下面废话吧。。。。</p>
 </blockquote>
+<p>  3.22补充：ES7中有个关于null传导运算符的<strong>提案</strong>，提供了一个判断对象属性是否存在的简写方法，具体在<a href="http://es6.ruanyifeng.com/#docs/object" target="_blank" rel="external">阮老师ECMAScript6入门9.12</a>中提到。<br>  因此，上面的短路判断就可以改写为<code>data?.order_items</code></p>
 <hr>
 <hr>
 <h3 id="用短路操作判断"><a href="#用短路操作判断" class="headerlink" title="用短路操作判断"></a>用短路操作判断</h3><p>1.14</p>
