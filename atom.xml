@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wanghewanghe.github.io/"/>
-  <updated>2017-03-19T16:04:11.000Z</updated>
+  <updated>2017-03-29T03:57:56.000Z</updated>
   <id>http://wanghewanghe.github.io/</id>
   
   <author>
@@ -14,6 +14,49 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>header和footer并不是那么简单</title>
+    <link href="http://wanghewanghe.github.io/2017/03/27/header%E5%92%8Cfooter%E5%B9%B6%E4%B8%8D%E6%98%AF%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/"/>
+    <id>http://wanghewanghe.github.io/2017/03/27/header和footer并不是那么简单/</id>
+    <published>2017-03-26T18:38:36.000Z</published>
+    <updated>2017-03-29T03:57:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>网页的头部和底部，想起来比较容易实现，但是真的实践起来，并不是那么简单。<br><a id="more"></a></p>
+<hr>
+<h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>这篇文章主要是关于头部和底部的一些布局上的思考，因为在我做项目的时候也了遇到类似的问题。然后参考了一篇国外的博客，然后加上自己的理解。BTW，我大美团的官网也有类似的问题哟。。。</p>
+<h3 id="问题重现"><a href="#问题重现" class="headerlink" title="问题重现"></a>问题重现</h3><p>下面就拿美团的官网为例吧。</p>
+<p>这是我写这篇文章的时候，美团的官网<br><img src="/img/header_footer/origin_meituan_header.png" alt="最初的美团header"><br><img src="/img/header_footer/origin_meituan_footer.png" alt="最初的美团footer"></p>
+<p>看起来没毛病，但是我们缩小下浏览器，就会出现一些奇怪的现象（黄框部分）<br><img src="/img/header_footer/yasuo_meituan_header.png" alt="亚索的美团header"><br><img src="/img/header_footer/yasuo_meituan_footer.png" alt="亚索的美团footer"></p>
+<p>不敢相信自己的眼睛。。。</p>
+<h3 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h3><p>让美团的头部和身体同宽～值得一提的是，这里用的是最小宽度min-width，而不是width。用了width的结果显而易见–放大就不对了<br><img src="/img/header_footer/fix_meituan_header.png" alt="修复美团的header"></p>
+<p>中部的空隙margin改为padding<br><img src="/img/header_footer/fix_meituan_body.png" alt="修复美团的body"></p>
+<p>接下来，底部就用同样的方法，<br>将margin留出的间隔改为padding（class为category-floor的div），<br>用最小宽度设置footer元素和class为component-holy-reco mt-component–booted的div。</p>
+<h3 id="又发现一个问题"><a href="#又发现一个问题" class="headerlink" title="又发现一个问题"></a>又发现一个问题</h3><p>现在看起来就好多了。。但是，发现了这里有点有意思的地方，<br>![width100%并没有卵用](/img/header_footer/origin_footer_width.png</p>
+<p>可以看到，当时切图的工程师意识到了这里需要满满的宽度，用了<code>width: 100%</code>，但是为什么没用呢。<br>然后小小修改一下，<code>float: left; min-width: 100%</code>就是想象中期望的样子了～<br><img src="/img/header_footer/fix-width.png" alt="fix-width"></p>
+<p>为什么<code>width: 100%</code>没有用呢，原来答案是关于viewport的。</p>
+<ul>
+<li>viewport的功能在于控制你网站的最高块状容器<code>&lt;html&gt;</code>元素</li>
+<li><code>&lt;html&gt;</code>宽度受viewport的限制，<code>&lt;html&gt;</code>元素的宽度为viewport宽度的100%</li>
+<li>viewport严格的等于浏览器的窗口，并且不能通过css修改</li>
+<li>更详细的内容见【<a href="http://www.w3cplus.com/css/viewports.html" target="_blank" rel="external">viewports剖析</a>】</li>
+</ul>
+<p>那么为什么用<code>float: left; min-width: 100%</code>就可以达到期望中的样子呢，这就要引出这个方法的来源了，是从一个国外的博客中搜到的。</p>
+<h3 id="问题思考"><a href="#问题思考" class="headerlink" title="问题思考"></a>问题思考</h3><p><a href="http://www.cssgirl.com/resources/2012/01/15/100-full-width-header-and-footer-with-centered-content-revisited-again/" target="_blank" rel="external">博客原文戳这里</a></p>
+<p>博客的作者也出现了类似美团官网头部和底部的问题。文章里有类似的截图与实例。<br>作者最初也用媒体查询来设置最大最小宽度，但是正如作者说的，这样很蠢。</p>
+<p>这种方法的原理也很容易理解，用float使header或footer脱离文档流(所以这里用<code>position: absolute</code>也可以)，然后用<code>min-width: 100%</code>使它充满整个页面的宽度。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;网页的头部和底部，想起来比较容易实现，但是真的实践起来，并不是那么简单。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="css" scheme="http://wanghewanghe.github.io/tags/css/"/>
+    
+  </entry>
   
   <entry>
     <title>关于git的笔记</title>

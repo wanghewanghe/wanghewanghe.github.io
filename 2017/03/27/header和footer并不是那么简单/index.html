@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="网页的头部和底部，想起来比较容易实现，但是真的实践起来，并不是那么简单。"><meta name="keywords" content="css"><title>header和footer并不是那么简单 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://wanghewanghe.github.io/2017/03/27/header和footer并不是那么简单/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'Your Google Analytics ID', 'auto');
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">header和footer并不是那么简单</h1><span class="post-time">2017年3月27日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#写在前面"><span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题重现"><span class="toc-text">问题重现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决问题"><span class="toc-text">解决问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#又发现一个问题"><span class="toc-text">又发现一个问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题思考"><span class="toc-text">问题思考</span></a></li></ol></div><div class="post-content"><p>网页的头部和底部，想起来比较容易实现，但是真的实践起来，并不是那么简单。<br><a id="more"></a></p>
+<hr>
+<h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>这篇文章主要是关于头部和底部的一些布局上的思考，因为在我做项目的时候也了遇到类似的问题。然后参考了一篇国外的博客，然后加上自己的理解。BTW，我大美团的官网也有类似的问题哟。。。</p>
+<h3 id="问题重现"><a href="#问题重现" class="headerlink" title="问题重现"></a>问题重现</h3><p>下面就拿美团的官网为例吧。</p>
+<p>这是我写这篇文章的时候，美团的官网<br><img src="/img/header_footer/origin_meituan_header.png" alt="最初的美团header"><br><img src="/img/header_footer/origin_meituan_footer.png" alt="最初的美团footer"></p>
+<p>看起来没毛病，但是我们缩小下浏览器，就会出现一些奇怪的现象（黄框部分）<br><img src="/img/header_footer/yasuo_meituan_header.png" alt="亚索的美团header"><br><img src="/img/header_footer/yasuo_meituan_footer.png" alt="亚索的美团footer"></p>
+<p>不敢相信自己的眼睛。。。</p>
+<h3 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h3><p>让美团的头部和身体同宽～值得一提的是，这里用的是最小宽度min-width，而不是width。用了width的结果显而易见–放大就不对了<br><img src="/img/header_footer/fix_meituan_header.png" alt="修复美团的header"></p>
+<p>中部的空隙margin改为padding<br><img src="/img/header_footer/fix_meituan_body.png" alt="修复美团的body"></p>
+<p>接下来，底部就用同样的方法，<br>将margin留出的间隔改为padding（class为category-floor的div），<br>用最小宽度设置footer元素和class为component-holy-reco mt-component–booted的div。</p>
+<h3 id="又发现一个问题"><a href="#又发现一个问题" class="headerlink" title="又发现一个问题"></a>又发现一个问题</h3><p>现在看起来就好多了。。但是，发现了这里有点有意思的地方，<br>![width100%并没有卵用](/img/header_footer/origin_footer_width.png</p>
+<p>可以看到，当时切图的工程师意识到了这里需要满满的宽度，用了<code>width: 100%</code>，但是为什么没用呢。<br>然后小小修改一下，<code>float: left; min-width: 100%</code>就是想象中期望的样子了～<br><img src="/img/header_footer/fix-width.png" alt="fix-width"></p>
+<p>为什么<code>width: 100%</code>没有用呢，原来答案是关于viewport的。</p>
+<ul>
+<li>viewport的功能在于控制你网站的最高块状容器<code>&lt;html&gt;</code>元素</li>
+<li><code>&lt;html&gt;</code>宽度受viewport的限制，<code>&lt;html&gt;</code>元素的宽度为viewport宽度的100%</li>
+<li>viewport严格的等于浏览器的窗口，并且不能通过css修改</li>
+<li>更详细的内容见【<a href="http://www.w3cplus.com/css/viewports.html" target="_blank" rel="external">viewports剖析</a>】</li>
+</ul>
+<p>那么为什么用<code>float: left; min-width: 100%</code>就可以达到期望中的样子呢，这就要引出这个方法的来源了，是从一个国外的博客中搜到的。</p>
+<h3 id="问题思考"><a href="#问题思考" class="headerlink" title="问题思考"></a>问题思考</h3><p><a href="http://www.cssgirl.com/resources/2012/01/15/100-full-width-header-and-footer-with-centered-content-revisited-again/" target="_blank" rel="external">博客原文戳这里</a></p>
+<p>博客的作者也出现了类似美团官网头部和底部的问题。文章里有类似的截图与实例。<br>作者最初也用媒体查询来设置最大最小宽度，但是正如作者说的，这样很蠢。</p>
+<p>这种方法的原理也很容易理解，用float使header或footer脱离文档流(所以这里用<code>position: absolute</code>也可以)，然后用<code>min-width: 100%</code>使它充满整个页面的宽度。</p>
+</div></article><div class="tags"><a href="/tags/css/">css</a></div><div class="paginator"><a id="next" href="/2017/03/16/关于git的笔记/" data-title="关于git的笔记" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2017/03/27/header和footer并不是那么简单/index.html" data-title="header和footer并不是那么简单" data-url="http://wanghewanghe.github.io/2017/03/27/header和footer并不是那么简单/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();</script></section></section><footer><div class="social"><a href="mailto:893079286@qq.com" title="email" class="iconfont icon-email"></a><a href="https://github.com/wanghewanghe" title="github" class="iconfont icon-github"></a><a href="/atom.xml" title="rss" class="iconfont icon-rss"></a></div><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2017<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Wang He</span></p></div><div id="back2top"><i class="iconfont icon-up"></i></div></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
