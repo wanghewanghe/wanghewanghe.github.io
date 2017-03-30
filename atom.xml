@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wanghewanghe.github.io/"/>
-  <updated>2017-03-29T03:57:56.000Z</updated>
+  <updated>2017-03-30T05:25:44.000Z</updated>
   <id>http://wanghewanghe.github.io/</id>
   
   <author>
@@ -16,11 +16,82 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>初探async／await</title>
+    <link href="http://wanghewanghe.github.io/2017/03/29/%E5%88%9D%E6%8E%A2async%EF%BC%8Fawait/"/>
+    <id>http://wanghewanghe.github.io/2017/03/29/初探async／await/</id>
+    <published>2017-03-29T12:13:43.000Z</published>
+    <updated>2017-03-30T05:25:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>一用就能感觉到，async和await是目前处理异步逻辑最优雅的方式。<br><a id="more"></a></p>
+<h3 id="async-await-特点概要"><a href="#async-await-特点概要" class="headerlink" title="async/await 特点概要"></a>async/await 特点概要</h3><ul>
+<li>属于ES2017，应用在项目中需要babel（具体是stage-3），node最新版已经支持</li>
+<li>就是 <code>Generator</code> 函数的语法糖</li>
+<li>内置执行器，与普通函数一模一样，只要一行便可执行</li>
+<li><code>async</code>函数<ul>
+<li><code>async</code>表示函数里有异步操作</li>
+<li><code>async</code>函数完全可以看作多个异步操作，包装成的一个<code>Promise</code>对象</li>
+<li><code>async</code>函数返回的是 <code>Promise</code> 对象，可以作为<code>await</code>命令的参数</li>
+<li><code>async</code>函数内部<code>return</code>语句返回的值，会成为<code>then</code>方法回调函数的参数</li>
+<li>只有<code>async</code>函数内部的异步操作执行完，才会执行<code>then</code>方法指定的回调函数</li>
+</ul>
+</li>
+<li><code>await</code>命令<ul>
+<li><code>await</code>表示紧跟在后面的表达式需要等待结果</li>
+<li><code>await</code>命令就是内部<code>then</code>命令的语法糖</li>
+<li>只要一个<code>await</code>语句后面的 <code>Promise</code> 变为<code>reject</code>，那么整个<code>async</code>函数都会中断执行。<ul>
+<li>不希望如此则用<code>try...catch...</code>语句同步形式处理</li>
+<li>或者在await后的promise对象跟上<code>catch</code>方法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="async-await-使用姿势"><a href="#async-await-使用姿势" class="headerlink" title="async/await 使用姿势"></a>async/await 使用姿势</h3><ul>
+<li>函数声明<ul>
+<li><code>async function foo() {}</code></li>
+</ul>
+</li>
+<li>函数表达式<ul>
+<li><code>const foo = async function () {};</code></li>
+<li><code>const foo = async () =&gt; {};</code></li>
+</ul>
+</li>
+<li>对象的方法<pre><code>let obj = { async foo() {} };
+obj.foo().then(...);
+</code></pre></li>
+<li>class的方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">class User &#123;</div><div class="line">  constructor() &#123;</div><div class="line">    super()</div><div class="line">  &#125;</div><div class="line">  getUserInfo(url) &#123;</div><div class="line">    return fetch(url).then(res =&gt; res.user)</div><div class="line">  &#125;</div><div class="line">  async foo() &#123;</div><div class="line">    const user_info = await this.getUserInfo(url)</div><div class="line"></div><div class="line">    dosomething...</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">const user = new User()</div><div class="line">user.foo().then(...)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="async-await-基本实践"><a href="#async-await-基本实践" class="headerlink" title="async/await 基本实践"></a>async/await 基本实践</h3><p>  async/await最基本的用法，就是在async函数执行的时候，遇到await命令，就会等到await后的promise执行完毕，再接着执行函数体await之后的语句</p>
+<p>  这样，就会让人觉得这其实是一段同步的代码，按顺序自上而下执行。真正异步的东西其实在await部分，以及函数返回promise之后。</p>
+<p>  下面记下自己的亲自实践过程，来更好的解释async和await的用法。</p>
+<p>  业务场景是，后台给我们一组实例id，我们需要通过遍历这些id来异步向后台请求，获取任务task。（有人估计问为什么不后台直接返回过来任务task。。据后台同事说，这种前端通过遍历发送多个异步请求的效率比较高。。）</p>
+<p>  起初，为了赶工期。。是这么写的<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">setTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []    // 这个数组是为了视图渲染而定义的数据</div><div class="line"></div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    process_ids.forEach(process_id =&gt;</div><div class="line">      this.requireTask(process_id).then(task =&gt; &#123;  // requireTask是之前定义的请求task的promise对象</div><div class="line">        const task_info = &#123;</div><div class="line">          category: task.category,</div><div class="line">          id: task.id,</div><div class="line">          name: task.name</div><div class="line">        &#125;</div><div class="line">        render_tasks.push(task_info)</div><div class="line">        this.setState(&#123; render_tasks &#125;)</div><div class="line">      &#125;)</div><div class="line">    )</div><div class="line">  &#125; else &#123;</div><div class="line">    this.setState(&#123; render_tasks &#125;)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面这段代码，有两处调用了setState，还是为了在异步请求之后再设置state，要是写在循环外面，就会先于异步请求执行。显得很冗余，也很蠢。。<br>最重要的是，循环的setState会使React组件render很多次。要是嵌套了子组件，子组件中有异步请求代码的话，也会使子组件发送很多重复的请求。</p>
+<p>所以，这段代码既丑陋又影响性能。为了解决这个问题，尝试用async和await重构这段逻辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">async getTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []</div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    for (const process_id of process_ids) &#123;</div><div class="line">      const task = await this.requireTask(process_id)</div><div class="line">      const task_info = &#123;</div><div class="line">        category: task.category,</div><div class="line">        id: task.id,</div><div class="line">        name: task.name</div><div class="line">      &#125;</div><div class="line">      render_tasks.push(task_info)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">  return render_tasks</div><div class="line">&#125;</div><div class="line"></div><div class="line">setTasks() &#123;</div><div class="line">  this.setTasks(process_ids).then(render_tasks =&gt; this.setState(&#123; render_tasks &#125;))</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面这段代码看起来就清晰多了，由于async函数返回的promise对象，所以可以将获取task和设置task分开来，使一个方法做一个任务，方便维护。<br>（上面的代码也是修改了很多次，经过了很多尝试，第一版：用函数表达式的写法写，在方法里调用。第二版：改成class的async方法，仍然在方法里setState）</p>
+<p>但是，上面的代码还是存在一个问题，不要忘了，紧跟在<code>await</code>后面的表达式，需要等待结果，然后才能继续执行。所以上面for循环发的一个个requireTask请求是等上一个requireTask请求完毕后，再发起下一个请求的，也就是说，这里一系列requireTask请求是继发的。然而，每个requireTask请求是完全独立的，如果是继发的话，会比较耗时，影响性能。</p>
+<p>所以，有了下面的版本，将继发的请求变成并发的形式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">async getTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []</div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    // 循环发送请求，保存请求结果</div><div class="line">    const taskRequires =&gt; process_ids.map(process_id =&gt; (&#123;</div><div class="line">      promise: this.requireTask(process_id),</div><div class="line">      process_id</div><div class="line">      &#125;))</div><div class="line"></div><div class="line">    // 循环请求结果，处理请求数据</div><div class="line">    for (const taskRequire of taskRequires) &#123;</div><div class="line">      const task = await this.requireTask(process_id)</div><div class="line">      const task_info = &#123;</div><div class="line">        category: task.category,</div><div class="line">        id: task.id,</div><div class="line">        name: task.name</div><div class="line">      &#125;</div><div class="line">      render_tasks.push(task_info)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">  return render_tasks</div><div class="line">&#125;</div><div class="line"></div><div class="line">setTasks() &#123;</div><div class="line">  this.setTasks(process_ids).then(render_tasks =&gt; this.setState(&#123; render_tasks &#125;))</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>上面的代码应该还有值得优化的地方，主要参考了阮老师的ECMAScript 6 入门，其中提到的async函数的难点在于错误处理，这里还需要考虑错误的处理。在本文中就不赘述了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一用就能感觉到，async和await是目前处理异步逻辑最优雅的方式。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="js" scheme="http://wanghewanghe.github.io/tags/js/"/>
+    
+  </entry>
+  
+  <entry>
     <title>header和footer并不是那么简单</title>
     <link href="http://wanghewanghe.github.io/2017/03/27/header%E5%92%8Cfooter%E5%B9%B6%E4%B8%8D%E6%98%AF%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/"/>
     <id>http://wanghewanghe.github.io/2017/03/27/header和footer并不是那么简单/</id>
     <published>2017-03-26T18:38:36.000Z</published>
-    <updated>2017-03-29T03:57:56.000Z</updated>
+    <updated>2017-03-29T12:44:36.000Z</updated>
     
     <content type="html"><![CDATA[<p>网页的头部和底部，想起来比较容易实现，但是真的实践起来，并不是那么简单。<br><a id="more"></a></p>
 <hr>
@@ -45,6 +116,12 @@
 <h3 id="问题思考"><a href="#问题思考" class="headerlink" title="问题思考"></a>问题思考</h3><p><a href="http://www.cssgirl.com/resources/2012/01/15/100-full-width-header-and-footer-with-centered-content-revisited-again/" target="_blank" rel="external">博客原文戳这里</a></p>
 <p>博客的作者也出现了类似美团官网头部和底部的问题。文章里有类似的截图与实例。<br>作者最初也用媒体查询来设置最大最小宽度，但是正如作者说的，这样很蠢。</p>
 <p>这种方法的原理也很容易理解，用float使header或footer脱离文档流(所以这里用<code>position: absolute</code>也可以)，然后用<code>min-width: 100%</code>使它充满整个页面的宽度。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这篇文章主要解决了，浏览器视口在特殊情况下（如页面放大或缩小浏览器使页面出现水平滚动条等）时，网页的头部和底部不能铺满整个页面的问题。</p>
+<p>主要有两种方案：</p>
+<ul>
+<li>设置头部和底部的宽度，使他们和内容区域同宽。</li>
+<li>设置 <code>float: left; min-width: 100%</code>使其自适应</li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -103,7 +180,7 @@
     <link href="http://wanghewanghe.github.io/2017/03/10/%E5%86%99%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E6%97%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E6%84%9F%E6%82%9F/"/>
     <id>http://wanghewanghe.github.io/2017/03/10/写业务代码时的一些感悟/</id>
     <published>2017-03-10T03:13:40.000Z</published>
-    <updated>2017-03-19T16:02:01.000Z</updated>
+    <updated>2017-03-29T12:47:58.000Z</updated>
     
     <content type="html"><![CDATA[<p>这篇文章记录了写业务代码和重构业务代码时候的感悟。<br><a id="more"></a></p>
 <hr>
@@ -137,6 +214,8 @@
     </summary>
     
     
+      <category term="js" scheme="http://wanghewanghe.github.io/tags/js/"/>
+    
   </entry>
   
   <entry>
@@ -144,7 +223,7 @@
     <link href="http://wanghewanghe.github.io/2016/12/25/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E5%AD%A6%E4%B9%A0%E7%9A%84js%E5%9F%BA%E7%A1%80/"/>
     <id>http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/</id>
     <published>2016-12-25T05:27:36.000Z</published>
-    <updated>2017-03-21T17:45:29.000Z</updated>
+    <updated>2017-03-29T12:48:06.000Z</updated>
     
     <content type="html"><![CDATA[<p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
 <hr>
@@ -348,7 +427,7 @@ if (i) {
     </summary>
     
     
-      <category term="js基础" scheme="http://wanghewanghe.github.io/tags/js%E5%9F%BA%E7%A1%80/"/>
+      <category term="js" scheme="http://wanghewanghe.github.io/tags/js/"/>
     
   </entry>
   
@@ -357,7 +436,7 @@ if (i) {
     <link href="http://wanghewanghe.github.io/2016/12/14/CSS%E7%82%B9%E6%BB%B4/"/>
     <id>http://wanghewanghe.github.io/2016/12/14/CSS点滴/</id>
     <published>2016-12-14T13:26:26.000Z</published>
-    <updated>2017-03-07T06:31:14.000Z</updated>
+    <updated>2017-03-29T12:48:23.000Z</updated>
     
     <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br>主要内容：transition 属性 | | 关于三列布局+垂直居中<br><a id="more"></a></p>
 <hr>
@@ -406,7 +485,7 @@ if (i) {
     </summary>
     
     
-      <category term="CSS" scheme="http://wanghewanghe.github.io/tags/CSS/"/>
+      <category term="css" scheme="http://wanghewanghe.github.io/tags/css/"/>
     
       <category term="transition" scheme="http://wanghewanghe.github.io/tags/transition/"/>
     

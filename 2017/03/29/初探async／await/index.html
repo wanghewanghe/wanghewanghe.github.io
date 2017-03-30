@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="一用就能感觉到，async和await是目前处理异步逻辑最优雅的方式。"><meta name="keywords" content="js"><title>初探async／await · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://wanghewanghe.github.io/2017/03/29/初探async／await/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'Your Google Analytics ID', 'auto');
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">初探async／await</h1><span class="post-time">2017年3月29日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#async-await-特点概要"><span class="toc-text">async/await 特点概要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#async-await-使用姿势"><span class="toc-text">async/await 使用姿势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#async-await-基本实践"><span class="toc-text">async/await 基本实践</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后记"><span class="toc-text">后记</span></a></li></ol></div><div class="post-content"><p>一用就能感觉到，async和await是目前处理异步逻辑最优雅的方式。<br><a id="more"></a></p>
+<h3 id="async-await-特点概要"><a href="#async-await-特点概要" class="headerlink" title="async/await 特点概要"></a>async/await 特点概要</h3><ul>
+<li>属于ES2017，应用在项目中需要babel（具体是stage-3），node最新版已经支持</li>
+<li>就是 <code>Generator</code> 函数的语法糖</li>
+<li>内置执行器，与普通函数一模一样，只要一行便可执行</li>
+<li><code>async</code>函数<ul>
+<li><code>async</code>表示函数里有异步操作</li>
+<li><code>async</code>函数完全可以看作多个异步操作，包装成的一个<code>Promise</code>对象</li>
+<li><code>async</code>函数返回的是 <code>Promise</code> 对象，可以作为<code>await</code>命令的参数</li>
+<li><code>async</code>函数内部<code>return</code>语句返回的值，会成为<code>then</code>方法回调函数的参数</li>
+<li>只有<code>async</code>函数内部的异步操作执行完，才会执行<code>then</code>方法指定的回调函数</li>
+</ul>
+</li>
+<li><code>await</code>命令<ul>
+<li><code>await</code>表示紧跟在后面的表达式需要等待结果</li>
+<li><code>await</code>命令就是内部<code>then</code>命令的语法糖</li>
+<li>只要一个<code>await</code>语句后面的 <code>Promise</code> 变为<code>reject</code>，那么整个<code>async</code>函数都会中断执行。<ul>
+<li>不希望如此则用<code>try...catch...</code>语句同步形式处理</li>
+<li>或者在await后的promise对象跟上<code>catch</code>方法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="async-await-使用姿势"><a href="#async-await-使用姿势" class="headerlink" title="async/await 使用姿势"></a>async/await 使用姿势</h3><ul>
+<li>函数声明<ul>
+<li><code>async function foo() {}</code></li>
+</ul>
+</li>
+<li>函数表达式<ul>
+<li><code>const foo = async function () {};</code></li>
+<li><code>const foo = async () =&gt; {};</code></li>
+</ul>
+</li>
+<li>对象的方法<pre><code>let obj = { async foo() {} };
+obj.foo().then(...);
+</code></pre></li>
+<li>class的方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">class User &#123;</div><div class="line">  constructor() &#123;</div><div class="line">    super()</div><div class="line">  &#125;</div><div class="line">  getUserInfo(url) &#123;</div><div class="line">    return fetch(url).then(res =&gt; res.user)</div><div class="line">  &#125;</div><div class="line">  async foo() &#123;</div><div class="line">    const user_info = await this.getUserInfo(url)</div><div class="line"></div><div class="line">    dosomething...</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">const user = new User()</div><div class="line">user.foo().then(...)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="async-await-基本实践"><a href="#async-await-基本实践" class="headerlink" title="async/await 基本实践"></a>async/await 基本实践</h3><p>  async/await最基本的用法，就是在async函数执行的时候，遇到await命令，就会等到await后的promise执行完毕，再接着执行函数体await之后的语句</p>
+<p>  这样，就会让人觉得这其实是一段同步的代码，按顺序自上而下执行。真正异步的东西其实在await部分，以及函数返回promise之后。</p>
+<p>  下面记下自己的亲自实践过程，来更好的解释async和await的用法。</p>
+<p>  业务场景是，后台给我们一组实例id，我们需要通过遍历这些id来异步向后台请求，获取任务task。（有人估计问为什么不后台直接返回过来任务task。。据后台同事说，这种前端通过遍历发送多个异步请求的效率比较高。。）</p>
+<p>  起初，为了赶工期。。是这么写的<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">setTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []    // 这个数组是为了视图渲染而定义的数据</div><div class="line"></div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    process_ids.forEach(process_id =&gt;</div><div class="line">      this.requireTask(process_id).then(task =&gt; &#123;  // requireTask是之前定义的请求task的promise对象</div><div class="line">        const task_info = &#123;</div><div class="line">          category: task.category,</div><div class="line">          id: task.id,</div><div class="line">          name: task.name</div><div class="line">        &#125;</div><div class="line">        render_tasks.push(task_info)</div><div class="line">        this.setState(&#123; render_tasks &#125;)</div><div class="line">      &#125;)</div><div class="line">    )</div><div class="line">  &#125; else &#123;</div><div class="line">    this.setState(&#123; render_tasks &#125;)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面这段代码，有两处调用了setState，还是为了在异步请求之后再设置state，要是写在循环外面，就会先于异步请求执行。显得很冗余，也很蠢。。<br>最重要的是，循环的setState会使React组件render很多次。要是嵌套了子组件，子组件中有异步请求代码的话，也会使子组件发送很多重复的请求。</p>
+<p>所以，这段代码既丑陋又影响性能。为了解决这个问题，尝试用async和await重构这段逻辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">async getTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []</div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    for (const process_id of process_ids) &#123;</div><div class="line">      const task = await this.requireTask(process_id)</div><div class="line">      const task_info = &#123;</div><div class="line">        category: task.category,</div><div class="line">        id: task.id,</div><div class="line">        name: task.name</div><div class="line">      &#125;</div><div class="line">      render_tasks.push(task_info)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">  return render_tasks</div><div class="line">&#125;</div><div class="line"></div><div class="line">setTasks() &#123;</div><div class="line">  this.setTasks(process_ids).then(render_tasks =&gt; this.setState(&#123; render_tasks &#125;))</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面这段代码看起来就清晰多了，由于async函数返回的promise对象，所以可以将获取task和设置task分开来，使一个方法做一个任务，方便维护。<br>（上面的代码也是修改了很多次，经过了很多尝试，第一版：用函数表达式的写法写，在方法里调用。第二版：改成class的async方法，仍然在方法里setState）</p>
+<p>但是，上面的代码还是存在一个问题，不要忘了，紧跟在<code>await</code>后面的表达式，需要等待结果，然后才能继续执行。所以上面for循环发的一个个requireTask请求是等上一个requireTask请求完毕后，再发起下一个请求的，也就是说，这里一系列requireTask请求是继发的。然而，每个requireTask请求是完全独立的，如果是继发的话，会比较耗时，影响性能。</p>
+<p>所以，有了下面的版本，将继发的请求变成并发的形式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">async getTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []</div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    // 循环发送请求，保存请求结果</div><div class="line">    const taskRequires =&gt; process_ids.map(process_id =&gt; (&#123;</div><div class="line">      promise: this.requireTask(process_id),</div><div class="line">      process_id</div><div class="line">      &#125;))</div><div class="line"></div><div class="line">    // 循环请求结果，处理请求数据</div><div class="line">    for (const taskRequire of taskRequires) &#123;</div><div class="line">      const task = await this.requireTask(process_id)</div><div class="line">      const task_info = &#123;</div><div class="line">        category: task.category,</div><div class="line">        id: task.id,</div><div class="line">        name: task.name</div><div class="line">      &#125;</div><div class="line">      render_tasks.push(task_info)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">  return render_tasks</div><div class="line">&#125;</div><div class="line"></div><div class="line">setTasks() &#123;</div><div class="line">  this.setTasks(process_ids).then(render_tasks =&gt; this.setState(&#123; render_tasks &#125;))</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>上面的代码应该还有值得优化的地方，主要参考了阮老师的ECMAScript 6 入门，其中提到的async函数的难点在于错误处理，这里还需要考虑错误的处理。在本文中就不赘述了。</p>
+</div></article><div class="tags"><a href="/tags/js/">js</a></div><div class="paginator"><a id="next" href="/2017/03/27/header和footer并不是那么简单/" data-title="header和footer并不是那么简单" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2017/03/29/初探async／await/index.html" data-title="初探async／await" data-url="http://wanghewanghe.github.io/2017/03/29/初探async／await/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();</script></section></section><footer><div class="social"><a href="mailto:893079286@qq.com" title="email" class="iconfont icon-email"></a><a href="https://github.com/wanghewanghe" title="github" class="iconfont icon-github"></a><a href="/atom.xml" title="rss" class="iconfont icon-rss"></a></div><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2017<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Wang He</span></p></div><div id="back2top"><i class="iconfont icon-up"></i></div></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
