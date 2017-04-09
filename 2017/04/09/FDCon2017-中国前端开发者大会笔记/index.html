@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description" content="这篇文章根据嘉宾的文字发言汇总结合自己的理解而来。特别记录一下，以便很好的总结经验，吸收精华。"><meta name="keywords" content=""><title>FDCon2017 中国前端开发者大会笔记 · Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://wanghewanghe.github.io/2017/04/09/FDCon2017-中国前端开发者大会笔记/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'Your Google Analytics ID', 'auto');
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">FDCon2017 中国前端开发者大会笔记</h1><span class="post-time">2017年4月9日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#尤雨溪–Vue-2017现状和展望"><span class="toc-text">尤雨溪–Vue 2017现状和展望</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#魏晓军–CRN-WEB（Ctrip-React-Native-Framework-For-Web）"><span class="toc-text">魏晓军–CRN-WEB（Ctrip React Native Framework For Web）</span></a></li></ol></div><div class="post-content"><p>这篇文章根据嘉宾的文字发言汇总结合自己的理解而来。特别记录一下，以便很好的总结经验，吸收精华。<br><a id="more"></a></p>
+<hr>
+<p>参加了第二届中国前端开发者大会，感觉各位嘉宾讲的都很高大上。下面根据金山文字的<a href="https://d.wps.cn/v/8mPL0?s=qr&amp;from=groupmessage&amp;isappinstalled=0" target="_blank" rel="external">嘉宾发言汇总</a>，整理一些自己认为有价值的部分，也算不虚此行。</p>
+<h2 id="尤雨溪–Vue-2017现状和展望"><a href="#尤雨溪–Vue-2017现状和展望" class="headerlink" title="尤雨溪–Vue 2017现状和展望"></a>尤雨溪–Vue 2017现状和展望</h2><p>Vue从刚开始低调的负责视图view层的轻型mvvm框架，发展到现在和react平起平坐的渐进式框架，真的是一件了不起的工程。在台下感受着尤大大强大的气场，也学习到了很多东西。</p>
+<ol>
+<li><p>关于渐进式</p>
+<blockquote>
+<p>Vue的生态系统有提供完全的前端框架，并不是强迫你要用Vue一定要用所有的全家桶。你可以只用Vue本身，不需要一下子把所有东西都用上。</p>
+</blockquote>
+<p>渐进式的好处，我个人理解是可以让开发者有一个良好的学习和使用体验。与angular和react相比，用了angular需要学习一整个angular生态的各种概念，ts，依赖注入等等规则，以及使用angular的路由，服务等全套规则；用了react需要自己去react丰富的而琐碎的社区中，自己寻找各种需要的库来完成整个项目的架构，有点像玩乐高积木，目前的react全家桶，只是社区中公认的一种实现方案，究竟是不是最佳实践也未可知；而Vue既不需要去接受一整套既定规则，也不需要像摸着石头过河一样去寻找最佳实践。</p>
+</li>
+<li><p>关于类型检查</p>
+<blockquote>
+<p>引入了Flow类型检查，提高代码健壮性。</p>
+</blockquote>
+<p>之前还在某个小蜜圈中看到了flow这个类型检查库，尤大大在现场答疑中也说到，在工程项目中用ts也许是更好的选择。但是当你不想用ts，又想加入类型检查，我觉得可以试试flow。</p>
+</li>
+<li><p>模版渲染机制的优化</p>
+<blockquote>
+<p> Vue2.0有一个模板编译过程，两种编译模式，一种是运行时，一种是构建时，你直接把模板写在页面里面，Vue在页面加载之后，把模板编译成渲染函数。构建时渲染是打包发布的同时把原文件的模板处理运行时就不需要再编译一遍了。</p>
+</blockquote>
+</li>
+<li><p>bundlerenderer的概念<br>解决的问题：</p>
+<blockquote>
+<p>解决同构代码在服务端的构建和部署。</p>
+</blockquote>
+<p>优点：</p>
+<blockquote>
+<p>避免跨请求状况污染；除了入口文件和构建配置外，业务代码完全同构；服务端包和服务端代码解耦，便于部署，甚至可以热部署。</p>
+</blockquote>
+</li>
+<li><p>ScopedSlots的应用</p>
+<blockquote>
+<p>传递一个可复用的模板片断给子组件。组件内部可以把传进来的组件内容，嵌入到组件自身里面，内容再组构的机制。可复用的模板片断可以获得子组件传回来的数据。</p>
+</blockquote>
+<p>可以用这个技术在Vue中将http请求抽象，直接在模版层根据请求状态控制渲染，而不用关心具体的请求部分。个人理解这有点react中组件嵌套的概念。</p>
+</li>
+<li><p>带命名空间的module</p>
+<blockquote>
+<p>可以包含自己的state，actions，mutations和getters，就像一个小的store。通过它们可以轻松的对业务逻辑进行分块封装，最后只需要在Root  store入口处组合。甚至可以通过动态模块注册来配合代码分割/懒加载</p>
+</blockquote>
+</li>
+<li>改进Vue devtoos，支持weex查看状态快照  </li>
+<li>配合webpack完美支持路由级别的代码懒加载</li>
+<li>css代码分割，避免服务端渲染，js内嵌样式使首屏无样式的问题，也可以确保CSS跟随业务代码被分割出去</li>
+<li>内置了Chrome  timeline性能追踪支持，完善异常机制与报错信息</li>
+<li>服务端渲染进一步改进<blockquote>
+<p>通过分析Webpack服务端和客户端的构建信息，自动推导需要在客户端与加载的文件，生成最优的<code>&lt;script&gt;</code>和<code>&lt;link rel=“preload/prefetch”&gt;</code>链接;<br>自动选用不包含CSS字符串的异步JS文件，避免Critical  CSS被两次下载。你在JavaScript有一个字符串是CSS，才指出的HTML里面也有字符船，等于字符串被重复了两次，我们会把每次割出去的代码包打两份，一份有CSS，一份没有CSS，避免首屏双重加载CSS的问题。</p>
+</blockquote>
+</li>
+</ol>
+<p>可以看出，Vue是一步步变得更强大，开发和使用体验都越来越好。希望下一个项目可以尝试一发。</p>
+<h2 id="魏晓军–CRN-WEB（Ctrip-React-Native-Framework-For-Web）"><a href="#魏晓军–CRN-WEB（Ctrip-React-Native-Framework-For-Web）" class="headerlink" title="魏晓军–CRN-WEB（Ctrip React Native Framework For Web）"></a>魏晓军–CRN-WEB（Ctrip React Native Framework For Web）</h2><p>之前在携程的技术分享会上，接触了CRN的一些相关知识，这次听到魏晓军老师的分享，也是有一丝亲切感。</p>
+<p>CRN是携程在React Native上封装扩展了一层，解决了RN的一些坑，能够用同一套代码运行在安卓和ios上。</p>
+<p>CRN-WEB则是在浏览器上跑React Native的代码。这样，浏览器，安卓，ios，三端同一套代码。很完美。</p>
+<ol>
+<li>CRN-WEB特点<ol>
+<li>基于ReactJS，兼容RN和CRN组件及接口的H5框架。可以快速生成已有或者即将开发的CRN项目的H5版本。</li>
+<li>支持项目两种类型项目RN和CRN。你只要有RN代码，运行CRN-WEB的命令，立马可以转出来可以在Web上跑了。</li>
+<li>开发体验友好，支持元素审查、源码改动动态刷新，运行时debug，远程真机调试。支持浏览器、微信等多平台。</li>
+</ol>
+</li>
+<li>CRN-WEB的实现<ol>
+<li>适配了RN和CRN的API包括第三方的扩展，同时是基于ReactJS做的web前端框架。</li>
+<li>主要基于ReactNative自身的东西，CRN的自身的东西，第三方的扩展，三个部分做的。</li>
+<li>开发环境完全基于nodejs，快速搭建开发环境。使用简单、功能强大，支持源码调试。源码修改，自动热更新。</li>
+<li>借鉴小程序的思路，开发CRN-WEB的IDE，方便开发。</li>
+</ol>
+</li>
+<li>CRN-WEB的现状和发展<ol>
+<li>最大的痛点就是性能还有兼容性</li>
+<li>和去哪儿团队合作开发YRN-WEB，两个团队会做一些切磋的东西，放在YRN-WEB里面，同一套底层，每家的业务代码加底层，可以运行到各家的APP里面去</li>
+</ol>
+</li>
+</ol>
+</div></article><div class="tags"></div><div class="paginator"><a id="next" href="/2017/03/29/初探async／await/" data-title="初探async／await" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2017/04/09/FDCon2017-中国前端开发者大会笔记/index.html" data-title="FDCon2017 中国前端开发者大会笔记" data-url="http://wanghewanghe.github.io/2017/04/09/FDCon2017-中国前端开发者大会笔记/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();</script></section></section><footer><div class="social"><a href="mailto:893079286@qq.com" title="email" class="iconfont icon-email"></a><a href="https://github.com/wanghewanghe" title="github" class="iconfont icon-github"></a><a href="/atom.xml" title="rss" class="iconfont icon-rss"></a></div><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2017<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Wang He</span></p></div><div id="back2top"><i class="iconfont icon-up"></i></div></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
