@@ -28,8 +28,7 @@ ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/."
 </blockquote>
 <p>之前还在某个小密圈中看到了flow这个类型检查库，尤大大在现场答疑中也说到，在工程项目中用ts也许是更好的选择。但是当你不想用ts，又想加入类型检查，我觉得可以试试flow。</p>
 </li>
-<li><p>模版渲染机制的优化</p>
-<blockquote>
+<li>模版渲染机制的优化<blockquote>
 <p> Vue2.0有一个模板编译过程，两种编译模式，一种是运行时，一种是构建时，你直接把模板写在页面里面，Vue在页面加载之后，把模板编译成渲染函数。构建时渲染是打包发布的同时把原文件的模板处理运行时就不需要再编译一遍了。</p>
 </blockquote>
 </li>
@@ -48,8 +47,7 @@ ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/."
 </blockquote>
 <p>可以用这个技术在Vue中将http请求抽象，直接在模版层根据请求状态控制渲染，而不用关心具体的请求部分。个人理解这有点react中组件嵌套的概念。</p>
 </li>
-<li><p>带命名空间的module</p>
-<blockquote>
+<li>带命名空间的module<blockquote>
 <p>可以包含自己的state，actions，mutations和getters，就像一个小的store。通过它们可以轻松的对业务逻辑进行分块封装，最后只需要在Root  store入口处组合。甚至可以通过动态模块注册来配合代码分割/懒加载</p>
 </blockquote>
 </li>
