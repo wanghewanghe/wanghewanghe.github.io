@@ -11,7 +11,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'Your Google Analytics ID', 'auto');
-ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">那些年我们一起学习的js基础</h1><span class="post-time">2016年12月25日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array的map方法"><span class="toc-text">Array的map方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用遍历判断空对象"><span class="toc-text">用遍历判断空对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用短路操作判断"><span class="toc-text">用短路操作判断</span></a></li></ol></div><div class="post-content"><p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">那些年我们一起学习的js基础</h1><span class="post-time">2016年12月25日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array的map方法"><span class="toc-text">Array的map方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用遍历判断空对象"><span class="toc-text">用遍历判断空对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用短路操作判断"><span class="toc-text">用短路操作判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#arguments对象相关"><span class="toc-text">arguments对象相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数组的push、concat与扩展操作"><span class="toc-text">数组的push、concat与扩展操作</span></a></li></ol></div><div class="post-content"><p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
 <hr>
 <h3 id="Array的map方法"><a href="#Array的map方法" class="headerlink" title="Array的map方法"></a>Array的map方法</h3><p>  12.25</p>
 <blockquote>
@@ -204,6 +204,37 @@ if (i) {
 </code></pre><p>一般来说，这两种写法是等价的。但是有一点不同的是，既然<code>&amp;&amp;</code>是个布尔运算符，那么它就会返回一个布尔值为false的值。当在不需要返回值的时候，还是用<code>if</code>语句比较稳妥。或者用三元运算符表示</p>
 <pre><code>i ? doSomething() : null
 </code></pre><p><code>||</code>运算符同理也可以代替<code>if</code>语句，不过常用来给变量设置默认值。</p>
+<hr>
+<hr>
+<h3 id="arguments对象相关"><a href="#arguments对象相关" class="headerlink" title="arguments对象相关"></a>arguments对象相关</h3><p>5.1</p>
+<ol>
+<li>arguments对象可以为参数赋值，但是严格模式不允许这么做。</li>
+<li>Es6的rest参数，即<code>...变量名</code>，可以代替arguments获取函数其余的参数。</li>
+<li>与arguments对象不同的是，rest参数中的变量就是一个数组，可以在函数中直接用数组的方法，而不用之前用arguments时将类数组转换数组的操作。</li>
+<li>将类数组转换为数组有以下几种常用写法<ul>
+<li><code>Array.prototype.slice.call(arguments)</code></li>
+<li><code>[].slice.call(arguments)</code></li>
+<li><code>Array.from(arguments)</code></li>
+<li><code>[...arguments]</code></li>
+</ul>
+</li>
+</ol>
+<hr>
+<hr>
+<h3 id="数组的push、concat与扩展操作"><a href="#数组的push、concat与扩展操作" class="headerlink" title="数组的push、concat与扩展操作"></a>数组的push、concat与扩展操作</h3><p>5.1</p>
+<p>这里只是讨论三者在数组合并方面的不同。<br>将以下合并到一个数组d中：<br><code>const a = [1, 2, 3]; const b = &#39;123&#39;; const c = 123;</code></p>
+<ol>
+<li>用push<br><code>const d = []; d.push(...a, b, c);</code></li>
+<li>用扩展运算符<br><code>const d = [...a, b, c]</code></li>
+<li>用concat<br><code>coust d = [].concat(a, b, c)</code></li>
+</ol>
+<p>乍一看没什么大区别，但是，要是有一个变量，它的类型是不定的，比如可能是a，b，c中任意一个，我们就只能用concat来操作了。</p>
+<p>具体的问题，总结一下</p>
+<ol>
+<li>push以一个数组为参数时，会把这个数组整体作为一个数组的一项，所以需要用扩展运算符才能达到concat的效果。</li>
+<li>单纯的扩展运算符操作number类型的会报错，操作string类型会把字符串分成单个字符。</li>
+</ol>
+<p>所以，对于合并数组这个需求，更健壮的实现还是要用concat</p>
 </div></article><div class="tags"><a href="/tags/js/">js</a></div><div class="paginator"><a id="prev" href="/2017/03/10/写业务代码时的一些感悟/" data-title="写业务代码时的一些感悟" class="prev"><i class="iconfont icon-left"></i><span>Prev</span></a><a id="next" href="/2016/12/14/CSS点滴/" data-title="CSS点滴" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div data-thread-key="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" data-title="那些年我们一起学习的js基础" data-url="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "wanghe830" };
 (function() {
     var ds = document.createElement('script');
