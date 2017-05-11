@@ -174,6 +174,7 @@
 <li>actionType的重名问题，还是靠约定和代码规范。</li>
 <li>模块动态加载的问题，势必会引入一个新的Reducer，就破坏了Redux关于reducer必须是纯函数的特性，时间旅行如何保证。</li>
 </ol>
+<p>(未完待续。。)</p>
 ]]></content>
       
         
@@ -1043,7 +1044,7 @@ SomeApp.contextTypes = {
       <url>/2016/12/05/SVG%E7%AC%94%E8%AE%B0/</url>
       <content type="html"><![CDATA[<p>SVG 已经不是什么新鲜技术了，天猫也即将不支持IE8.所以SVG在今后的使用场景肯定会更加广泛。之前用SVG实现一个环形统计图，比用canvas渲染的图表性能更好。下面对一些SVG的知识点进行整理，以便今后使用查阅方便。<br><a id="more"></a></p>
 <hr>
-<h4 id="零、SVG简介"><a href="#零、SVG简介" class="headerlink" title="零、SVG简介"></a>零、SVG简介</h4><ol>
+<h2 id="零、SVG简介"><a href="#零、SVG简介" class="headerlink" title="零、SVG简介"></a>零、SVG简介</h2><ol>
 <li>SVG 即 Scalable Vector Graphics (可伸缩矢量图形)<br><br></li>
 <li>优点<ul>
 <li>可以随意放大或改变尺寸, 同时其图形质量不会有损失</li>
@@ -1055,13 +1056,13 @@ SomeApp.contextTypes = {
 </li>
 <li>SVG 可以单独作为一个文件书写, 在这里只介绍编写在HTML里的SVG</li>
 </ol>
-<h4 id="一、SVG-标签"><a href="#一、SVG-标签" class="headerlink" title="一、SVG 标签"></a>一、SVG 标签</h4><pre><code>&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot;&gt;
+<h2 id="一、SVG-标签"><a href="#一、SVG-标签" class="headerlink" title="一、SVG 标签"></a>一、SVG 标签</h2><pre><code>&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot;&gt;
     {some svg code}
 &lt;/svg&gt;
 </code></pre><p>上面是一个svg基础标签, 任何svg的代码都需要包裹在这个标签中。</p>
 <p>在现代浏览器中, svg标签的<em>xmlns</em>属性和<em>version</em>属性都可以省略。</p>
 <p>svg 标签默认的宽高是 <em>300 * 150</em> , 如果不设置<em>width</em>和<em>height</em>属性, SVG图像就在这个尺寸的画布中绘制。</p>
-<h4 id="二、SVG-元素"><a href="#二、SVG-元素" class="headerlink" title="二、SVG 元素"></a>二、SVG 元素</h4><ul>
+<h2 id="二、SVG-元素"><a href="#二、SVG-元素" class="headerlink" title="二、SVG 元素"></a>二、SVG 元素</h2><ul>
 <li>矩形 <code>&lt;rect&gt;</code><br><br></li>
 <li>圆形 <code>&lt;circle&gt;</code><br><br></li>
 <li>椭圆 <code>&lt;ellipse&gt;</code><br><br></li>
@@ -1071,7 +1072,7 @@ SomeApp.contextTypes = {
 <li>路径 <code>&lt;path&gt;</code><br><br></li>
 <li>文本 <code>&lt;text&gt;</code></li>
 </ul>
-<h4 id="三、SVG-元素属性"><a href="#三、SVG-元素属性" class="headerlink" title="三、SVG 元素属性"></a>三、SVG 元素属性</h4><p>下面用表格的形式对一些常见的元素属性进行这里：</p>
+<h2 id="三、SVG-元素属性"><a href="#三、SVG-元素属性" class="headerlink" title="三、SVG 元素属性"></a>三、SVG 元素属性</h2><p>下面用表格的形式对一些常见的元素属性进行这里：</p>
 <p><table style="width: 100%;text-align: center;tabel-layout:fixed;border:1px solid gray;"><thead><tr><td style="width:16%">属性描述</td><td style="width:20%">属性名</td><td style="width:32%">属性值</td><td style="width:32%">备注</td></tr></thead><tbody><tr><td rowspan="3">位置</td><td><p><code>x</code> <code>y</code></p><p>(矩形位置)</p></td><td>相对于<em>svg</em>标签的绘制区域的左侧和顶端距离。类似于css中的top和left属性。</td><td>位置的属性是将元素的内容区域进行定位（边框是不属于内容区域的，这一点需要注意）</td></tr><tr><td><p><code>cx</code> <code>cy</code></p><p>(圆形位置)</p></td><td>圆形坐标。默认值为（0，0）</td><td></td></tr><tr><td><p><code>x1</code> <code>x2</code> <code>y1</code> <code>y2</code></p><p>(直线开始和结束的位置)</p></td><td></td><td></td></tr><tr><td rowspan="3">尺寸</td><td><p><code>width</code> <code>height</code></p><p>(矩形尺寸)</p></td><td rowspan="3"><p>同css中width和height的值</p><p>可以直接为数字（相当于px)</p><p>使用em和rem效果似乎是一样的</p><p>百分比为单位时，是相对于<em>svg</em>标签的尺寸</p></td><td></td></tr><tr><td><p><code>r</code></p><p>(圆形半径)</p></td><td></td></tr><tr><td><p><code>rx</code> <code>ry</code></p><p>(椭圆的水平、垂直半径)</p></td><td></td></tr><tr><td>圆角</td><td><code>rx</code> <code>ry</code></td><td>同css中</td><td></td></tr><tr><td>多边形、曲线</td><td><code>points</code></td><td>字符串，包含至少三个坐标值，用空格分割。如<code>points=&quot;200,10 250,190 160,210&quot;</code></td><td></td></tr><tr><td>变换</td><td><code>transform</code></td><td><p>translate（位移）</p><p>rotate（旋转）</p><p>scale（缩放）</p><p>skew（斜切）</p></td><td><a href="http://www.zhangxinxu.com/wordpress/2015/10/understand-svg-transform/" target="_blank" rel="external">一切尽在这里</a></td></tr><tr><td colspan="4"><p>以下属性需要写在<em>style</em>属性中, 如</p><p><code>&lt;rect x=1 y=1 height＝&quot;100px&quot; width=10 style=&quot;下面的属性&quot; /&gt;</code></p></td></tr><tr><td rowspan="3">填充</td><td><p><code>fill-rule</code></p><p>(填充规则)</p></td><td><p>nonzero(默认值)</p><p>evenodd</p><p>inherit</p></td><td></td></tr><tr><td><p><code>fill-opacity</code></p><p>(填充透明度)</p></td><td></td><td></td></tr><tr><td><p><code>fill</code></p><p>(填充颜色)</p></td><td rowspan="2">颜色同css中，颜色名，十六进制，rgb(a)等等</td><td></td></tr><tr><td rowspan="4">描边(边框、直线)属性</td><td><p><code>stroke</code></p><p>(颜色)</p></td><td rowspan="2">关于<em>stroke</em>及其他的属性，张鑫旭大神有<a href="http://www.zhangxinxu.com/wordpress/2014/04/animateion-line-drawing-svg-path-%e5%8a%a8%e7%94%bb-%e8%b7%af%e5%be%84/" target="_blank" rel="external">一篇博文</a>介绍</td></tr><tr><td><p><code>stroke-opacity</code></p><p>(透明度)</p></td><td></td></tr><tr><td><p><code>stroke-width</code></p><p>(宽度)</p></td><td></td><td>矩形边框的宽度不属于元素的宽高</td></tr><tr><td><p><code>stroke-dasharray</code></p><p>(用于创建虚线)</p></td><td>指定一个虚线规则的数组，偶数项为实体宽度，奇数项为空白宽度。之后一直循环这个数组，形成一个虚线</td><td>需要渲染大量环形图表，用echart会很卡，用SVG的这个属性就很轻松的实现了，也是张大神的文章——<a href="http://www.zhangxinxu.com/wordpress/2015/07/svg-circle-loading/" target="_blank" rel="external">小tip: 使用SVG寥寥数行实现圆环loading进度效果</a></td></tr><tr><td rowspan="3">透明度</td><td><p><code>opacity</code></p><p>(元素透明度)</p></td><td rowspan="3">同css中，范围为0-1</td><td rowspan="3">显而易见，设置了<em>opacity</em>属性，也就同时设置了<em>fill-opacity</em>和<em>stroke-opacity</em>属性</td></tr><tr><td><p><code>fill-opacity</code></p><p>(填充透明度)</p></td></tr><tr><td><p><code>fill</code></p><p>(填充颜色)</p></td></tr></tbody></table></p>
 <!-- 开发代码<table style='width: 100%;text-align: center;tabel-layout:fixed;border:1px solid gray;'>
   <thead>
@@ -1201,7 +1202,7 @@ SomeApp.contextTypes = {
     </tr>
   </tbody>
 </tabel> -->
-<h4 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h4><p><em>以上便是一些SVG的基本知识，以及部分关于SVG的好文章。后面有更深入的了解时再加进来。</em></p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p><em>以上便是一些SVG的基本知识，以及部分关于SVG的好文章。后面有更深入的了解时再加进来。</em></p>
 <p><strong> SVG很强大～</strong></p>
 ]]></content>
       
