@@ -1,0 +1,1219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+    
+    <entry>
+      <title><![CDATA[函数柯里化实现初探]]></title>
+      <url>/2017/05/08/%E5%87%BD%E6%95%B0%E6%9F%AF%E9%87%8C%E5%8C%96%E5%88%9D%E6%8E%A2/</url>
+      <content type="html"><![CDATA[<p>这篇文章简单实现了curry函数，主要是为了巩固实现过程中用到的js知识，并且更深刻的了解函数柯里化的概念。<br><a id="more"></a></p>
+<hr>
+<p>函数柯里化是和函数式编程密切相关的一个概念，可以先读下面的这篇文章，<br><a href="http://www.zhangxinxu.com/wordpress/2013/02/js-currying" target="_blank" rel="external">张鑫旭–js中的柯里化</a>，初步的理解这个概念。</p>
+<p>概括来讲，函数柯里化的作用和特点就是参数复用，提前返回，延迟执行。下面通过代码来初探函数柯里化的实现。</p>
+<h2 id="预备阶段"><a href="#预备阶段" class="headerlink" title="预备阶段"></a>预备阶段</h2><p>  首先需要接受或者习惯一个js的基础知识，因为平时代码中用的不多，所以刚开始看到代码还会有点陌生和不知所云。其实就是基础知识罢了。<br>  下面用es5和es6两种写法来写，方便理解，在比较中也可以更好的学习es6。<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function add(a) &#123;</div><div class="line">  return function(b) &#123;</div><div class="line">    return a + b</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">const add = a =&gt; b =&gt; a + b</div></pre></td></tr></table></figure>
+<p>  我们定义了一个求和函数，但是，调用方法有些特殊：<code>add(1)(2);  // 3</code>。<br>  如果我们分开来调用，就可以看得更加明显：<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">const add1 = add(1);      // 这里就体现了参数复用的特点</div><div class="line">add1(2);     // 3</div></pre></td></tr></table></figure></p>
+<p>  总结下：</p>
+<ol>
+<li>将一般的求和函数<code>const sum = (a, b, c) =&gt; a + b + c</code>转化为<code>const add = a =&gt; b =&gt; c =&gt; a + b + c</code>的过程，就叫做函数的柯里化过程。转化而来的函数就是柯里化函数。</li>
+<li><code>fn(a)(b)(c)</code>这种调用函数的方法，意味着fn接受一个参数a，然后返回了一个函数接受参数b，又返回了一个函数接受参数c……最后，将所有的参数进行处理。</li>
+</ol>
+<h2 id="初步实现"><a href="#初步实现" class="headerlink" title="初步实现"></a>初步实现</h2><p>  下面我们尝试实现一个curry函数，它的作用就是将一个函数柯里化，即<code>curry(sum)(a)(b)(c) &lt;==&gt; add(a)(b)(c)</code></p>
+<p>  通过上面的分析，可以有个初步的思路，我们先定义一个数组，将函数的参数依次收集起来，然后将这些参数加起来.<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">function curry(fn) &#123;</div><div class="line">  var arr = [];</div><div class="line">  return function curring() &#123;</div><div class="line">    var arg = [].slice.call(arguments);</div><div class="line">    arr = arr.concat(arg);</div><div class="line">    if (arr.legnth &lt; fn.length) &#123;</div><div class="line">      return curring;</div><div class="line">    &#125;</div><div class="line">    return fn.apply(this, arr);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">const curry = fn =&gt; &#123;</div><div class="line">  let arr = [];</div><div class="line">  const curring = (...arg) =&gt; &#123;</div><div class="line">    arr = arr.concat(arg);</div><div class="line">    return arr.length &lt; fn.length ? curring : fn.apply(this, arr);</div><div class="line">  &#125;</div><div class="line">  return curring</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  上面的代码用到了闭包保存我们收集参数的数组，通过递归来依次收集参数（这里用到了function的length属性，这个属性会返回一个函数预期传入的参数个数，也就是形式参数的个数）。</p>
+<p>  如果还是不理解，可以在浏览器里分步执行，比如<code>curry(sum)(1)(2)(3)</code>，curry一共执行了三次，arg分别是[1], [2], [3]，arr分别是[], [1], [1, 2]；另外，函数中的this一直指向的window。</p>
+<p>  补充一下，这个柯里化函数还可以每次传入不定的参数进行调用，如<code>curry(sum)(1, 2)(3)</code>或者<code>curry(sum)(1, 2, 3)</code></p>
+<h2 id="另一个版本"><a href="#另一个版本" class="headerlink" title="另一个版本"></a>另一个版本</h2><p>  不多废话了，直接看代码<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">const curry = (fn, arr = []) =&gt; (</div><div class="line">     (...arg) =&gt; (</div><div class="line">         a =&gt; a.length === fn.length ? fn(...a) : curry(fn, a)</div><div class="line">       )([...arr, ...arg])</div><div class="line">  )</div></pre></td></tr></table></figure></p>
+<p>  因为最初看到的这个版本就是es6的，感觉比上面的更加简练一点，当然也更加装逼。。。仔细分析一下可以看到，这个版本通过一个默认参数和一个立即执行函数，避免了定义收集参数的数组arr，通过灵活使用扩展运算符，替代了arguments对象也完成了数组的拼接。</p>
+<p>  下面试着用es5的方法改写一下，加深理解<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">function curry(fn, arr) &#123;</div><div class="line">  var arr = (arr !== undefined &amp;&amp; arr !== null) ? arr : [];</div><div class="line">  return function() &#123;</div><div class="line">    var arg = [].slice.call(arguments)</div><div class="line">    return (function(a) &#123;</div><div class="line">      return a.length === fn.length ? fn.apply(this, a) : curry(fn, a)</div><div class="line">    &#125;)(arr.concat(arg))</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>  上面是我改写的版本，有个地方明显是没改好，就是最后<code>[...arr, ...arg]</code>这里，我直接改写为concat了。由于扩展运算符也可以用于处理字符串，和类数组，所以直接改成concat不是很合理。但是理解这个函数的思路是够用了。</p>
+<p>  下面是我在babel官网进行转译的结果，看看babel是怎么处理扩展运算符的。<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">function _toConsumableArray(arr) &#123;</div><div class="line">  if (Array.isArray(arr)) &#123;</div><div class="line">    for (var i = 0, arr2 = Array(arr.length); i &lt; arr.length; i++) arr2[i] = arr[i];</div><div class="line">    return arr2;</div><div class="line">  &#125; else &#123;</div><div class="line">    return Array.from(arr);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">var curry = function curry(fn) &#123;</div><div class="line">  var arr = arguments.length &lt;= 1 || arguments[1] === undefined ? [] : arguments[1];</div><div class="line">  return function () &#123;</div><div class="line">      for (var _len = arguments.length, arg = Array(_len), _key = 0; _key &lt; _len; _key++) &#123;</div><div class="line">          arg[_key] = arguments[_key];</div><div class="line">      &#125;</div><div class="line">      return (function (a) &#123;</div><div class="line">          return a.length === fn.length ? fn.apply(undefined, _toConsumableArray(a)) : curry(fn, a);</div><div class="line">      &#125;)([].concat(_toConsumableArray(arr), arg));</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>  从上面一系列的转化分析中可以看出，这个版本的curry函数可以接受第二个参数，这个参数必须能被扩展运算符操作，否则就会报错，比如一个数字。不过单纯实现我们的需求，这个版本是相对比较简单的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>  这篇文章涉及到的js知识有：</p>
+<ul>
+<li>函数柯里化</li>
+<li>闭包</li>
+<li>函数的length属性</li>
+<li>函数的call和apply方法</li>
+<li>函数的arguments对象</li>
+<li>es6的箭头函数和扩展运算符</li>
+<li>函数的递归</li>
+<li>立即执行函数</li>
+</ul>
+<h2 id="what’s-more"><a href="#what’s-more" class="headerlink" title="what’s more"></a>what’s more</h2><p>  一些javascript库早就提供了curry方法，比如大名鼎鼎的lodash。lodash的curry函数就比上面的版本更加健壮，当然其源码也更加复杂。<br>  下面是lodash的curry方法<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Creates a function that accepts arguments of `func` and either invokes</div><div class="line"> * `func` returning its result, if at least `arity` number of arguments have</div><div class="line"> * been provided, or returns a function that accepts the remaining `func`</div><div class="line"> * arguments, and so on. The arity of `func` may be specified if `func.length`</div><div class="line"> * is not sufficient.</div><div class="line"> *</div><div class="line"> * The `_.curry.placeholder` value, which defaults to `_` in monolithic builds,</div><div class="line"> * may be used as a placeholder for provided arguments.</div><div class="line"> *</div><div class="line"> * **Note:** This method doesn&apos;t set the &quot;length&quot; property of curried functions.</div><div class="line"> *</div><div class="line"> * @static</div><div class="line"> * @memberOf _</div><div class="line"> * @since 2.0.0</div><div class="line"> * @category Function</div><div class="line"> * @param &#123;Function&#125; func The function to curry.</div><div class="line"> * @param &#123;number&#125; [arity=func.length] The arity of `func`.</div><div class="line"> * @param- &#123;Object&#125; [guard] Enables use as an iteratee for methods like `_.map`.</div><div class="line"> * @returns &#123;Function&#125; Returns the new curried function.</div><div class="line"> * @example</div><div class="line"> *</div><div class="line"> * var abc = function(a, b, c) &#123;</div><div class="line"> *   return [a, b, c];</div><div class="line"> * &#125;;</div><div class="line"> *</div><div class="line"> * var curried = _.curry(abc);</div><div class="line"> *</div><div class="line"> * curried(1)(2)(3);</div><div class="line"> * // =&gt; [1, 2, 3]</div><div class="line"> *</div><div class="line"> * curried(1, 2)(3);</div><div class="line"> * // =&gt; [1, 2, 3]</div><div class="line"> *</div><div class="line"> * curried(1, 2, 3);</div><div class="line"> * // =&gt; [1, 2, 3]</div><div class="line"> *</div><div class="line"> * // Curried with placeholders.</div><div class="line"> * curried(1)(_, 3)(2);</div><div class="line"> * // =&gt; [1, 2, 3]</div><div class="line"> */</div><div class="line">function curry(func, arity, guard) &#123;</div><div class="line">  arity = guard ? undefined : arity;</div><div class="line">  var result = createWrap(func, WRAP_CURRY_FLAG, undefined, undefined, undefined, undefined, undefined, arity);</div><div class="line">  result.placeholder = curry.placeholder;</div><div class="line">  return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> js进阶 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[FDCon2017 中国前端开发者大会笔记]]></title>
+      <url>/2017/04/09/FDCon2017-%E4%B8%AD%E5%9B%BD%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9A%E7%AC%94%E8%AE%B0/</url>
+      <content type="html"><![CDATA[<p>这篇文章根据嘉宾的文字发言汇总结合自己的理解而来。特别记录一下，以便更好的总结经验，吸收精华。<br><a id="more"></a></p>
+<hr>
+<p>参加了第二届中国前端开发者大会，感觉各位嘉宾讲的都很高大上。下面根据金山文字的<a href="https://d.wps.cn/v/8mPL0?s=qr&amp;from=groupmessage&amp;isappinstalled=0" target="_blank" rel="external">嘉宾发言汇总</a>，整理一些自己认为有价值的部分，也算不虚此行。</p>
+<h2 id="尤雨溪–Vue-2017现状和展望"><a href="#尤雨溪–Vue-2017现状和展望" class="headerlink" title="尤雨溪–Vue 2017现状和展望"></a>尤雨溪–Vue 2017现状和展望</h2><p>Vue从刚开始低调的负责视图view层的轻型mvvm框架，发展到现在和react平起平坐的渐进式框架，真的是一件了不起的工程。在台下感受着尤大大强大的气场，也学习到了很多东西。</p>
+<ol>
+<li><p>关于渐进式</p>
+<blockquote>
+<p>Vue的生态系统有提供完全的前端框架，并不是强迫你要用Vue一定要用所有的全家桶。你可以只用Vue本身，不需要一下子把所有东西都用上。</p>
+</blockquote>
+<p>渐进式的好处，我个人理解是可以让开发者有一个良好的学习和使用体验。与angular和react相比，用了angular需要学习一整个angular生态的各种概念，ts，依赖注入等等规则，以及使用angular的路由，服务等全套规则；用了react需要自己去react丰富的而琐碎的社区中，自己寻找各种需要的库来完成整个项目的架构，有点像玩乐高积木，目前的react全家桶，只是社区中公认的一种实现方案，究竟是不是最佳实践也未可知；而Vue既不需要去接受一整套既定规则，也不需要像摸着石头过河一样去寻找最佳实践。</p>
+</li>
+<li><p>关于类型检查</p>
+<blockquote>
+<p>引入了Flow类型检查，提高代码健壮性。</p>
+</blockquote>
+<p>之前还在某个小密圈中看到了flow这个类型检查库，尤大大在现场答疑中也说到，在工程项目中用ts也许是更好的选择。但是当你不想用ts，又想加入类型检查，我觉得可以试试flow。</p>
+</li>
+<li>模版渲染机制的优化<blockquote>
+<p> Vue2.0有一个模板编译过程，两种编译模式，一种是运行时，一种是构建时，你直接把模板写在页面里面，Vue在页面加载之后，把模板编译成渲染函数。构建时渲染是打包发布的同时把原文件的模板处理运行时就不需要再编译一遍了。</p>
+</blockquote>
+</li>
+<li><p>bundlerenderer的概念<br>解决的问题：</p>
+<blockquote>
+<p>解决同构代码在服务端的构建和部署。</p>
+</blockquote>
+<p>优点：</p>
+<blockquote>
+<p>避免跨请求状况污染；除了入口文件和构建配置外，业务代码完全同构；服务端包和服务端代码解耦，便于部署，甚至可以热部署。</p>
+</blockquote>
+</li>
+<li><p>ScopedSlots的应用</p>
+<blockquote>
+<p>传递一个可复用的模板片断给子组件。组件内部可以把传进来的组件内容，嵌入到组件自身里面，内容再组构的机制。可复用的模板片断可以获得子组件传回来的数据。</p>
+</blockquote>
+<p>可以用这个技术在Vue中将http请求抽象，直接在模版层根据请求状态控制渲染，而不用关心具体的请求部分。个人理解这有点react中组件嵌套的概念。</p>
+</li>
+<li>带命名空间的module<blockquote>
+<p>可以包含自己的state，actions，mutations和getters，就像一个小的store。通过它们可以轻松的对业务逻辑进行分块封装，最后只需要在Root  store入口处组合。甚至可以通过动态模块注册来配合代码分割/懒加载</p>
+</blockquote>
+</li>
+<li>改进Vue devtoos，支持weex查看状态快照  </li>
+<li>配合webpack完美支持路由级别的代码懒加载</li>
+<li>css代码分割，避免服务端渲染，js内嵌样式使首屏无样式的问题，也可以确保CSS跟随业务代码被分割出去</li>
+<li>内置了Chrome  timeline性能追踪支持，完善异常机制与报错信息</li>
+<li>服务端渲染进一步改进<blockquote>
+<p>通过分析Webpack服务端和客户端的构建信息，自动推导需要在客户端与加载的文件，生成最优的<code>&lt;script&gt;</code>和<code>&lt;link rel=“preload/prefetch”&gt;</code>链接;<br>自动选用不包含CSS字符串的异步JS文件，避免Critical  CSS被两次下载。你在JavaScript有一个字符串是CSS，才指出的HTML里面也有字符船，等于字符串被重复了两次，我们会把每次割出去的代码包打两份，一份有CSS，一份没有CSS，避免首屏双重加载CSS的问题。</p>
+</blockquote>
+</li>
+</ol>
+<p>可以看出，Vue是一步步变得更强大，开发和使用体验都越来越好。希望下一个项目可以尝试一发。</p>
+<h2 id="魏晓军–CRN-WEB（Ctrip-React-Native-Framework-For-Web）"><a href="#魏晓军–CRN-WEB（Ctrip-React-Native-Framework-For-Web）" class="headerlink" title="魏晓军–CRN-WEB（Ctrip React Native Framework For Web）"></a>魏晓军–CRN-WEB（Ctrip React Native Framework For Web）</h2><p>之前在携程的技术分享会上，接触了CRN的一些相关知识，这次听到魏晓军老师的分享，也是有一丝亲切感。</p>
+<p>CRN是携程在React Native上封装扩展了一层，解决了RN的一些坑，能够用同一套代码运行在安卓和ios上。</p>
+<p>CRN-WEB则是在浏览器上跑React Native的代码。这样，浏览器，安卓，ios，三端同一套代码。很完美。</p>
+<ol>
+<li>CRN-WEB特点<ol>
+<li>基于ReactJS，兼容RN和CRN组件及接口的H5框架。可以快速生成已有或者即将开发的CRN项目的H5版本。</li>
+<li>支持项目两种类型项目RN和CRN。你只要有RN代码，运行CRN-WEB的命令，立马可以转出来可以在Web上跑了。</li>
+<li>开发体验友好，支持元素审查、源码改动动态刷新，运行时debug，远程真机调试。支持浏览器、微信等多平台。</li>
+</ol>
+</li>
+<li>CRN-WEB的实现<ol>
+<li>适配了RN和CRN的API包括第三方的扩展，同时是基于ReactJS做的web前端框架。</li>
+<li>主要基于ReactNative自身的东西，CRN的自身的东西，第三方的扩展，三个部分做的。</li>
+<li>开发环境完全基于nodejs，快速搭建开发环境。使用简单、功能强大，支持源码调试。源码修改，自动热更新。</li>
+<li>借鉴小程序的思路，开发CRN-WEB的IDE，方便开发。</li>
+</ol>
+</li>
+<li>CRN-WEB的现状和发展<ol>
+<li>最大的痛点就是性能还有兼容性</li>
+<li>和去哪儿团队合作开发YRN-WEB，两个团队会做一些切磋的东西，放在YRN-WEB里面，同一套底层，每家的业务代码加底层，可以运行到各家的APP里面去</li>
+</ol>
+</li>
+</ol>
+<h2 id="渚薰–H5互动的正确打开方式"><a href="#渚薰–H5互动的正确打开方式" class="headerlink" title="渚薰–H5互动的正确打开方式"></a>渚薰–H5互动的正确打开方式</h2><p>作为本次大会唯一一个和js关系不是那么密切，关于“交互”的分享，渚薰老师的演讲犹如一道餐后果蔬，营养丰富且清新健康。</p>
+<p>首先介绍了互动的概念，已手淘为例，交互包括引流、氛围、橱窗、抽奖、视频、游戏、提醒，乃至VR/AR等等，并不只于点击。<br>总结下来，可以分为被动的获取和主动的寻求反馈。</p>
+<p>然后介绍了互动的实现，也就是动效的原理–动画其实是动效+时间的完美配合。<br>其中，遇到了兼容性和性能优化两大问题。</p>
+<p>兼容性问题，简单粗暴的满足95%的用户体验，剩下的用户默默砍掉。<br>性能优化问题，又有下面几点：</p>
+<ol>
+<li>CPU运算<br>js不擅长浮点运算，而动效的实现往往是差值的浮点运算。所以依次检查每个函数，重点优化最耗性能的那个</li>
+<li>GPU方面<br>虽然前端没办法访问GPU，js不能使用GPU运算，但是可以通过<code>transform: translateZ()</code>或者<code>transform: translate3d()</code>来开启硬件的GPU加速，帮助你渲染的流程从CPU挪到GPU，会减少CPU的压力。</li>
+<li>图片栅格化<blockquote>
+<p>把你的一张原始图片变成像素点，这个时候如果像素很大，但是放到手机屏幕上，要缩小成你当时显示的区域的像素点的颜色值，这个时候很耗性能的，甚至在安卓里面，图片栅格化远远弱于IOS的，这个必须要注意的一点，你图片尽量不要大于你要显示的实际的像素大小。</p>
+</blockquote>
+</li>
+<li>避免过度绘制<blockquote>
+<p>手机屏幕呈现的部分对它渲染就可以了，不在区域内部的渲染都丢弃掉。不要直接的显示出来，这样子会提高你的整个渲染的效率。</p>
+</blockquote>
+</li>
+<li>关于降级<br>降级可以分为内容降级和版本降级。内容降级就是让动画元素、动画内容、例子效果少一点，保证主要内容的呈现；版本降级主要是关于3D版本和2D版本两套方案。</li>
+</ol>
+<p>随后提到了和Native的亲密接触。在Native页面上面覆盖一个H5的View以实现动画效果，让动画和原生页面紧密结合在一起。</p>
+<p>之后推荐了一套高效调整动画参数的工具。</p>
+<blockquote>
+<p>Airbnb的，可以Adobe的动画导出JSON，通过Airbnb的软件运行，但是有一个问题，JSON要对它进行编辑很困难，我们通过它对DSL的转化，赋予它二次开发的能力，可以对JSON进行微调，把JSON数据整合起来运用到业务当中去。</p>
+</blockquote>
+<p>最后说到了WebGL，这个Web3D技术可以针对GPU编程。可以先从最简单的Three.js学起。之后</p>
+<blockquote>
+<p>推荐stack.gl的网站，帮助大家更系统的理解WebGL怎么编程的网站，里面有APM包，可以让你通过按需加载的方式获得一些能力让你在WebGL的道路上走的比较自然系统一点。<br>还有一些上层的框架，比如说Unity，微软的babylonJS都可以帮助你解决问题。</p>
+</blockquote>
+<h2 id="张强–Redux的打开方式"><a href="#张强–Redux的打开方式" class="headerlink" title="张强–Redux的打开方式"></a>张强–Redux的打开方式</h2><p>张强老师的演讲很棒，条理很清晰，无论是演讲稿还是slide，都是精心准备过的。</p>
+<p>因为是关于Redux的，所以先从状态管理的角度，讲了前端的发展史。引出了遇到的问题，从而后面深入问题的解决方案。这个思路是很对我的胃口的。</p>
+<p>前端的本质是做用户和数据的双向交互。最开始的前端架构，简单就是美。然而这种用户体验非常不好。</p>
+<blockquote>
+<p>具体数据怎么处理我们前端不管，都是后端的事情，我们一般以URL区分不同的请求，一个请求发出去SERVER处理HTML直出。最完美的状况管理是浏览器前进后退的操作。<br>当时Web非常可靠，不容易出错，出错也好定位。学习成本低，浏览器搞定了大部分事情，开发者只需要关心UI渲染就可以了。</p>
+</blockquote>
+<p>后来，AJAX的出现，改变了这一状态，也引来了一系列的复杂问题。</p>
+<blockquote>
+<p>以前只有单一数据源，现在多了很多本地临时数据，以前只通过URL进行数据变更，现在多了AJAX的数据请求，和UI输入对本地数据进行修改。以前是统一的UI渲染方式，现在是HTML直出加上本地全局（局部）DOM渲染。而且浏览器的前进后退失效，状态都由自己管理。<br>我们进入AJAX发现应用中有多个数据源，维护多个数据源的一致性非常困难，多数据源有关联，导致应用中多处代码操作同一数据，预测一个操作带来的数据变更愈发困难。对于整个应用内的代码都能随便修改，用户说我这边颜色不对的时候，你就瞎了，你要看到底谁改了你的DOM，状态管理根本无从谈起。bug越修越多，我们还要加班重构代码。</p>
+</blockquote>
+<p>React的出现，使事情发生了转机。但是独立的React架构，虽然在ui渲染方面，隔离了真实DOM，避免了DOM操作，但是每个组件都有自己的state，导致了多个数据源，数据的变更情况，React也没有约束。</p>
+<p>结合了Redux后，React+Redux架构也只是有一个数据源：Redux的全局State。统一的数据变更是action出发。统一的UI渲染：react，状态管理：“时间旅行”。</p>
+<p>但是，Redux也有其自身的问题：</p>
+<ol>
+<li>把大象关冰箱一共三步，用Redux解决这个问题需要定义三个actionType，起三个不同的名字我们要实现三个actionCreator，最后实现三个reducer，感觉搞复杂了。</li>
+<li>Redux处理异步是很有问题的，它没有明确规定异步放在哪步。有的是放在View中，有的放在actionCreator里，有的利用中间件实现，有的反模式的放在了reducer中。</li>
+<li>关于Redux模块化的问题，官方没有成熟的解决方案。</li>
+<li>actionType的重名问题，还是靠约定和代码规范。</li>
+<li>模块动态加载的问题，势必会引入一个新的Reducer，就破坏了Redux关于reducer必须是纯函数的特性，时间旅行如何保证。</li>
+</ol>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[初探async／await]]></title>
+      <url>/2017/03/29/%E5%88%9D%E6%8E%A2async%EF%BC%8Fawait/</url>
+      <content type="html"><![CDATA[<p>一用就能感觉到，async和await是目前处理异步逻辑最优雅的方式。<br><a id="more"></a></p>
+<h3 id="async-await-特点概要"><a href="#async-await-特点概要" class="headerlink" title="async/await 特点概要"></a>async/await 特点概要</h3><ul>
+<li>属于ES2017，应用在项目中需要babel（具体是stage-3），node最新版已经支持</li>
+<li>就是 <code>Generator</code> 函数的语法糖</li>
+<li>内置执行器，与普通函数一模一样，只要一行便可执行</li>
+<li><code>async</code>函数<ul>
+<li><code>async</code>表示函数里有异步操作</li>
+<li><code>async</code>函数完全可以看作多个异步操作，包装成的一个<code>Promise</code>对象</li>
+<li><code>async</code>函数返回的是 <code>Promise</code> 对象，可以作为<code>await</code>命令的参数</li>
+<li><code>async</code>函数内部<code>return</code>语句返回的值，会成为<code>then</code>方法回调函数的参数</li>
+<li>只有<code>async</code>函数内部的异步操作执行完，才会执行<code>then</code>方法指定的回调函数</li>
+</ul>
+</li>
+<li><code>await</code>命令<ul>
+<li><code>await</code>表示紧跟在后面的表达式需要等待结果</li>
+<li><code>await</code>命令就是内部<code>then</code>命令的语法糖</li>
+<li>只要一个<code>await</code>语句后面的 <code>Promise</code> 变为<code>reject</code>，那么整个<code>async</code>函数都会中断执行。<ul>
+<li>不希望如此则用<code>try...catch...</code>语句同步形式处理</li>
+<li>或者在await后的promise对象跟上<code>catch</code>方法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="async-await-使用姿势"><a href="#async-await-使用姿势" class="headerlink" title="async/await 使用姿势"></a>async/await 使用姿势</h3><ul>
+<li>函数声明<ul>
+<li><code>async function foo() {}</code></li>
+</ul>
+</li>
+<li>函数表达式<ul>
+<li><code>const foo = async function () {};</code></li>
+<li><code>const foo = async () =&gt; {};</code></li>
+</ul>
+</li>
+<li>对象的方法<pre><code>let obj = { async foo() {} };
+obj.foo().then(...);
+</code></pre></li>
+<li>class的方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">class User &#123;</div><div class="line">  constructor() &#123;</div><div class="line">    super()</div><div class="line">  &#125;</div><div class="line">  getUserInfo(url) &#123;</div><div class="line">    return fetch(url).then(res =&gt; res.user)</div><div class="line">  &#125;</div><div class="line">  async foo() &#123;</div><div class="line">    const user_info = await this.getUserInfo(url)</div><div class="line"></div><div class="line">    dosomething...</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">const user = new User()</div><div class="line">user.foo().then(...)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="async-await-基本实践"><a href="#async-await-基本实践" class="headerlink" title="async/await 基本实践"></a>async/await 基本实践</h3><p>  async/await最基本的用法，就是在async函数执行的时候，遇到await命令，就会等到await后的promise执行完毕，再接着执行函数体await之后的语句</p>
+<p>  这样，就会让人觉得这其实是一段同步的代码，按顺序自上而下执行。真正异步的东西其实在await部分，以及函数返回promise之后。</p>
+<p>  下面记下自己的亲自实践过程，来更好的解释async和await的用法。</p>
+<p>  业务场景是，后台给我们一组实例id，我们需要通过遍历这些id来异步向后台请求，获取任务task。（有人估计问为什么不后台直接返回过来任务task。。据后台同事说，这种前端通过遍历发送多个异步请求的效率比较高。。）</p>
+<p>  起初，为了赶工期。。是这么写的<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">setTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []    // 这个数组是为了视图渲染而定义的数据</div><div class="line"></div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    process_ids.forEach(process_id =&gt;</div><div class="line">      this.requireTask(process_id).then(task =&gt; &#123;  // requireTask是之前定义的请求task的promise对象</div><div class="line">        const task_info = &#123;</div><div class="line">          category: task.category,</div><div class="line">          id: task.id,</div><div class="line">          name: task.name</div><div class="line">        &#125;</div><div class="line">        render_tasks.push(task_info)</div><div class="line">        this.setState(&#123; render_tasks &#125;)</div><div class="line">      &#125;)</div><div class="line">    )</div><div class="line">  &#125; else &#123;</div><div class="line">    this.setState(&#123; render_tasks &#125;)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面这段代码，有两处调用了setState，还是为了在异步请求之后再设置state，要是写在循环外面，就会先于异步请求执行。显得很冗余，也很蠢。。<br>最重要的是，循环的setState会使React组件render很多次。要是嵌套了子组件，子组件中有异步请求代码的话，也会使子组件发送很多重复的请求。</p>
+<p>所以，这段代码既丑陋又影响性能。为了解决这个问题，尝试用async和await重构这段逻辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">async getTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []</div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    for (const process_id of process_ids) &#123;</div><div class="line">      const task = await this.requireTask(process_id)</div><div class="line">      const task_info = &#123;</div><div class="line">        category: task.category,</div><div class="line">        id: task.id,</div><div class="line">        name: task.name</div><div class="line">      &#125;</div><div class="line">      render_tasks.push(task_info)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">  return render_tasks</div><div class="line">&#125;</div><div class="line"></div><div class="line">setTasks() &#123;</div><div class="line">  this.getTasks(process_ids).then(render_tasks =&gt; this.setState(&#123; render_tasks &#125;))</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面这段代码看起来就清晰多了，由于async函数返回的promise对象，所以可以将获取task和设置task分开来，使一个方法做一个任务，方便维护。<br>（上面的代码也是修改了很多次，经过了很多尝试，第一版：用函数表达式的写法写，在方法里调用。第二版：改成class的async方法，仍然在方法里setState）</p>
+<p>但是，上面的代码还是存在一个问题，不要忘了，紧跟在<code>await</code>后面的表达式，需要等待结果，然后才能继续执行。所以上面for循环发的一个个requireTask请求是等上一个requireTask请求完毕后，再发起下一个请求的，也就是说，这里一系列requireTask请求是继发的。然而，每个requireTask请求是完全独立的，如果是继发的话，会比较耗时，影响性能。</p>
+<p>所以，有了下面的版本，将继发的请求变成并发的形式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">async getTasks(process_ids) &#123;</div><div class="line">  const render_tasks = []</div><div class="line">  if (process_ids.length) &#123;</div><div class="line">    // 循环发送请求，保存请求结果</div><div class="line">    const taskRequires =&gt; process_ids.map(process_id =&gt; (&#123;</div><div class="line">      promise: this.requireTask(process_id),</div><div class="line">      process_id</div><div class="line">      &#125;))</div><div class="line"></div><div class="line">    // 循环请求结果，处理请求数据</div><div class="line">    for (const taskRequire of taskRequires) &#123;</div><div class="line">      const task = await this.requireTask(process_id)</div><div class="line">      const task_info = &#123;</div><div class="line">        category: task.category,</div><div class="line">        id: task.id,</div><div class="line">        name: task.name</div><div class="line">      &#125;</div><div class="line">      render_tasks.push(task_info)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">  return render_tasks</div><div class="line">&#125;</div><div class="line"></div><div class="line">setTasks() &#123;</div><div class="line">  this.getTasks(process_ids).then(render_tasks =&gt; this.setState(&#123; render_tasks &#125;))</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>上面的代码应该还有值得优化的地方，主要参考了阮老师的ECMAScript 6 入门，其中提到的async函数的难点在于错误处理，这里还需要考虑错误的处理。在本文中就不赘述了。</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> js </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[header和footer并不是那么简单]]></title>
+      <url>/2017/03/27/header%E5%92%8Cfooter%E5%B9%B6%E4%B8%8D%E6%98%AF%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95/</url>
+      <content type="html"><![CDATA[<p>网页的头部和底部，想起来比较容易实现，但是真的实践起来，并不是那么简单。<br><a id="more"></a></p>
+<hr>
+<h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>这篇文章主要是关于头部和底部的一些布局上的思考，因为在我做项目的时候也了遇到类似的问题。然后参考了一篇国外的博客，然后加上自己的理解。BTW，我大美团的官网也有类似的问题哟。。。</p>
+<h3 id="问题重现"><a href="#问题重现" class="headerlink" title="问题重现"></a>问题重现</h3><p>下面就拿美团的官网为例吧。</p>
+<p>这是我写这篇文章的时候，美团的官网<br><img src="/img/header_footer/origin_meituan_header.png" alt="最初的美团header"><br><img src="/img/header_footer/origin_meituan_footer.png" alt="最初的美团footer"></p>
+<p>看起来没毛病，但是我们缩小下浏览器，就会出现一些奇怪的现象（黄框部分）<br><img src="/img/header_footer/yasuo_meituan_header.png" alt="亚索的美团header"><br><img src="/img/header_footer/yasuo_meituan_footer.png" alt="亚索的美团footer"></p>
+<p>不敢相信自己的眼睛。。。</p>
+<h3 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h3><p>让美团的头部和身体同宽～值得一提的是，这里用的是最小宽度min-width，而不是width。用了width的结果显而易见–放大就不对了<br><img src="/img/header_footer/fix_meituan_header.png" alt="修复美团的header"></p>
+<p>中部的空隙margin改为padding<br><img src="/img/header_footer/fix_meituan_body.png" alt="修复美团的body"></p>
+<p>接下来，底部就用同样的方法，<br>将margin留出的间隔改为padding（class为category-floor的div），<br>用最小宽度设置footer元素和class为component-holy-reco mt-component–booted的div。</p>
+<h3 id="又发现一个问题"><a href="#又发现一个问题" class="headerlink" title="又发现一个问题"></a>又发现一个问题</h3><p>现在看起来就好多了。。但是，发现了这里有点有意思的地方，<br><img src="/img/header_footer/origin_footer_width.png" alt="width100%并没有卵用"></p>
+<p>可以看到，当时切图的工程师意识到了这里需要满满的宽度，用了<code>width: 100%</code>，但是为什么没用呢。<br>然后小小修改一下，<code>float: left; min-width: 100%</code>就是想象中期望的样子了～<br><img src="/img/header_footer/fix-width.png" alt="fix-width"></p>
+<p>为什么<code>width: 100%</code>没有用呢，原来答案是关于viewport的。</p>
+<ul>
+<li>viewport的功能在于控制你网站的最高块状容器<code>&lt;html&gt;</code>元素</li>
+<li><code>&lt;html&gt;</code>宽度受viewport的限制，<code>&lt;html&gt;</code>元素的宽度为viewport宽度的100%</li>
+<li>viewport严格的等于浏览器的窗口，并且不能通过css修改</li>
+<li>更详细的内容见【<a href="http://www.w3cplus.com/css/viewports.html" target="_blank" rel="external">viewports剖析</a>】</li>
+</ul>
+<p>那么为什么用<code>float: left; min-width: 100%</code>就可以达到期望中的样子呢，这就要引出这个方法的来源了，是从一个国外的博客中搜到的。</p>
+<h3 id="问题思考"><a href="#问题思考" class="headerlink" title="问题思考"></a>问题思考</h3><p><a href="http://www.cssgirl.com/resources/2012/01/15/100-full-width-header-and-footer-with-centered-content-revisited-again/" target="_blank" rel="external">博客原文戳这里</a></p>
+<p>博客的作者也出现了类似美团官网头部和底部的问题。文章里有类似的截图与实例。<br>作者最初也用媒体查询来设置最大最小宽度，但是正如作者说的，这样很蠢。</p>
+<p>这种方法的原理也很容易理解，用float使header或footer脱离文档流(所以这里用<code>position: absolute</code>也可以)，然后用<code>min-width: 100%</code>使它充满整个页面的宽度。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这篇文章主要解决了，浏览器视口在特殊情况下（如页面放大或缩小浏览器使页面出现水平滚动条等）时，网页的头部和底部不能铺满整个页面的问题。</p>
+<p>主要有两种方案：</p>
+<ul>
+<li>设置头部和底部的宽度，使他们和内容区域同宽。</li>
+<li>设置 <code>float: left; min-width: 100%</code>使其自适应</li>
+</ul>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> css </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[关于git的笔记]]></title>
+      <url>/2017/03/16/%E5%85%B3%E4%BA%8Egit%E7%9A%84%E7%AC%94%E8%AE%B0/</url>
+      <content type="html"><![CDATA[<p>这篇文章记录了平时使用git时候遇到的问题和常用的命令。<br><a id="more"></a></p>
+<hr>
+<h2 id="gitingore里的东西又会冒出来"><a href="#gitingore里的东西又会冒出来" class="headerlink" title="gitingore里的东西又会冒出来"></a>gitingore里的东西又会冒出来</h2><p>  stackoverflow上的解释是：</p>
+<blockquote>
+<p>Even if you haven’t tracked the files so far, git seems to be able to “know” about them even after you add them to .gitignore.</p>
+</blockquote>
+<p>下面是解决方法</p>
+<blockquote>
+<p> First commit your current changes, or you will lose them.<br>Then run the following commands from the top folder of your git repo:</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git rm -r --cached .</div><div class="line">git add .</div><div class="line">git commit -m &quot;fixed untracked files&quot;</div></pre></td></tr></table></figure>
+<h2 id="常用的分支操作"><a href="#常用的分支操作" class="headerlink" title="常用的分支操作"></a>常用的分支操作</h2><ol>
+<li>查看本地分支 <code>git branch</code> ···· <em>gb</em></li>
+<li>查看远程分支 <code>git branch -r</code>···· <em>gb -r</em></li>
+<li>从当前分支新建一个分支 <code>git checkout -b new_branch</code> ···· <em>gco -b new_branch</em></li>
+<li>切到一个分支 <code>git checkout a_branch</code> ···· <em>gco a_branch</em></li>
+<li>删除本地分支(此时应该在另一个分支) <code>git branch -D a_branch</code> ···· <em>gb -D a_branch</em></li>
+<li>删除远程分支(就是将一个空的分支推到远程分支) <code>git push origin :a_branch</code> ···· <em>gp origin :a_branch</em></li>
+<li>将分支A合并到分支B(此时应该在分支B上执行) <code>git merge branch_A</code> ···· <em>gm branch_A</em></li>
+</ol>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> git </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[写业务代码时的一些感悟]]></title>
+      <url>/2017/03/10/%E5%86%99%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E6%97%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E6%84%9F%E6%82%9F/</url>
+      <content type="html"><![CDATA[<p>这篇文章记录了写业务代码和重构业务代码时候的感悟。<br><a id="more"></a></p>
+<hr>
+<ol>
+<li><p>案例：解析后台数据，用一个循环又一个循环去预处理数据，然后将用到的数据换一个“通俗易懂”的名字，同时加上自己便于实现业务逻辑的数据，比如对数据的描述和对数据内容的判断</p>
+<p>感悟：直接拿来用就可以，在用的时候需要什么取什么。关于业务逻辑的数据，应该和后台返回数据分开维护，混杂在一起很麻烦</p>
+<p>理由：</p>
+<ul>
+<li>增加额外不必要工作量</li>
+<li>增加代码复杂度</li>
+<li>相当于将接口返回值换名字，给前后端调试接口带来不便</li>
+<li>使代码可读性变得很差</li>
+</ul>
+</li>
+<li><p>案例：业务代码中变量名取的不好</p>
+<ul>
+<li>根据视图构造取名（如tbodyData）</li>
+<li>根据用户抽象操作取名（如select_data）</li>
+<li>还有map等方法遍历数组的时候形参名（如obj）</li>
+</ul>
+<p>感悟：取名还是越具象越贴切越和接口保持一致越好。直接具体描述这个对象是什么，如orders, school_info，最好和接口返回的名字保持一致</p>
+<p>理由：能够为重构代码和阅读代码提供很大便利</p>
+</li>
+</ol>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> js </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[那些年我们一起学习的js基础]]></title>
+      <url>/2016/12/25/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E5%AD%A6%E4%B9%A0%E7%9A%84js%E5%9F%BA%E7%A1%80/</url>
+      <content type="html"><![CDATA[<p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
+<hr>
+<h3 id="Array的map方法"><a href="#Array的map方法" class="headerlink" title="Array的map方法"></a>Array的map方法</h3><p>  12.25</p>
+<blockquote>
+<p>map() 方法返回一个由原数组中的每个元素调用一个指定方法后的返回值组成的新数组。<br>  <br><br>① map 方法会给原数组中的每个元素都按顺序调用一次 callback 函数。callback 每次执行后的返回值（包括 undefined）组合起来形成一个新数组。 callback 函数只会在有值的索引上被调用；那些从来没被赋过值或者使用 delete 删除的索引则不会被调用。<br>  <br><br>② callback 函数会被自动传入三个参数：数组元素，元素索引，原数组本身。<br>  <br><br>③ 如果 thisArg 参数有值，则每次 callback 函数被调用的时候，this 都会指向 thisArg 参数上的这个对象。如果省略了 thisArg 参数,或者赋值为 null 或 undefined，则 this 指向全局对象。<br>  <br><br>④ map 不修改调用它的原数组本身（当然可以在 callback 执行时改变原数组）。<br>  <br><br>⑤ 使用 map 方法处理数组时，数组元素的范围是在 callback 方法第一次调用之前就已经确定了。在 map 方法执行的过程中：原数组中新增加的元素将不会被 callback 访问到；若已经存在的元素被改变或删除了，则它们的传递到 callback 的值是 map 方法遍历到它们的那一时刻的值；而被删除的元素将不会被访问到。</p>
+</blockquote>
+<p>  以上描述来自MDN–<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank" rel="external">Array.prototype.map()</a></p>
+<p>  写这篇文章之前，还没有认真阅读过，但是我当把这段描述贴上后，发现接下来的内容都没必要写了-_-#。。MDN大法好。。。既然起了笔，就继续写下去吧。。</p>
+<p>  示例1：</p>
+<pre><code>orders.map((obj, i) =&gt; {
+  obj.key = i + 1
+  obj.num = i + 1
+  obj.operate_status = obj.operate_status.length &gt; 10 ? &apos;&apos; : obj.operate_status
+  obj.status = obj.status.length &gt; 10 ? &apos;&apos; :obj.status
+})
+</code></pre><p>  正如描述中第④条所述。上面这段代码是将一个对象数组进行后续处理。给这个对象数组每一项加上key和num的字段，修改它的operate_status和status字段。</p>
+<p>  <em>(因为这个orders是后台传过来的信息，用在react表格中，需要加上key，然后表格需要一个序号。后面的两个status，后台有时候会返回一段很长的乱码，所以加上了判断)</em></p>
+<p>  !!! 又是写出来才发现，这个例子用map方法实现需求其实不好，因为map方法是返回一个新数组，这里只是为了修改原数组，用forEach方法更合适。已在项目代码中改为forEach，看来这篇总结是很有价值的～～哈哈哈</p>
+<p>  示例2：</p>
+<pre><code>const select_ids = this.selected_rows.map(obj =&gt; obj.order_id )
+</code></pre><p>  如描述①。上面的代码从select_rows这个对象数组中，提取出了key为order_id的值，返回了一个新的数组并赋值给select_ids</p>
+<p>  <em>这段代码利用es6的箭头函数，显得十分简洁。</em></p>
+<p>  示例3：（先写这么多，加班去了，圣诞快乐）<br>  10.27</p>
+<pre><code>orders.map(obj =&gt; {
+  return {
+    order_name: obj.name,
+    order_time: obj.create_at
+  }
+})
+</code></pre><p>  上面的代码从orders里提取出name，create_at字段，组成了一个新的对象数组：</p>
+<pre><code>[
+  { order_name: &apos;&apos;, order_time: &apos;&apos; },
+  { order_name: &apos;&apos;, order_time: &apos;&apos; }
+]
+</code></pre><p>  可以和示例1，示例2进行对比，就能更加深刻的理解map方法，以及ES6箭头函数的使用方法。</p>
+<hr>
+<hr>
+<h3 id="用遍历判断空对象"><a href="#用遍历判断空对象" class="headerlink" title="用遍历判断空对象"></a>用遍历判断空对象</h3><p>  12.26</p>
+<p>  场景：（这段可以不看）</p>
+<blockquote>
+<p>从后台得到这样一个的数据：</p>
+</blockquote>
+<pre><code>const data = {
+  order_items: [],
+  id: &apos;&apos;,
+  extra: {},
+  operators: []
+}
+</code></pre><blockquote>
+<p>这个时候需要在<em>react</em>中根据<em>order_items</em>和<em>operators</em>渲染出一些信息，可能会在<code>render()</code>方法中这么写</p>
+</blockquote>
+<pre><code>this.state.order_items.map(obj =&gt; {...})
+this.state.operators.map(obj =&gt; {...})
+</code></pre><blockquote>
+<p>这样需要根据后台返回的数据设置许多<em>state</em>的默认值，然后需要用<code>setState()</code>方法设置许多<em>state</em>，很麻烦：</p>
+</blockquote>
+<pre><code>constructor() {
+  this.state = {
+    order_items: [],
+    operators: []
+  }
+}
+
+componentDidMount() {
+  httpRequest().then(res =&gt;
+      this.setState({
+        order_items: res.order_items,
+        operators: res.operators
+      })
+    )
+}
+</code></pre><blockquote>
+<p>如果想只在<em>state</em>里设置一个<em>data</em>，然后只需要用<code>setState({data})</code>来控制data的改变，进而控制<em>render</em>渲染，这个时候就需要：</p>
+</blockquote>
+<pre><code>constructor() {
+  this.state = {
+    data: {}
+  }
+}
+
+componentDidMount() {
+  httpRequest().then(res =&gt;
+      this.setState({data})
+    )
+}
+
+render() {
+  return() {
+    &lt;div&gt;
+      {
+        this.state.data.order_items.map(obj =&gt; {...})
+      }
+    &lt;/div&gt;
+  }
+}
+</code></pre><blockquote>
+<p>这么写会报错！因为第一次<em>render</em>的时候，<code>this.state.date</code>为<code>{}</code>。<br>可以这样解决：</p>
+</blockquote>
+<pre><code>this.state = {
+  data: {
+    order_items: [],
+    operators: []
+  }
+}
+</code></pre><blockquote>
+<p>但是这么做和感觉和之前的并没有差别。</p>
+</blockquote>
+<hr>
+<p>  这个时候，需要判断一下这个data对象是不是<code>{}</code>，下面是正文。。。。。</p>
+<p>  通常基础不扎实的（such as me），会这么写。。：</p>
+<pre><code>if (data) {}
+</code></pre><p>  或者这么写</p>
+<pre><code>if (data.length) {}
+</code></pre><p>  或者这么写</p>
+<pre><code>if (data === {}) {}
+</code></pre><p>  或者用什么<code>typeof</code>、<code>instanceof</code>之类之类。。。最后发现，然并卵。。一脸蒙逼。。</p>
+<p>  下面是正确的打开方式</p>
+<p>  ES5方法：</p>
+<pre><code>function isEmptyObject(obj) {
+  for (var x in obj) {
+    return false;
+  }
+  return true;
+}
+
+if (isEmptyObject(data)) {}
+</code></pre><p>  ES6方法：</p>
+<pre><code>if (Object.keys(data).length) {}
+</code></pre><p>  上面两种方法其核心都是对对象进行遍历。<code>Object.keys()</code>解释如下：</p>
+<blockquote>
+<p>Object.keys 返回一个所有元素为字符串的数组，其元素来自于从给定的对象上面可直接枚举的属性。这些属性的顺序与手动遍历该对象属性时的一致。</p>
+</blockquote>
+<p>  下面再列举一些遍历对象属性的方法(详细解释戳<a href="http://es6.ruanyifeng.com/#docs/object" target="_blank" rel="external">这里</a>)：</p>
+<ul>
+<li><code>Object.getOwnPropertyNames(obj)</code></li>
+<li><code>Object.getOwnPropertySymbols(obj)</code></li>
+<li><code>Reflect.ownKeys(obj)</code></li>
+</ul>
+<p>  此外，与<code>Object.keys()</code> 相关的方法是<code>Object.value()</code>和<code>Object.entries()</code>。<br>  他们返回都是对象<strong>非继承的</strong>所有<strong>可遍历的</strong>属性或属性值的<strong>数组</strong>。<br>  具体差别是，keys方法返回<strong>属性</strong>的数组，value方法返回<strong>属性值</strong>的数组，entries方法返回<strong>键值对</strong>的数组。</p>
+<hr>
+<blockquote>
+<p>下面继续废话。。。<br>之前的代码，现在改为：</p>
+</blockquote>
+<pre><code>constructor() {
+  this.state = {
+    data: {}
+  }
+}
+
+componentDidMount() {
+  httpRequest().then(res =&gt;
+      this.setState({ data })
+    )
+}
+
+render() {
+  let data
+  if (Object.keys(this.state.data).length) {
+    data = this.state.data
+  }
+  return (
+    &lt;div&gt;
+      {
+        data &amp;&amp;
+        data.order_items.map()
+      }
+
+      {
+        data &amp;&amp;
+        data.operators.map()
+      }
+    &lt;/div&gt;
+  )
+}
+</code></pre><blockquote>
+<p>项目中的这个问题目前用这种方法解决（现在我觉得是比较好的方法了）。。之后发现更好的解决方式，再继续在下面废话吧。。。。</p>
+</blockquote>
+<p>  3.22补充：ES7中有个关于null传导运算符的<strong>提案</strong>，提供了一个判断对象属性是否存在的简写方法，具体在<a href="http://es6.ruanyifeng.com/#docs/object" target="_blank" rel="external">阮老师ECMAScript6入门9.12</a>中提到。<br>  因此，上面的短路判断就可以改写为<code>data?.order_items</code></p>
+<hr>
+<hr>
+<h3 id="用短路操作判断"><a href="#用短路操作判断" class="headerlink" title="用短路操作判断"></a>用短路操作判断</h3><p>1.14</p>
+<p><code>&amp;&amp;</code>和<code>||</code>属于布尔运算符，所谓布尔运算符，就会讲表达式转换为<strong>布尔值</strong></p>
+<p>所谓的短路操作指的是：<br>且运算符(<code>&amp;&amp;</code>)会返回第一个布尔值为<code>false</code>的运算对象的值，其后的运算对象会被忽略。如果每个运算对象的布尔值都是<code>true</code>，则返回最后一个运算对象的值（不是布尔值）。</p>
+<p>或运算符(<code>||</code>)会返回第一个布尔值为<code>true</code>的运算对象的值，其后的运算对象会被忽略。如果每个运算对象的布尔值都是<code>false</code>，则返回最后一个运算对象的值（不是布尔值）。</p>
+<p>jQuery的源码中，用了很多<code>&amp;&amp;</code>来代替<code>if</code>语句</p>
+<pre><code>i &amp;&amp; doSomething();
+
+if (i) {
+  doSomething();
+}
+</code></pre><p>一般来说，这两种写法是等价的。但是有一点不同的是，既然<code>&amp;&amp;</code>是个布尔运算符，那么它就会返回一个布尔值为false的值。当在不需要返回值的时候，还是用<code>if</code>语句比较稳妥。或者用三元运算符表示</p>
+<pre><code>i ? doSomething() : null
+</code></pre><p><code>||</code>运算符同理也可以代替<code>if</code>语句，不过常用来给变量设置默认值。</p>
+<hr>
+<hr>
+<h3 id="arguments对象相关"><a href="#arguments对象相关" class="headerlink" title="arguments对象相关"></a>arguments对象相关</h3><p>5.1</p>
+<ol>
+<li>arguments对象可以为参数赋值，但是严格模式不允许这么做。</li>
+<li>Es6的rest参数，即<code>...变量名</code>，可以代替arguments获取函数其余的参数。</li>
+<li>与arguments对象不同的是，rest参数中的变量就是一个数组，可以在函数中直接用数组的方法，而不用之前用arguments时将类数组转换数组的操作。</li>
+<li>将类数组转换为数组有以下几种常用写法<ul>
+<li><code>Array.prototype.slice.call(arguments)</code></li>
+<li><code>[].slice.call(arguments)</code></li>
+<li><code>Array.from(arguments)</code></li>
+<li><code>[...arguments]</code></li>
+</ul>
+</li>
+</ol>
+<hr>
+<hr>
+<h3 id="数组的push、concat与扩展操作"><a href="#数组的push、concat与扩展操作" class="headerlink" title="数组的push、concat与扩展操作"></a>数组的push、concat与扩展操作</h3><p>5.1</p>
+<p>这里只是讨论三者在数组合并方面的不同。<br>将以下合并到一个数组d中：<br><code>const a = [1, 2, 3]; const b = &#39;123&#39;; const c = 123;</code></p>
+<ol>
+<li>用push<br><code>const d = []; d.push(...a, b, c);</code></li>
+<li>用扩展运算符<br><code>const d = [...a, b, c]</code></li>
+<li>用concat<br><code>coust d = [].concat(a, b, c)</code></li>
+</ol>
+<p>乍一看没什么大区别，但是，要是有一个变量，它的类型是不定的，比如可能是a，b，c中任意一个，我们就只能用concat来操作了。</p>
+<p>具体的问题，总结一下</p>
+<ol>
+<li>push以一个数组为参数时，会把这个数组整体作为一个数组的一项，所以需要用扩展运算符才能达到concat的效果。</li>
+<li>单纯的扩展运算符操作number类型的会报错，操作string类型会把字符串分成单个字符。</li>
+</ol>
+<p>所以，对于合并数组这个需求，更健壮的实现还是要用concat</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> js </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[CSS点滴]]></title>
+      <url>/2016/12/14/CSS%E7%82%B9%E6%BB%B4/</url>
+      <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br>主要内容：transition 属性 | | 关于三列布局+垂直居中<br><a id="more"></a></p>
+<hr>
+<h3 id="transition-属性"><a href="#transition-属性" class="headerlink" title="transition 属性"></a>transition 属性</h3><p>  12.14</p>
+<p>  属性详解：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition" target="_blank" rel="external">https://developer.mozilla.org/zh-CN/docs/Web/CSS/transition</a></p>
+<p>  这里值得一提的是，在设置</p>
+<pre><code>div {
+
+  some code...
+
+  &amp;.active {
+    position: relative;
+    top: 5px;
+
+    border: 1px solid #a00;
+
+    transition: top .3s, border .3s;      
+  }  
+}
+</code></pre><p>  时，如果没在div中声明<code>position: relative;</code> 以及<code>top: 0;</code>，这里的top渐变会失效。即使<code>transition: all .3s;</code>也没办法实现。</p>
+<p>  说明 transition-property 属性值不能是 position。<br>  但是<code>top: 0;</code>的声明也必不可少，这个原因还不清楚。而div中不声明border属性，border的渐变还是可以看到的。。。这点很奇怪。。待我研究到原因再补上。</p>
+<h3 id="关于三列布局-垂直居中"><a href="#关于三列布局-垂直居中" class="headerlink" title="关于三列布局+垂直居中"></a>关于三列布局+垂直居中</h3><p>  12.20</p>
+<p>  今天遇到了三列布局的需求，之前看到的相关文章没怎么在意，今天亲自实践才发现，这里还是有很多值得记录的地方的。</p>
+<p>  这篇文章大致写了三列布局实现的方法（<a href="http://www.jackpu.com/san-lie-bu-ju-zuo-you-gu-ding-zhong-jian-lie-zi-gua-ying-tan-jiu/" target="_blank" rel="external">《三列布局面试题延伸》</a>）,主要分为表格（table）布局，浮动（float）布局（或者inline-block），绝对定位（absolute）布局，弹性盒子（flex）布局和网格（grid）布局。</p>
+<p>  但是，我们的需求并不简单，如下图<img src="/img/css/want.png" alt=""></p>
+<p>  中间一列高度不定，左右黄色部分为两列，而且内容垂直居中。</p>
+<p>  下面写出几种方案，是基于上文的思路结合自己的经验进行扩展。希望能找到最优的方案。</p>
+<p>  1、表格、类表格法<br>  表格法即最原始的表格实现：<img src="/img/css/table1.png" alt=""></p>
+<p>  类表格法就用<code>display: table-cell</code>的方法<a href="http://www.zhangxinxu.com/wordpress/2010/10/%e6%88%91%e6%89%80%e7%9f%a5%e9%81%93%e7%9a%84%e5%87%a0%e7%a7%8ddisplaytable-cell%e7%9a%84%e5%ba%94%e7%94%a8/" target="_blank" rel="external">（具体原理）</a>：<img src="/img/css/table2.png" alt=""></p>
+<p>  这种类表格的方法在内容宽度不够时，需要设置宽度，否则撑不开，原因有待研究。。</p>
+<p>  2、利用js计算<br>  简单粗暴的方法，没有多少技术含量。</p>
+<p>  3、浮动法<br>  用浮动实现等高效果有几种方法（详见大漠的<a href="http://www.w3cplus.com/css/creaet-equal-height-columns" target="_blank" rel="external">《八种创建等高列布局》</a>），但是在等高的同时垂直居中，目前还没想到好的办法。。</p>
+<p>  4、绝对定位<br>  绝对定位的方法是可行的，如图：<img src="/img/css/absolute.png" alt=""></p>
+<p>  这里实际上是通过绝对定位top实现垂直居中，左右两侧的背景其实是父容器的背景色。</p>
+<p>  5、flex方法<br>  <img src="/img/css/flex.png" alt=""><br>  flex方法可以做到，不过有个缺点，左右两列的高度是需要设置的，否则只能用父容器的背景来实现左右两列的相同背景（不同的话就麻烦一点）</p>
+<p>  6、grid布局<br>  grid布局是一种相对新的技术，浏览器支持不太好，不过据说明年三月就可以被现代浏览器支持。大漠老师在中国第三届CSS大会上做了分享。正好通过这个问题，了解一下grid布局～～</p>
+<p>  <img src="/img/css/grid.png" alt=""></p>
+<p>  grid布局的垂直居中效果上和flex的有点类似，不过可以用<code>height:100%</code>撑开高度，然后就可以用<a href="https://my.oschina.net/u/2282680/blog/784838" target="_blank" rel="external">许多方法</a>在这个独立的容器里面来垂直居中了。</p>
+<p>  grid布局还是很强大的，需要好好深入一下～</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> css </tag>
+            
+            <tag> transition </tag>
+            
+            <tag> 垂直居中 </tag>
+            
+            <tag> 多列布局 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[React-Router 遇到的那些坑——IndexRoute 嵌套问题]]></title>
+      <url>/2016/12/13/React-Router-%E9%81%87%E5%88%B0%E7%9A%84%E9%82%A3%E4%BA%9B%E5%9D%91/</url>
+      <content type="html"><![CDATA[<p>有的东西不总结，永远不是自己的。<br><a id="more"></a></p>
+<hr>
+<h2 id="问题概述"><a href="#问题概述" class="headerlink" title="问题概述"></a>问题概述</h2><p>  IndexRoute的设定是，必须为叶节点，而要是作为父级元素，在IndexRoute下面嵌套更多的子节点。也就是这样的写法是不支持的：</p>
+<pre><code>&lt;Router&gt;
+  &lt;IndexRoute&gt;
+    &lt;IndexRoute&gt;&lt;/IndexRoute&gt;
+  &lt;/IndexRoute&gt;
+  &lt;Route&gt;&lt;/Route&gt;
+&lt;/Router&gt;
+</code></pre><h2 id="问题还原"><a href="#问题还原" class="headerlink" title="问题还原"></a>问题还原</h2><p>  而在实际的业务需求中，经常会遇到下面这种情况：当我从这个入口进入：<br>  <img src="/img/react-router/d.png" alt=""><br>想要看到<br>  <img src="/img/react-router/a.png" alt=""><br>而实际情况是：<br>  <img src="/img/react-router/b.png" alt=""><br>需要一层一层进行点击才能得到想要的结果。(图中的是React-Router官方的<a href="https://github.com/ReactTraining/react-router/tree/master/examples" target="_blank" rel="external">示例</a>运行后看到的)  </p>
+<p>  （因为实际业务中都用到异步路由，按需加载，所以照着官方的huge-app示例进行修改和描述。看官如果觉得描述的有点混乱，可以下载源码，npm install后npm start，结合页面跳转进行理解。）</p>
+<h2 id="尝试解决"><a href="#尝试解决" class="headerlink" title="尝试解决"></a>尝试解决</h2><p>  我们先用应用IndexRouter，在<code>huge-apps/routes/Course/index.js</code>中添加<code>getIndexRoute</code>方法，完整代码如下：</p>
+<pre><code>module.exports = {
+  path: &apos;course/:courseId&apos;,
+
+  getChildRoutes(partialNextState, cb) {
+    require.ensure([], (require) =&gt; {
+      cb(null, [
+        require(&apos;./routes/Announcements&apos;),
+        require(&apos;./routes/Assignments&apos;),
+        require(&apos;./routes/Grades&apos;)
+      ])
+    })
+  },
+
+  getIndexRoute(location, cb) {
+    require.ensure([], require =&gt;
+      cb(null, require(&apos;./routes/Announcements&apos;))
+    )
+  },
+
+  getComponent(nextState, cb) {
+    require.ensure([], (require) =&gt; {
+      cb(null, require(&apos;./components/Course&apos;))
+    })
+  }
+}
+</code></pre><p>从入口进入后，如图<img src="/img/react-router/c.png" alt=""></p>
+<p>可以看到，上图和第二张图的 url 是一样的，而显示的效果和这个url（<em> localhost:8080/huge-apps/course/0/announcements</em>）的结果是一样的，这就是IndexRoute的基本用法。这个时候，点击<em>Announcements</em>这个按钮，会发现url改变了，这个时候该死的强迫症就来了——明明页面没有改变，为什么 url 里多了一个字段！！与此同时，控制台会报一个<em>Warning</em>：<code>[react-router] Index routes should not have paths</code>!!</p>
+<p>为了解决这个问题，尝试将<code>/Announcement/index.js</code>的<code>path</code>去掉，然后需要修改<code>activeClassName</code>，链接这个路径需要用<code>IndexLink</code>组件，或者<code>Link</code>组件加上<code>onlyActiveOnIndex</code>属性（详见<a href="http://www.ruanyifeng.com/blog/2016/05/react_router.html" target="_blank" rel="external">阮一峰React-Router教程</a>（九））。这样的话，用map遍历出来的<code>Link</code>组件就需要加入若干个判断，比较麻烦。</p>
+<p>这个支线问题只是为了解决强迫症，而且上面的解决方案并不够优雅。下面回到主线问题（工期要紧）。这个时候，如果再用同样的方法，在<code>/Announcement/index.js</code>中使用<code>getIndexRoute</code>方法，结果发现，怎么也进不到第三张图的页面了，控制台只是说没有匹配到相应的路由（那只是没有修改<code>Link</code>组件中to的链接导致的，我们想要的是在<code>/huge-apps/course/0</code>路径下得到第三张图的效果）。</p>
+<p>之后想到另一种解决方法，因为<code>IndexRoute</code>想解决的问题是<code>this.props.children</code>为<code>undefined</code>（详见<a href="http://www.ruanyifeng.com/blog/2016/05/react_router.html" target="_blank" rel="external">阮一峰React-Router教程</a>（五）），那我们是不是可以写成<code>{this.props.children || &lt;Announcement/&gt;}</code>呢。</p>
+<p>经过实践，是可以实现需求的，但是和antd的面包屑组件结合起来就会有问题。具体问题是：想要显示的面包屑是三级的，但实际只显示了二级面包屑，而且点击一级面包屑后，面包屑变为一级，但是显示的并不改变，虽然这本来就不会改变，但是这样的体验很不好。。</p>
+<p>最后，想出用重定向的方式，即解决了强迫症的问题，又满足了需求，与antd的面包屑组件结合也没有冲突。下面贴上代码：</p>
+<pre><code>class SomeApp extends React.Component {
+    redirect() {
+        if (!this.props.children) {
+            this.context.router.push(&apos;some url&apos;)
+        }
+    }
+
+    componentWillMount() {
+        this.redirect()
+    }
+
+    componentDidUpdate() {
+        this.redirect()
+    }
+
+    render() {
+        return (
+            &lt;div&gt;
+                {this.props.children}
+            &lt;/div&gt;
+        )
+    }
+}
+
+SomeApp.contextTypes = {
+    router: React.PropTypes.object
+}
+</code></pre><p>这里遇到的最后一个坑是关于生命周期的问题，要把重定向函数写在<code>componentWillMount</code>和<code>componentDidUpdate</code>两个方法里。</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> React </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[个人收藏夹整理]]></title>
+      <url>/2016/12/07/%E4%B8%AA%E4%BA%BA%E6%94%B6%E8%97%8F%E5%A4%B9%E6%95%B4%E7%90%86/</url>
+      <content type="html"><![CDATA[<p>把平时工作和学习中查阅资料和学习知识的站点整理一下，有的值得看第二遍，还有的今后遇到类似的问题时可以快速查阅和参考。<br><a id="more"></a></p>
+<hr>
+<h3 id="HTML-方面"><a href="#HTML-方面" class="headerlink" title="HTML 方面"></a>HTML 方面</h3><ol>
+<li>基础知识<ul>
+<li><a href="http://www.zhangxinxu.com/wordpress/2010/08/%e7%bf%bb%e8%af%91-%e4%bd%a0%e5%bf%85%e9%a1%bb%e7%9f%a5%e9%81%93%e7%9a%8428%e4%b8%aahtml5%e7%89%b9%e5%be%81%e3%80%81%e7%aa%8d%e9%97%a8%e5%92%8c%e6%8a%80%e6%9c%af/" target="_blank" rel="external">翻译-你必须知道的28个HTML5特征、窍门和技术</a></li>
+</ul>
+</li>
+<li>标签相关<ul>
+<li><code>&lt;head&gt;</code>标签<ul>
+<li><a href="http://www.css88.com/archives/6410" target="_blank" rel="external">移动前端不得不了解的HTML5 head 头标签（2016最新版）</a></li>
+<li><a href="http://gethead.info/" target="_blank" rel="external">A list of everything that could go in the <code>&lt;head&gt;</code> of your document</a></li>
+</ul>
+</li>
+<li><code>&lt;label&gt;</code>标签<ul>
+<li><a href="http://www.topcss.org/%e8%a1%a8%e5%8d%95%e6%98%be%e5%bc%8flabel%e5%92%8c%e9%9a%90%e5%bc%8flabel%e5%af%b9%e5%b1%8f%e5%b9%95%e9%98%85%e8%af%bb%e5%99%a8%e7%94%a8%e6%88%b7%e7%9a%84%e5%bd%b1%e5%93%8d/" target="_blank" rel="external">表单显式label和隐式label对屏幕阅读器用户的影响</a></li>
+</ul>
+</li>
+<li><code>&lt;fieldset&gt;</code>和<code>&lt;legend&gt;</code>标签<ul>
+<li><a href="http://www.zhangxinxu.com/wordpress/2016/11/html-fieldset-legend-element-css-layout/" target="_blank" rel="external">HTML可访问性fieldset,legend元素及CSS布局应用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>转义字符<ul>
+<li><a href="http://www.fileformat.info/format/w3c/entitytest.htm" target="_blank" rel="external">http://www.fileformat.info/format/w3c/entitytest.htm</a></li>
+<li><a href="http://114.xixik.com/character/" target="_blank" rel="external">http://114.xixik.com/character/</a></li>
+</ul>
+</li>
+<li>缓存和本地存储<ul>
+<li><a href="http://www.cnblogs.com/yuzhongwusan/archive/2011/12/19/2293347.html" target="_blank" rel="external">HTMl5的sessionStorage和localStorage</a></li>
+<li><a href="https://github.com/nbubna/store" target="_blank" rel="external">A better way to use localStorage and sessionStorage</a></li>
+<li><a href="http://mp.weixin.qq.com/s/QayrQWL8qyEtT8xhDcA2fQ" target="_blank" rel="external">cookie从哪里来到哪里去</a></li>
+<li><a href="http://www.alloyteam.com/2016/03/discussion-on-web-caching/" target="_blank" rel="external">AlloyTeam–浅谈Web缓存
+</a></li>
+<li><a href="https://mp.weixin.qq.com/s/qOMO0LIdA47j3RjhbCWUEQ" target="_blank" rel="external">彻底弄懂 Http 缓存机制 - 基于缓存策略三要素分解法</a></li>
+</ul>
+</li>
+<li>模板语言<ul>
+<li><a href="https://github.com/slim-template/slim" target="_blank" rel="external">slim</a></li>
+<li><a href="https://naltatis.github.io/jade-syntax-docs/" target="_blank" rel="external">jade</a></li>
+</ul>
+</li>
+<li>开发工具<ul>
+<li><a href="https://gold.xitu.io/post/5843a0e861ff4b006b97f5d5" target="_blank" rel="external">emmet, 让你的 html 飞起来</a></li>
+</ul>
+</li>
+<li>HTTP知识<ul>
+<li><a href="http://itbilu.com/other/relate/EkwKysXIl.html" target="_blank" rel="external">HTTP请求方法：GET、HEAD、POST、PUT、DELETE、CONNECT、OPTIONS、TRACE</a></li>
+<li><a href="http://itbilu.com/other/relate/E1T0q4EIe.html" target="_blank" rel="external">HTTP消息头（HTTP headers）－HTTP请求头与HTTP响应头</a></li>
+<li><a href="http://itbilu.com/other/relate/EJ3fKUwUx.html" target="_blank" rel="external">HTTP消息头（HTTP headers）－常用的HTTP请求头与响应头</a></li>
+<li><a href="http://blog.csdn.net/u014346301/article/details/53995333" target="_blank" rel="external">HTTP状态码（HTTP Status Code）</a></li>
+</ul>
+</li>
+<li>问答<ul>
+<li><a href="https://www.zhihu.com/question/24398907" target="_blank" rel="external">HTML5 有哪些让你惊艳的 demo？</a></li>
+<li><a href="https://www.zhihu.com/question/28478379" target="_blank" rel="external">前端工程师一般都喜欢去哪些网站逛？</a></li>
+<li><a href="https://www.zhihu.com/question/19651401" target="_blank" rel="external">关于 JavaScript 学习，有哪些好的博客或者网站推荐？</a></li>
+</ul>
+</li>
+</ol>
+<h3 id="兼容性方面"><a href="#兼容性方面" class="headerlink" title="兼容性方面"></a>兼容性方面</h3><ul>
+<li><a href="http://caniuse.com/#index" target="_blank" rel="external">can I use</a></li>
+<li><a href="http://jartto.wang/2016/12/06/talk-about-ie-compatible-over-again/" target="_blank" rel="external">再谈ie浏览器兼容问题</a></li>
+<li><a href="http://stackoverflow.com/questions/9906794/internet-explorers-css-rules-limits" target="_blank" rel="external">Internet Explorer’s CSS rules limits</a><ul>
+<li>rails的解决方案——<a href="https://github.com/zweilove/css_splitter" target="_blank" rel="external">https://github.com/zweilove/css_splitter</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="CSS方面"><a href="#CSS方面" class="headerlink" title="CSS方面"></a>CSS方面</h3><h4 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h4><ul>
+<li><a href="https://github.com/brigade/scss-lint" target="_blank" rel="external">scss-lint(Configurable tool for writing clean and consistent SCSS)</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/20495964" target="_blank" rel="external">CSS Modules 详解及 React 中实践</a></li>
+<li><a href="https://ruby-china.org/topics/4396SASS 和 Compass 指南" target="_blank" rel="external">SASS 和 Compass 指南</a></li>
+</ul>
+<h4 id="思想、观点和鸡汤"><a href="#思想、观点和鸡汤" class="headerlink" title="思想、观点和鸡汤"></a>思想、观点和鸡汤</h4><ul>
+<li><a href="http://www.zhangxinxu.com/wordpress/2012/07/bottleneck-css-study/" target="_blank" rel="external">说说CSS学习中的瓶颈(张鑫旭)</a></li>
+<li><a href="https://segmentfault.com/a/1190000005775934" target="_blank" rel="external">提升你的CSS姿势</a></li>
+<li>CSS最佳实践——成为CSS忍者的十四步（<a href="http://chuansong.me/n/1100837351768" target="_blank" rel="external">上</a>）（<a href="http://chuansong.me/n/1100837451753" target="_blank" rel="external">下</a>）</li>
+</ul>
+<h4 id="命名规则"><a href="#命名规则" class="headerlink" title="命名规则"></a>命名规则</h4><ul>
+<li><a href="http://www.w3cplus.com/css/mindbemding-getting-your-head-round-bem-syntax.html" target="_blank" rel="external">BEM思想之彻底弄清BEM语法（大漠） </a></li>
+<li><a href="http://www.cnblogs.com/rising-fay/archive/2013/02/25/2932592.html" target="_blank" rel="external">html页面的CSS、DIV命名规则</a></li>
+</ul>
+<h4 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h4><ul>
+<li>参考资料<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS" target="_blank" rel="external">MDN–CSS</a></li>
+<li><a href="http://cssreference.io/?utm_source=mybridge&amp;utm_medium=email&amp;utm_campaign=read_more" target="_blank" rel="external">图解CSS属性</a>（<a href="http://cssreference.parryqiu.com/" target="_blank" rel="external">翻译</a>）</li>
+</ul>
+</li>
+<li>flex 布局<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html" target="_blank" rel="external">Flex 布局教程：语法篇（阮一峰）</a></li>
+<li>兼容移动端的flex以及简洁的api声明式布局——<a href="https://github.com/lzxb/flex.css" target="_blank" rel="external">flex.css</a></li>
+</ul>
+</li>
+<li>animate动画<ul>
+<li><a href="http://imweb.io/topic/5643850eed18cc424277050e" target="_blank" rel="external">搞定这些疑难杂症，向css3动画说yes</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h4><ul>
+<li><a href="http://www.zhangxinxu.com/wordpress/2012/04/inline-block-space-remove-%e5%8e%bb%e9%99%a4%e9%97%b4%e8%b7%9d/" target="_blank" rel="external">去除inline-block元素间间距的N种方法(张鑫旭)</a></li>
+<li><a href="http://blog.csdn.net/freshlover/article/details/11579669" target="_blank" rel="external">盘点8种CSS实现垂直居中水平居中的绝对定位居中技术</a></li>
+<li><a href="http://www.zhangxinxu.com/wordpress/2013/06/%e4%bc%aa%e5%85%83%e7%b4%a0-%e8%a1%a8%e5%8d%95%e6%a0%b7%e5%bc%8f-pseudo-elements-style-form-controls/" target="_blank" rel="external">伪元素表单控件默认样式重置与自定义大全(张鑫旭)</a></li>
+<li><a href="http://www.zhangxinxu.com/wordpress/2011/03/displayinline-blocktext-alignjustify%e4%b8%8b%e5%88%97%e8%a1%a8%e7%9a%84%e4%b8%a4%e7%ab%af%e5%af%b9%e9%bd%90%e5%b8%83%e5%b1%80/" target="_blank" rel="external">display:inline-block/text-align:justify下列表的两端对齐布局(张鑫旭)</a></li>
+<li><a href="http://www.cnblogs.com/PeunZhang/p/3289493.html" target="_blank" rel="external">css实现两端对齐的3种方法</a></li>
+<li><a href="http://imweb.io/topic/555a92f76da9e441601d6e94" target="_blank" rel="external">css中如何做到容器按比例缩放【padding的妙用】</a></li>
+<li><a href="https://github.com/chokcoco/iCSS" target="_blank" rel="external">有趣的css题目</a></li>
+</ul>
+<h4 id="开源库"><a href="#开源库" class="headerlink" title="开源库"></a>开源库</h4><ul>
+<li>loading效果<ul>
+<li>css动画做的loading图标~~~<a href="https://github.com/tobiasahlin/SpinKit" target="_blank" rel="external">Github</a>&nbsp;&nbsp;&nbsp;<a href="http://tobiasahlin.com/spinkit/" target="_blank" rel="external">Dome</a></li>
+<li><a href="http://www.raphaelfabeni.com.br/css-loader/" target="_blank" rel="external">各种loading</a></li>
+<li><a href="https://github.com/ConnorAtherton/loaders.css/tree/master" target="_blank" rel="external">loaders.css</a>【<a href="https://connoratherton.com/loaders" target="_blank" rel="external">Dome</a>】</li>
+</ul>
+</li>
+<li>css渐变实现的纯色背景~~~ <a href="https://github.com/evankarageorgos/hue" target="_blank" rel="external">Github</a>&nbsp;&nbsp;&nbsp;<a href="http://evankarageorgos.github.io/hue/grid.html" target="_blank" rel="external">Dome</a></li>
+<li>页面切换的css动画~~~ <a href="https://github.com/codrops/PageTransitions" target="_blank" rel="external">Github</a>&nbsp;&nbsp;&nbsp;<a href="http://tympanus.net/Development/PageTransitions/" target="_blank" rel="external">Dome</a></li>
+<li><a href="https://www.awesomes.cn/csshub" target="_blank" rel="external">awasome.cn-&gt;CSS Hub</a></li>
+<li><a href="http://alloyteam.github.io/gopng/###" target="_blank" rel="external">AlloyTeam雪碧图制作工具</a></li>
+<li>css框架<ul>
+<li>轻量级<ul>
+<li><a href="http://hackcss.com/" target="_blank" rel="external">hack.css</a></li>
+<li><a href="http://corecss.io/" target="_blank" rel="external">core.css</a></li>
+<li><a href="http://usewing.ml/" target="_blank" rel="external">WING</a></li>
+<li><a href="https://picturepan2.github.io/spectre/" target="_blank" rel="external">Spectre.css</a></li>
+<li><a href="http://tachyons.io/" target="_blank" rel="external">tachyons</a></li>
+</ul>
+</li>
+<li>普通<ul>
+<li><a href="http://www.bootcss.com/" target="_blank" rel="external">Bootstrap</a></li>
+<li><a href="http://dropbox.github.io/scooter/" target="_blank" rel="external">Scooter</a></li>
+<li><a href="http://semantic-ui.com/" target="_blank" rel="external">Semantic UI</a></li>
+</ul>
+</li>
+<li>重量级<ul>
+<li><a href="http://www.primefaces.org/#" target="_blank" rel="external">PrimeFaces</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="移动端"><a href="#移动端" class="headerlink" title="移动端"></a>移动端</h3><ul>
+<li><a href="https://github.com/amfe/lib-flexible" target="_blank" rel="external">可伸缩的布局方案lib-flexible</a></li>
+<li><a href="https://github.com/amfe/article/issues/17" target="_blank" rel="external">使用Flexible实现手淘H5页面的终端适配(大漠)</a></li>
+<li><a href="http://www.cnblogs.com/lyzg/p/5058356.html" target="_blank" rel="external">淘宝弹性布局方案lib-flexible实践</a></li>
+<li><a href="http://www.cnblogs.com/lyzg/p/4877277.html" target="_blank" rel="external">从网易与淘宝的font-size思考前端设计稿与工作流</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/25216275" target="_blank" rel="external">网易和淘宝移动WEB适配方案再分析</a></li>
+<li><a href="http://www.w3cplus.com/css/viewports.html" target="_blank" rel="external">viewports剖析</a></li>
+<li><a href="http://html-js.com/article/MobileWeb" target="_blank" rel="external">MobileWeb适配总结</a></li>
+<li>移动端适配方案【<a href="http://web.jobbole.com/90075/?repeat=w3tc" target="_blank" rel="external">上</a>】【<a href="http://web.jobbole.com/90084/?repeat=w3tc" target="_blank" rel="external">下</a>】</li>
+</ul>
+<h3 id="动画库"><a href="#动画库" class="headerlink" title="动画库"></a>动画库</h3><h4 id="css动画"><a href="#css动画" class="headerlink" title="css动画"></a>css动画</h4><ul>
+<li><a href="https://github.com/daneden/animate.css/" target="_blank" rel="external">animate.css</a>【<a href="https://daneden.github.io/animate.css/" target="_blank" rel="external">Dome</a>】</li>
+<li><a href="https://github.com/h5bp/Effeckt.css" target="_blank" rel="external">effeckt</a>【<a href="http://h5bp.github.io/Effeckt.css/" target="_blank" rel="external">Dome</a>】</li>
+<li><a href="https://github.com/IanLunn/Hover" target="_blank" rel="external">hover.css</a>【<a href="http://ianlunn.github.io/Hover/" target="_blank" rel="external">Dome</a>】</li>
+<li><a href="https://github.com/leaverou/animatable" target="_blank" rel="external">animatable</a>【<a href="http://leaverou.github.io/animatable/" target="_blank" rel="external">Dome</a>】</li>
+<li><a href="https://tympanus.net/Development/HoverEffectIdeas/" target="_blank" rel="external">一些微妙的悬停效果</a>【<a href="https://github.com/codrops/HoverEffectIdeas" target="_blank" rel="external">Code</a>】</li>
+<li><a href="https://tympanus.net/Development/ArrowNavigationStyles/" target="_blank" rel="external">左右切换箭头的效果</a>【<a href="https://github.com/codrops/ArrowNavigationStyles" target="_blank" rel="external">Code</a>】</li>
+</ul>
+<h4 id="js动画"><a href="#js动画" class="headerlink" title="js动画"></a>js动画</h4><ul>
+<li><a href="http://thednp.github.io/kute.js/index.html" target="_blank" rel="external">KUTE.js</a></li>
+<li><a href="https://tympanus.net/Tutorials/FourBoxes/" target="_blank" rel="external">独特的幻灯片切换</a>【<a href="https://github.com/codrops/FourBoxes" target="_blank" rel="external">Code</a>】</li>
+<li><a href="https://sarcadass.github.io/granim.js/examples.html" target="_blank" rel="external">js渐变动画</a></li>
+</ul>
+<h3 id="播放器和地图"><a href="#播放器和地图" class="headerlink" title="播放器和地图"></a>播放器和地图</h3><ul>
+<li>B站开源——<a href="https://github.com/Bilibili/flv.js" target="_blank" rel="external">Flv.js</a></li>
+<li><a href="http://leafletjs.com/index.html" target="_blank" rel="external">Leaflet–开源交互式地图</a></li>
+</ul>
+<h3 id="SVG"><a href="#SVG" class="headerlink" title="SVG"></a>SVG</h3><ul>
+<li><a href="https://github.com/riccardoscalco/textures" target="_blank" rel="external">Textures.js—js生成svg</a>【<a href="http://riccardoscalco.github.io/textures/" target="_blank" rel="external">Dome</a>】</li>
+<li><a href="https://github.com/maxwellito/vivus" target="_blank" rel="external">vivus.js—svg绘制的动画</a>【<a href="http://maxwellito.github.io/vivus" target="_blank" rel="external">Dome</a>】</li>
+<li><a href="http://www.zhangxinxu.com/wordpress/category/graphic/svg-graphic/" target="_blank" rel="external">张鑫旭SVG相关的文章</a></li>
+</ul>
+<h3 id="JS方面"><a href="#JS方面" class="headerlink" title="JS方面"></a>JS方面</h3><h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><ul>
+<li><a href="http://javascript.ruanyifeng.com/" target="_blank" rel="external">JavaScript 标准参考教程</a></li>
+<li><a href="http://es6.ruanyifeng.com/" target="_blank" rel="external">ECMAScript 6入门</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide" target="_blank" rel="external">MDN–JS</a></li>
+</ul>
+<h4 id="开源库-1"><a href="#开源库-1" class="headerlink" title="开源库"></a>开源库</h4><ul>
+<li>轻量的动画背景——<a href="https://github.com/VincentGarreau/particles.js/" target="_blank" rel="external">particles.js</a>&nbsp;&nbsp;&nbsp;<a href="http://vincentgarreau.com/particles.js/" target="_blank" rel="external">Dome</a></li>
+<li><a href="http://www.css88.com/doc/underscore/" target="_blank" rel="external">underscore.js</a></li>
+<li><a href="https://github.com/blueimp/JavaScript-MD5" target="_blank" rel="external">javascript-MD5</a></li>
+<li><a href="https://github.com/stefanpenner/es6-promise" target="_blank" rel="external">es6–promise(A polyfill for ES6-style Promises)</a></li>
+<li><a href="https://kimmobrunfeldt.github.io/progressbar.js/" target="_blank" rel="external">进度条</a></li>
+</ul>
+<h4 id="代码规范与最佳实践"><a href="#代码规范与最佳实践" class="headerlink" title="代码规范与最佳实践"></a>代码规范与最佳实践</h4><ul>
+<li><a href="http://eslint.cn/" target="_blank" rel="external">ESLint</a></li>
+<li><a href="https://www.h5jun.com/post/how-to-write-better-js-code.html" target="_blank" rel="external">如何写出好的 JavaScript —— 浅谈 API 设计</a></li>
+</ul>
+<h4 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h4><ul>
+<li><a href="http://www.alloyteam.com/2012/11/javascript-throttle/" target="_blank" rel="external">AlloyTeam—浅谈javascript的函数节流</a></li>
+<li><a href="http://i.jakeyu.top/2016/11/26/%E5%AE%9E%E7%8E%B0%E5%9B%BE%E7%89%87%E6%87%92%E5%8A%A0%E8%BD%BD/" target="_blank" rel="external">实现图片的懒加载</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/23812134" target="_blank" rel="external">深入了解 JavaScript 中的 for 循环</a></li>
+<li><a href="http://jdc.jd.com/archives/2942" target="_blank" rel="external">JavaScript写类的前世今生</a></li>
+<li><a href="https://github.com/gomeplusFED/blog/blob/master/2016-04/do-you-really-understand-how-to-write-a-countdown-by-javascript.md" target="_blank" rel="external">你真的知道怎么用javascript来写一个倒计时吗 ?</a></li>
+<li><a href="https://www.toobug.net/article/array_unique_in_javascript.html" target="_blank" rel="external">也谈JavaScript数组去重</a></li>
+<li><a href="https://segmentfault.com/a/1190000008088937" target="_blank" rel="external">JS正则表达式一条龙讲解，从原理和语法到JS正则、ES6正则扩展，最后再到正则实践思路</a></li>
+</ul>
+<h4 id="你本该知道的js"><a href="#你本该知道的js" class="headerlink" title="你本该知道的js"></a>你本该知道的js</h4><ul>
+<li><a href="http://bonsaiden.github.io/JavaScript-Garden/zh/" target="_blank" rel="external">JavaScript秘密花园</a></li>
+<li><a href="http://www.jstips.co/" target="_blank" rel="external">有用的JS tips</a></li>
+<li><a href="http://www.jianshu.com/users/4801d203ede4/latest_articles" target="_blank" rel="external">你不知道的JS中文</a></li>
+<li><a href="http://chuansong.me/n/2712930" target="_blank" rel="external">提高你的Javascript水平</a></li>
+</ul>
+<h3 id="React-全家桶"><a href="#React-全家桶" class="headerlink" title="React 全家桶"></a>React 全家桶</h3><ul>
+<li>环境通用框架之一——<a href="https://zeit.co/blog/next" target="_blank" rel="external">Next.js</a><ul>
+<li>相关文章【<a href="https://auth0.com/blog/building-universal-apps-with-nextjs/" target="_blank" rel="external">Build a Universal JavaScript App with Next.js</a>】</li>
+</ul>
+</li>
+<li>react生态系统的收集——<a href="https://github.com/enaqx/awesome-react" target="_blank" rel="external">awesome-react</a></li>
+</ul>
+<h4 id="文档与资料"><a href="#文档与资料" class="headerlink" title="文档与资料"></a>文档与资料</h4><ul>
+<li><a href="https://github.com/carlleton/reactjs101/tree/zh-CN" target="_blank" rel="external">从零开始学 ReactJS（ReactJS 101）</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/09/react-technology-stack.html" target="_blank" rel="external">阮一峰React技术栈</a></li>
+<li><a href="https://facebook.github.io/react/" target="_blank" rel="external">react官网</a></li>
+<li><a href="http://devnacho.com/2016/02/15/different-ways-to-add-if-else-statements-in-JSX/" target="_blank" rel="external">在JSX中写判断的四种方法</a></li>
+<li><a href="http://www.alloyteam.com/2016/01/reactjs-best-practices-for-2016/" target="_blank" rel="external">AlloyTeam—React.js 2016 最佳实践</a></li>
+<li><a href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/" target="_blank" rel="external">FED—高性能 React 组件</a></li>
+<li><a href="http://www.jianshu.com/p/002636591590" target="_blank" rel="external">ReactJS组件state的最佳实践</a></li>
+<li><a href="https://segmentfault.com/a/1190000005013207" target="_blank" rel="external">React 最佳实践——那些 React 没告诉你但很重要的事</a></li>
+<li><a href="http://wangfupeng.coding.me/share/2016/08/06/restruct-bdnews-webapp-by-react.html" target="_blank" rel="external">使用React重构百度新闻webapp前端</a></li>
+<li><a href="http://itbilu.com/javascript/react" target="_blank" rel="external">一个写react知识比较系统的博客(IT笔录)</a></li>
+</ul>
+<h4 id="组件与组件库"><a href="#组件与组件库" class="headerlink" title="组件与组件库"></a>组件与组件库</h4><ul>
+<li>蚂蚁金服【<a href="https://ant.design/" target="_blank" rel="external">ant design</a>】，对应移动端【<a href="https://mobile.ant.design/" target="_blank" rel="external">ant design mobile</a>】</li>
+<li>其他组件库<ul>
+<li><a href="https://www.zhihu.com/question/39452825" target="_blank" rel="external">React 有哪些优秀实用的组件？</a></li>
+</ul>
+</li>
+<li>轮播组件【<a href="https://github.com/akiran/react-slick" target="_blank" rel="external">react-slick</a>】【Dome】(<a href="http://neostack.com/opensource/react-slick" target="_blank" rel="external">http://neostack.com/opensource/react-slick</a>)</li>
+<li><a href="https://github.com/SoAanyip/React-FileUpload#%E7%AE%80%E4%BB%8B" target="_blank" rel="external">React-FillUploader—文件上传组件</a></li>
+</ul>
+<h4 id="React-Router"><a href="#React-Router" class="headerlink" title="React-Router"></a>React-Router</h4><ul>
+<li><a href="https://segmentfault.com/a/1190000006063554#articleHeader25" target="_blank" rel="external">React Router最新指南与异步加载实践</a></li>
+</ul>
+<h3 id="Webpack"><a href="#Webpack" class="headerlink" title="Webpack"></a>Webpack</h3><ul>
+<li><a href="https://webpack.github.io/docs/" target="_blank" rel="external">官方文档</a></li>
+<li><a href="https://segmentfault.com/a/1190000005995267#articleHeader3" target="_blank" rel="external">webpack教程资源收集</a></li>
+<li><a href="https://webpack.toobug.net/zh-cn/" target="_blank" rel="external">gitbook–webpack指南</a></li>
+<li><a href="https://www.zfanw.com/blog/webpack-assets-cache.html" target="_blank" rel="external">webpack与资源缓存</a></li>
+<li><a href="http://yincheng.site/webpack" target="_blank" rel="external">webpack从入门到上线</a></li>
+<li><a href="http://zhaoda.net/webpack-handbook/index.html" target="_blank" rel="external">webpack中文指南</a></li>
+<li><a href="http://zhizhi.betahouse.us/2015/09/27/yi-webpackde-demos/" target="_blank" rel="external">[译] webpack 的 demos</a></li>
+<li><a href="http://yj1438.github.io/2016/06/11/webpack.html" target="_blank" rel="external">完整的 webpack 开发环境与生产环境打包配置</a></li>
+<li><a href="http://www.cnblogs.com/haogj/p/5160821.html" target="_blank" rel="external">webpack 插件： html-webpack-plugin</a></li>
+<li><a href="https://segmentfault.com/a/1190000002552008" target="_blank" rel="external">Webpack 怎么用(题叶)</a></li>
+<li><a href="https://qiutc.me/post/webpack-best-practice-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5-%E9%83%A8%E7%BD%B2%E7%94%9F%E4%BA%A7.html" target="_blank" rel="external">webpack-best-practice-最佳实践-部署生产</a></li>
+<li><a href="http://guoyongfeng.github.io/idoc/html/React%E8%AF%BE%E7%A8%8B%E4%B8%93%E9%A2%98/%E4%BD%BF%E7%94%A8Webpack%E6%90%AD%E5%BB%BA%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E5%B7%A5%E4%BD%9C%E6%B5%81.html" target="_blank" rel="external">使用Webpack搭建生产环境工作流</a></li>
+<li><a href="https://segmentfault.com/a/1190000002551952#articleHeader5" target="_blank" rel="external">Webpack 入门指迷(题叶)</a></li>
+<li><a href="http://fakefish.github.io/react-webpack-cookbook/" target="_blank" rel="external">react和webpack小书</a></li>
+<li>CommonsChunkPlugin  <ul>
+<li><a href="https://mzkmzk.gitbooks.io/web_accumulate/content/commonschunkplugin.html" target="_blank" rel="external">CommonsChunkPlugin</a></li>
+<li><a href="https://cnodejs.org/topic/58396960c71e606e36aed1db" target="_blank" rel="external">CommonsChunkPlugin正确打开方式</a></li>
+</ul>
+</li>
+<li>DllPlugin&amp;DllReferencePlugin<ul>
+<li><a href="https://segmentfault.com/a/1190000007104372" target="_blank" rel="external">webpack多页应用架构系列（十一）：预打包Dll，实现webpack音速编译</a></li>
+<li><a href="https://blog.zp25.ninja/%E5%B7%A5%E5%85%B7/2016/10/02/webpack-code-splitting.html" target="_blank" rel="external">Webpack代码拆分</a></li>
+<li><a href="https://segmentfault.com/a/1190000005969643" target="_blank" rel="external">Webpack的dll功能</a></li>
+</ul>
+</li>
+<li><a href="https://segmentfault.com/a/1190000007891318" target="_blank" rel="external">webpack 构建性能优化策略小结</a></li>
+</ul>
+<h3 id="Ajax与跨域"><a href="#Ajax与跨域" class="headerlink" title="Ajax与跨域"></a>Ajax与跨域</h3><ul>
+<li><a href="https://github.com/mzabriskie/axios" target="_blank" rel="external">axios</a></li>
+<li><a href="http://react-china.org/t/topic/7258/1" target="_blank" rel="external">前后端分离实践 — 如何解决跨域问题</a></li>
+</ul>
+<h3 id="工作流与优化"><a href="#工作流与优化" class="headerlink" title="工作流与优化"></a>工作流与优化</h3><ul>
+<li><a href="https://github.com/weixin/tmt-workflow" target="_blank" rel="external">微信基于 Gulp 高效、可定制的 Web 前端工作流</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/21417465" target="_blank" rel="external">【译】唯快不破：Web 应用的 13 个优化步骤</a></li>
+</ul>
+<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h3><ul>
+<li><a href="http://www.zcfy.cc/article/10-tips-to-become-a-better-node-developer-in-2017-2349.html" target="_blank" rel="external">10 个技巧，让你在2017 年成为更好的 Node 开发者</a></li>
+<li><a href="http://www.zcfy.cc/article/the-10-most-important-node-js-articles-of-2016-risingstack-2201.html" target="_blank" rel="external">2016年Node.js十大文章</a></li>
+</ul>
+<h3 id="好文章"><a href="#好文章" class="headerlink" title="好文章"></a>好文章</h3><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/24094812" target="_blank" rel="external">《致设计师》来自前端工程师</a></li>
+<li><a href="http://chuansong.me/n/1246543551539" target="_blank" rel="external">天猫即将不支持IE8</a></li>
+<li><a href="http://www.jianshu.com/p/7246f993e990" target="_blank" rel="external">第三届CSS中国开发者大会纪实</a></li>
+</ul>
+<h3 id="好工作"><a href="#好工作" class="headerlink" title="好工作"></a>好工作</h3><ul>
+<li><a href="https://gold.xitu.io/post/5842c27c61ff4b006c2a55d7?utm_source=gold_browser_extension" target="_blank" rel="external">从培训班出来之后找工作的经历，教会了我这五件事</a></li>
+<li><a href="https://mrerhu.github.io/categories/%E4%BB%8E%E9%9D%A2%E8%AF%95%E9%A2%98%E4%B8%AD%E6%88%91%E4%BB%AC%E8%83%BD%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" target="_blank" rel="external">从面试题中我们能学到什么</a></li>
+</ul>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>整理真是个体力活。。之前太不重视总结了，导致有时候遇到相同或者类似问题，又得浪费时间google。。所以每天的积累和总结还是很有必要的</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> 收集 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[SVG笔记]]></title>
+      <url>/2016/12/05/SVG%E7%AC%94%E8%AE%B0/</url>
+      <content type="html"><![CDATA[<p>SVG 已经不是什么新鲜技术了，天猫也即将不支持IE8.所以SVG在今后的使用场景肯定会更加广泛。之前用SVG实现一个环形统计图，比用canvas渲染的图表性能更好。下面对一些SVG的知识点进行整理，以便今后使用查阅方便。<br><a id="more"></a></p>
+<hr>
+<h4 id="零、SVG简介"><a href="#零、SVG简介" class="headerlink" title="零、SVG简介"></a>零、SVG简介</h4><ol>
+<li>SVG 即 Scalable Vector Graphics (可伸缩矢量图形)<br><br></li>
+<li>优点<ul>
+<li>可以随意放大或改变尺寸, 同时其图形质量不会有损失</li>
+<li>比JPEG和GIF尺寸更小</li>
+<li>图像中文本可选可搜索</li>
+<li>能在任何分辨率下被高质量打印</li>
+<li>开放, 兼容, 易读取<br><br></li>
+</ul>
+</li>
+<li>SVG 可以单独作为一个文件书写, 在这里只介绍编写在HTML里的SVG</li>
+</ol>
+<h4 id="一、SVG-标签"><a href="#一、SVG-标签" class="headerlink" title="一、SVG 标签"></a>一、SVG 标签</h4><pre><code>&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot;&gt;
+    {some svg code}
+&lt;/svg&gt;
+</code></pre><p>上面是一个svg基础标签, 任何svg的代码都需要包裹在这个标签中。</p>
+<p>在现代浏览器中, svg标签的<em>xmlns</em>属性和<em>version</em>属性都可以省略。</p>
+<p>svg 标签默认的宽高是 <em>300 * 150</em> , 如果不设置<em>width</em>和<em>height</em>属性, SVG图像就在这个尺寸的画布中绘制。</p>
+<h4 id="二、SVG-元素"><a href="#二、SVG-元素" class="headerlink" title="二、SVG 元素"></a>二、SVG 元素</h4><ul>
+<li>矩形 <code>&lt;rect&gt;</code><br><br></li>
+<li>圆形 <code>&lt;circle&gt;</code><br><br></li>
+<li>椭圆 <code>&lt;ellipse&gt;</code><br><br></li>
+<li>线 <code>&lt;line&gt;</code><br><br></li>
+<li>折线 <code>&lt;polyline&gt;</code><br><br></li>
+<li>多边形 <code>&lt;polygon&gt;</code><br><br></li>
+<li>路径 <code>&lt;path&gt;</code><br><br></li>
+<li>文本 <code>&lt;text&gt;</code></li>
+</ul>
+<h4 id="三、SVG-元素属性"><a href="#三、SVG-元素属性" class="headerlink" title="三、SVG 元素属性"></a>三、SVG 元素属性</h4><p>下面用表格的形式对一些常见的元素属性进行这里：</p>
+<p><table style="width: 100%;text-align: center;tabel-layout:fixed;border:1px solid gray;"><thead><tr><td style="width:16%">属性描述</td><td style="width:20%">属性名</td><td style="width:32%">属性值</td><td style="width:32%">备注</td></tr></thead><tbody><tr><td rowspan="3">位置</td><td><p><code>x</code> <code>y</code></p><p>(矩形位置)</p></td><td>相对于<em>svg</em>标签的绘制区域的左侧和顶端距离。类似于css中的top和left属性。</td><td>位置的属性是将元素的内容区域进行定位（边框是不属于内容区域的，这一点需要注意）</td></tr><tr><td><p><code>cx</code> <code>cy</code></p><p>(圆形位置)</p></td><td>圆形坐标。默认值为（0，0）</td><td></td></tr><tr><td><p><code>x1</code> <code>x2</code> <code>y1</code> <code>y2</code></p><p>(直线开始和结束的位置)</p></td><td></td><td></td></tr><tr><td rowspan="3">尺寸</td><td><p><code>width</code> <code>height</code></p><p>(矩形尺寸)</p></td><td rowspan="3"><p>同css中width和height的值</p><p>可以直接为数字（相当于px)</p><p>使用em和rem效果似乎是一样的</p><p>百分比为单位时，是相对于<em>svg</em>标签的尺寸</p></td><td></td></tr><tr><td><p><code>r</code></p><p>(圆形半径)</p></td><td></td></tr><tr><td><p><code>rx</code> <code>ry</code></p><p>(椭圆的水平、垂直半径)</p></td><td></td></tr><tr><td>圆角</td><td><code>rx</code> <code>ry</code></td><td>同css中</td><td></td></tr><tr><td>多边形、曲线</td><td><code>points</code></td><td>字符串，包含至少三个坐标值，用空格分割。如<code>points=&quot;200,10 250,190 160,210&quot;</code></td><td></td></tr><tr><td>变换</td><td><code>transform</code></td><td><p>translate（位移）</p><p>rotate（旋转）</p><p>scale（缩放）</p><p>skew（斜切）</p></td><td><a href="http://www.zhangxinxu.com/wordpress/2015/10/understand-svg-transform/" target="_blank" rel="external">一切尽在这里</a></td></tr><tr><td colspan="4"><p>以下属性需要写在<em>style</em>属性中, 如</p><p><code>&lt;rect x=1 y=1 height＝&quot;100px&quot; width=10 style=&quot;下面的属性&quot; /&gt;</code></p></td></tr><tr><td rowspan="3">填充</td><td><p><code>fill-rule</code></p><p>(填充规则)</p></td><td><p>nonzero(默认值)</p><p>evenodd</p><p>inherit</p></td><td></td></tr><tr><td><p><code>fill-opacity</code></p><p>(填充透明度)</p></td><td></td><td></td></tr><tr><td><p><code>fill</code></p><p>(填充颜色)</p></td><td rowspan="2">颜色同css中，颜色名，十六进制，rgb(a)等等</td><td></td></tr><tr><td rowspan="4">描边(边框、直线)属性</td><td><p><code>stroke</code></p><p>(颜色)</p></td><td rowspan="2">关于<em>stroke</em>及其他的属性，张鑫旭大神有<a href="http://www.zhangxinxu.com/wordpress/2014/04/animateion-line-drawing-svg-path-%e5%8a%a8%e7%94%bb-%e8%b7%af%e5%be%84/" target="_blank" rel="external">一篇博文</a>介绍</td></tr><tr><td><p><code>stroke-opacity</code></p><p>(透明度)</p></td><td></td></tr><tr><td><p><code>stroke-width</code></p><p>(宽度)</p></td><td></td><td>矩形边框的宽度不属于元素的宽高</td></tr><tr><td><p><code>stroke-dasharray</code></p><p>(用于创建虚线)</p></td><td>指定一个虚线规则的数组，偶数项为实体宽度，奇数项为空白宽度。之后一直循环这个数组，形成一个虚线</td><td>需要渲染大量环形图表，用echart会很卡，用SVG的这个属性就很轻松的实现了，也是张大神的文章——<a href="http://www.zhangxinxu.com/wordpress/2015/07/svg-circle-loading/" target="_blank" rel="external">小tip: 使用SVG寥寥数行实现圆环loading进度效果</a></td></tr><tr><td rowspan="3">透明度</td><td><p><code>opacity</code></p><p>(元素透明度)</p></td><td rowspan="3">同css中，范围为0-1</td><td rowspan="3">显而易见，设置了<em>opacity</em>属性，也就同时设置了<em>fill-opacity</em>和<em>stroke-opacity</em>属性</td></tr><tr><td><p><code>fill-opacity</code></p><p>(填充透明度)</p></td></tr><tr><td><p><code>fill</code></p><p>(填充颜色)</p></td></tr></tbody></table></p>
+<!-- 开发代码<table style='width: 100%;text-align: center;tabel-layout:fixed;border:1px solid gray;'>
+  <thead>
+    <tr>
+      <td style='width:16%'>属性描述</td>
+      <td style='width:20%'>属性名</td>
+      <td style='width:32%'>属性值</td>
+      <td style='width:32%'>备注</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan='3'>位置</td>
+      <td><p>`x` `y`</p><p>(矩形位置)</p></td>
+      <td>相对于*svg*标签的绘制区域的左侧和顶端距离。类似于css中的top和left属性。</td>
+      <td>位置的属性是将元素的内容区域进行定位（边框是不属于内容区域的，这一点需要注意）</td>
+    </tr>
+    <tr>
+      <td><p>`cx` `cy`</p><p>(圆形位置)</p></td>
+      <td>圆形坐标。默认值为（0，0）</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><p>`x1` `x2` `y1` `y2`</p><p>(直线开始和结束的位置)</p></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td rowspan='3'>尺寸</td>
+      <td><p>`width` `height`</p><p>(矩形尺寸)</p></td>
+      <td rowspan='3'>
+        <p>同css中width和height的值</p>
+        <p>可以直接为数字（相当于px)</p>
+        <p>使用em和rem效果似乎是一样的</p>
+        <p>百分比为单位时，是相对于*svg*标签的尺寸</p>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><p>`r`</p><p>(圆形半径)</p></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><p>`rx` `ry`</p><p>(椭圆的水平、垂直半径)</p></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>圆角</td>
+      <td>`rx` `ry`</td>
+      <td>同css中</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>多边形、曲线</td>
+      <td>`points`</td>
+      <td>字符串，包含至少三个坐标值，用空格分割。如```points="200,10 250,190 160,210"```</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>变换</td>
+      <td>`transform`</td>
+      <td>
+        <p>translate（位移）</p>
+        <p>rotate（旋转）</p>
+        <p>scale（缩放）</p>
+        <p>skew（斜切）</p>
+      </td>
+      <td>[一切尽在这里](http://www.zhangxinxu.com/wordpress/2015/10/understand-svg-transform/)
+      </td>
+    </tr>
+    <tr>
+      <td colspan='4'>
+        <p>以下属性需要写在*style*属性中, 如</p>
+        <p>```<rect x=1 y=1 height＝"100px" width=10 style="下面的属性" />```</p>
+      </td>
+    </tr>
+    <tr>
+      <td rowspan='3'>填充</td>
+      <td><p>`fill-rule`</p><p>(填充规则)</p></td>
+      <td>
+        <p>nonzero(默认值)</p>
+        <p>evenodd</p>
+        <p>inherit</p>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><p>`fill-opacity`</p><p>(填充透明度)</p></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><p>`fill`</p><p>(填充颜色)</p></td>
+      <td rowspan='2'>颜色同css中，颜色名，十六进制，rgb(a)等等</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td rowspan='4'>描边(边框、直线)属性</td>
+      <td><p>`stroke`</p><p>(颜色)</p></td>
+      <td rowspan='2'>关于*stroke*及其他的属性，张鑫旭大神有[一篇博文](http://www.zhangxinxu.com/wordpress/2014/04/animateion-line-drawing-svg-path-%e5%8a%a8%e7%94%bb-%e8%b7%af%e5%be%84/)介绍</td>
+    </tr>
+    <tr>
+      <td><p>`stroke-opacity`</p><p>(透明度)</p></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><p>`stroke-width`</p><p>(宽度)</p></td>
+      <td></td>
+      <td>矩形边框的宽度不属于元素的宽高</td>
+    </tr>
+    <tr>
+      <td><p>`stroke-dasharray`</p><p>(用于创建虚线)</p></td>
+      <td>指定一个虚线规则的数组，偶数项为实体宽度，奇数项为空白宽度。之后一直循环这个数组，形成一个虚线</td>
+      <td>需要渲染大量环形图表，用echart会很卡，用SVG的这个属性就很轻松的实现了，也是张大神的文章——[小tip: 使用SVG寥寥数行实现圆环loading进度效果](http://www.zhangxinxu.com/wordpress/2015/07/svg-circle-loading/)</td>
+    </tr>
+    <tr>
+      <td rowspan='3'>透明度</td>
+      <td><p>`opacity`</p><p>(元素透明度)</p></td>
+      <td rowspan='3'>同css中，范围为0-1
+      <td rowspan='3'>显而易见，设置了*opacity*属性，也就同时设置了*fill-opacity*和*stroke-opacity*属性</td>
+    </tr>
+    <tr>
+      <td><p>`fill-opacity`</p><p>(填充透明度)</p></td>
+    </tr>
+    <tr>
+      <td><p>`fill`</p><p>(填充颜色)</p></td>
+    </tr>
+  </tbody>
+</tabel> -->
+<h4 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h4><p><em>以上便是一些SVG的基本知识，以及部分关于SVG的好文章。后面有更深入的了解时再加进来。</em></p>
+<p><strong> SVG很强大～</strong></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> svg </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+</search>

@@ -1,14 +1,787 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Wang He"><meta name="description"><title>Forino</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://wanghewanghe.github.io/"><link rel="alternate" href="/atom.xml" title="Forino"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script><script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-ga('create', 'Your Google Analytics ID', 'auto');
-ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo">Forino</a><ul class="nav"><li class="nav-link"><a href="/" class="active">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li></ul></header><section id="container"><ul class="home"><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2017/05/08/函数柯里化初探/" class="post-link">函数柯里化实现初探</a></h2><span class="post-time">2017年5月8日</span><div class="post-content"><p>这篇文章简单实现了curry函数，主要是为了巩固实现过程中用到的js知识，并且更深刻的了解函数柯里化的概念。<br></div><a href="/2017/05/08/函数柯里化初探/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2017/04/09/FDCon2017-中国前端开发者大会笔记/" class="post-link">FDCon2017 中国前端开发者大会笔记</a></h2><span class="post-time">2017年4月9日</span><div class="post-content"><p>这篇文章根据嘉宾的文字发言汇总结合自己的理解而来。特别记录一下，以便更好的总结经验，吸收精华。<br></div><a href="/2017/04/09/FDCon2017-中国前端开发者大会笔记/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2017/03/29/初探async／await/" class="post-link">初探async／await</a></h2><span class="post-time">2017年3月29日</span><div class="post-content"><p>一用就能感觉到，async和await是目前处理异步逻辑最优雅的方式。<br></div><a href="/2017/03/29/初探async／await/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2017/03/27/header和footer并不是那么简单/" class="post-link">header和footer并不是那么简单</a></h2><span class="post-time">2017年3月27日</span><div class="post-content"><p>网页的头部和底部，想起来比较容易实现，但是真的实践起来，并不是那么简单。<br></div><a href="/2017/03/27/header和footer并不是那么简单/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2017/03/16/关于git的笔记/" class="post-link">关于git的笔记</a></h2><span class="post-time">2017年3月16日</span><div class="post-content"><p>这篇文章记录了平时使用git时候遇到的问题和常用的命令。<br></div><a href="/2017/03/16/关于git的笔记/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2017/03/10/写业务代码时的一些感悟/" class="post-link">写业务代码时的一些感悟</a></h2><span class="post-time">2017年3月10日</span><div class="post-content"><p>这篇文章记录了写业务代码和重构业务代码时候的感悟。<br></div><a href="/2017/03/10/写业务代码时的一些感悟/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2016/12/25/那些年我们一起学习的js基础/" class="post-link">那些年我们一起学习的js基础</a></h2><span class="post-time">2016年12月25日</span><div class="post-content"><p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br></div><a href="/2016/12/25/那些年我们一起学习的js基础/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2016/12/14/CSS点滴/" class="post-link">CSS点滴</a></h2><span class="post-time">2016年12月14日</span><div class="post-content"><p>有的东西不总结，永远不是自己的。<br>主要内容：transition 属性 | | 关于三列布局+垂直居中<br></div><a href="/2016/12/14/CSS点滴/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2016/12/13/React-Router-遇到的那些坑/" class="post-link">React-Router 遇到的那些坑——IndexRoute 嵌套问题</a></h2><span class="post-time">2016年12月13日</span><div class="post-content"><p>有的东西不总结，永远不是自己的。<br></div><a href="/2016/12/13/React-Router-遇到的那些坑/" class="read-more">Read more..</a></article></li><li class="post-item"><article class="post"><h2 class="post-title"><a href="/2016/12/07/个人收藏夹整理/" class="post-link">个人收藏夹整理</a></h2><span class="post-time">2016年12月7日</span><div class="post-content"><p>把平时工作和学习中查阅资料和学习知识的站点整理一下，有的值得看第二遍，还有的今后遇到类似的问题时可以快速查阅和参考。<br></div><a href="/2016/12/07/个人收藏夹整理/" class="read-more">Read more..</a></article></li></ul><div class="paginator"><a id="next" href="/page/2/" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div></section><footer><div class="social"><a href="mailto:893079286@qq.com" title="email" class="iconfont icon-email"></a><a href="https://github.com/wanghewanghe" title="github" class="iconfont icon-github"></a><a href="/atom.xml" title="rss" class="iconfont icon-rss"></a></div><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2017<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Wang He</span></p></div><div id="back2top"><i class="iconfont icon-up"></i></div></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="一个会一点钢琴的前端小白的博客"/>
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Forino">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://wanghewanghe.github.io/"/>
+
+
+<meta name="description" content="一个会一点钢琴的前端小白的博客">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Forino">
+<meta property="og:url" content="http://wanghewanghe.github.io/index.html">
+<meta property="og:site_name" content="Forino">
+<meta property="og:description" content="一个会一点钢琴的前端小白的博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Forino">
+<meta name="twitter:description" content="一个会一点钢琴的前端小白的博客">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: true,
+    searchPath: "/search.xml",
+    fancybox: true,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?a3862269d892d0758c00f6a4ad3a6b61";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+    <title> Forino </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Forino</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About Me
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Forino</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              About Me
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts">
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/05/08/函数柯里化初探/">函数柯里化实现初探</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年5月8日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>这篇文章简单实现了curry函数，主要是为了巩固实现过程中用到的js知识，并且更深刻的了解函数柯里化的概念。<br>
+          <div class="read-more">
+            <a href="/2017/05/08/函数柯里化初探/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/04/09/FDCon2017-中国前端开发者大会笔记/">FDCon2017 中国前端开发者大会笔记</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年4月9日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>这篇文章根据嘉宾的文字发言汇总结合自己的理解而来。特别记录一下，以便更好的总结经验，吸收精华。<br>
+          <div class="read-more">
+            <a href="/2017/04/09/FDCon2017-中国前端开发者大会笔记/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/03/29/初探async／await/">初探async／await</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年3月29日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>一用就能感觉到，async和await是目前处理异步逻辑最优雅的方式。<br>
+          <div class="read-more">
+            <a href="/2017/03/29/初探async／await/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/03/27/header和footer并不是那么简单/">header和footer并不是那么简单</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年3月27日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>网页的头部和底部，想起来比较容易实现，但是真的实践起来，并不是那么简单。<br>
+          <div class="read-more">
+            <a href="/2017/03/27/header和footer并不是那么简单/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/03/16/关于git的笔记/">关于git的笔记</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年3月16日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>这篇文章记录了平时使用git时候遇到的问题和常用的命令。<br>
+          <div class="read-more">
+            <a href="/2017/03/16/关于git的笔记/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/03/10/写业务代码时的一些感悟/">写业务代码时的一些感悟</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年3月10日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>这篇文章记录了写业务代码和重构业务代码时候的感悟。<br>
+          <div class="read-more">
+            <a href="/2017/03/10/写业务代码时的一些感悟/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/12/25/那些年我们一起学习的js基础/">那些年我们一起学习的js基础</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016年12月25日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br>
+          <div class="read-more">
+            <a href="/2016/12/25/那些年我们一起学习的js基础/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/12/14/CSS点滴/">CSS点滴</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016年12月14日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>有的东西不总结，永远不是自己的。<br>主要内容：transition 属性 | | 关于三列布局+垂直居中<br>
+          <div class="read-more">
+            <a href="/2016/12/14/CSS点滴/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/12/13/React-Router-遇到的那些坑/">React-Router 遇到的那些坑——IndexRoute 嵌套问题</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016年12月13日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>有的东西不总结，永远不是自己的。<br>
+          <div class="read-more">
+            <a href="/2016/12/13/React-Router-遇到的那些坑/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/12/07/个人收藏夹整理/">个人收藏夹整理</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016年12月7日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>把平时工作和学习中查阅资料和学习知识的站点整理一下，有的值得看第二遍，还有的今后遇到类似的问题时可以快速查阅和参考。<br>
+          <div class="read-more">
+            <a href="/2016/12/07/个人收藏夹整理/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/12/05/SVG笔记/">SVG笔记</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016年12月5日
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p>SVG 已经不是什么新鲜技术了，天猫也即将不支持IE8.所以SVG在今后的使用场景肯定会更加广泛。之前用SVG实现一个环形统计图，比用canvas渲染的图表性能更好。下面对一些SVG的知识点进行整理，以便今后使用查阅方便。<br>
+          <div class="read-more">
+            <a href="/2016/12/05/SVG笔记/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    
+    
+  </nav>
+
+
+          </div>
+          
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:893079286@qq.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/wanghewanghe" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2016 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Wang He</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+
+
+    
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <script type="text/html" id="search-result">
+    <article class="post">
+      <header class="post-header">
+        <h1 class="post-title">
+          <a href="$url$" class="post-link">
+            $title$
+          </a>
+        </h1>
+      </header>
+      <div class="post-content">
+        $content$
+        <div class="read-more">
+          <a href="$url$" class="read-more-link">
+            Read more..
+          </a>
+        </div>
+      </div>
+    </article>
+  </script>
+  <script type="text/html" id="no-search-result">
+    <div class="no-result">
+      <h2>No result found!</h2>
+    </div>
+  </script>
+  <script type="text/javascript" src="/js/src/search.js?v=2.4.x"></script>
+
+  </body>
+</html>
