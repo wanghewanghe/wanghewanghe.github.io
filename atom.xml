@@ -417,7 +417,7 @@ obj.foo().then(...);
     <link href="http://wanghewanghe.github.io/2016/12/25/%E9%82%A3%E4%BA%9B%E5%B9%B4%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E5%AD%A6%E4%B9%A0%E7%9A%84js%E5%9F%BA%E7%A1%80/"/>
     <id>http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/</id>
     <published>2016-12-25T05:27:36.000Z</published>
-    <updated>2017-05-08T12:52:45.000Z</updated>
+    <updated>2017-05-24T12:13:58.000Z</updated>
     
     <content type="html"><![CDATA[<p>有些知识不总结，永远不是自己的。<br>这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。<br><a id="more"></a></p>
 <hr>
@@ -623,7 +623,7 @@ if (i) {
 <li><code>Array.prototype.slice.call(arguments)</code></li>
 <li><code>[].slice.call(arguments)</code></li>
 <li><code>Array.from(arguments)</code></li>
-<li><code>[...arguments]</code></li>
+<li><code>[...arguments]</code><br>``</li>
 </ul>
 </li>
 </ol>
@@ -643,6 +643,18 @@ if (i) {
 <li>单纯的扩展运算符操作number类型的会报错，操作string类型会把字符串分成单个字符。</li>
 </ol>
 <p>所以，对于合并数组这个需求，更健壮的实现还是要用concat</p>
+<hr>
+<hr>
+<h3 id="数组reduce方法的应用"><a href="#数组reduce方法的应用" class="headerlink" title="数组reduce方法的应用"></a>数组reduce方法的应用</h3><p>5.24</p>
+<p>提到 reduce 方法，第一印象应该就是它的累加作用 <code>[1, 2, 3, 4, 5].reduce((a, b) =&gt; a + b); // 15</code>，</p>
+<p>后来接触了函数式编程的知识，进一步认识到 reduce 方法是一个纯的方法，和map一样不会有副作用，符合函数式编程的思想。</p>
+<p>但是在实践过程中，对 reduce 方法理解不够深入，使用的场景并不是很多。下面做个总结，以便更好的理解。</p>
+<p>场景1：利用 reduce 第二个参数来从数组中生成新对象</p>
+<p>reduce 第二个参数可以理解为一个初始值，当这个初始值存在时，reduce 方法会把这个初始值作为第一次回调函数返回的值（即回调函数中的第一个参数），回调函数从数组的第0项开始处理（第二的参数为<code>array[0]</code>, 第三个参数为0）。如果没有这个初始值，reduce 方法的回调函数则会从数组的第1项开始处理（第二的参数为<code>array[1]</code>, 第三个参数为0，第一个参数则为<code>array[0]</code>）。</p>
+<p>比如有这样一个数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">const people_arr = [</div><div class="line">    &#123; id: 2017001, name: &apos;张三&apos; &#125;,</div><div class="line">    &#123; id: 2017002, name: &apos;李四&apos; &#125;,</div><div class="line">    &#123; id: 2017003, name: &apos;路人甲&apos; &#125;</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>我们想得到这样的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">const people_obj = &#123;</div><div class="line">    2017001: &apos;张三&apos;,</div><div class="line">    2017002: &apos;李四&apos;,</div><div class="line">    2017003: &apos;路人甲&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>之前我一直是这么做的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">const people_obj = &#123;&#125;;</div><div class="line">people_arr.forEach(people =&gt; people_obj[people.id] = people.name);</div></pre></td></tr></table></figure></p>
+<p>现在利用 reduce 可以这样做<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">const prople_obj = people_arr.reduce((obj, key) =&gt; &#123;</div><div class="line">    obj[key.id] = key.name;</div><div class="line">    return obj;</div><div class="line">&#125;, &#123;&#125;)</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">
