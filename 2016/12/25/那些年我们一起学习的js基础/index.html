@@ -40,7 +40,7 @@
 <meta property="og:url" content="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/index.html">
 <meta property="og:site_name" content="Forino">
 <meta property="og:description" content="有些知识不总结，永远不是自己的。这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。">
-<meta property="og:updated_time" content="2017-05-24T12:13:58.000Z">
+<meta property="og:updated_time" content="2017-05-31T09:53:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="那些年我们一起学习的js基础">
 <meta name="twitter:description" content="有些知识不总结，永远不是自己的。这篇文章记录了工作中用到的一些js基础知识。很基础，也很重要。">
@@ -444,10 +444,18 @@ if (i) {
 <p>但是在实践过程中，对 reduce 方法理解不够深入，使用的场景并不是很多。下面做个总结，以便更好的理解。</p>
 <p>场景1：利用 reduce 第二个参数来从数组中生成新对象</p>
 <p>reduce 第二个参数可以理解为一个初始值，当这个初始值存在时，reduce 方法会把这个初始值作为第一次回调函数返回的值（即回调函数中的第一个参数），回调函数从数组的第0项开始处理（第二的参数为<code>array[0]</code>, 第三个参数为0）。如果没有这个初始值，reduce 方法的回调函数则会从数组的第1项开始处理（第二的参数为<code>array[1]</code>, 第三个参数为0，第一个参数则为<code>array[0]</code>）。</p>
-<p>比如有这样一个数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">const people_arr = [</div><div class="line">    &#123; id: 2017001, name: &apos;张三&apos; &#125;,</div><div class="line">    &#123; id: 2017002, name: &apos;李四&apos; &#125;,</div><div class="line">    &#123; id: 2017003, name: &apos;路人甲&apos; &#125;</div><div class="line">]</div></pre></td></tr></table></figure></p>
-<p>我们想得到这样的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">const people_obj = &#123;</div><div class="line">    2017001: &apos;张三&apos;,</div><div class="line">    2017002: &apos;李四&apos;,</div><div class="line">    2017003: &apos;路人甲&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>比如有这样一个数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">const people_arr = [</div><div class="line">    &#123; id: 2017001, name: &apos;张三&apos; &#125;,</div><div class="line">    &#123; id: 2017002, name: &apos;李四&apos; &#125;,</div><div class="line">    &#123; id: 2017003, name: &apos;路人甲&apos; &#125;</div><div class="line">];</div></pre></td></tr></table></figure></p>
+<p>我们想得到这样的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">const people_obj = &#123;</div><div class="line">    2017001: &apos;张三&apos;,</div><div class="line">    2017002: &apos;李四&apos;,</div><div class="line">    2017003: &apos;路人甲&apos;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
 <p>之前我一直是这么做的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">const people_obj = &#123;&#125;;</div><div class="line">people_arr.forEach(people =&gt; people_obj[people.id] = people.name);</div></pre></td></tr></table></figure></p>
-<p>现在利用 reduce 可以这样做<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">const prople_obj = people_arr.reduce((obj, key) =&gt; &#123;</div><div class="line">    obj[key.id] = key.name;</div><div class="line">    return obj;</div><div class="line">&#125;, &#123;&#125;)</div></pre></td></tr></table></figure></p>
+<p>现在利用 reduce 可以这样做<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">const prople_obj = people_arr.reduce((obj, key) =&gt; &#123;</div><div class="line">    obj[key.id] = key.name;</div><div class="line">    return obj;</div><div class="line">&#125;, &#123;&#125;);</div></pre></td></tr></table></figure></p>
+<p>这样的写法相对与之前，形式上复杂一点，但是语义化更好，可维护性更高。之前的写法中，对需要得到的变量（people_obj）的定义和生成是分开的，要是还有其他逻辑代码，就显得很复杂，可读性很差，而且是不纯的。用了reduce就可以避免这些情况。</p>
+<p>场景2：利用 reduce 第二个参数来从对象数组中生成符合条件的新对象数组</p>
+<p>比如有这样一个数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">const people_arr = [</div><div class="line">    &#123; id: 2017001, first_name: &apos;张&apos;, last_name: &apos;三&apos;, is_male: true &#125;,</div><div class="line">    &#123; id: 2017002, first_name: &apos;李&apos;, last_name: &apos;四&apos;, is_male: false &#125;,</div><div class="line">    &#123; id: 2017003, first_name: &apos;路人&apos;, last_name: &apos;甲&apos;, is_male: true &#125;</div><div class="line">];</div></pre></td></tr></table></figure></p>
+<p>我们想得到这样的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">const male_arr = [</div><div class="line">    &#123; id: 2017001, name: &apos;张三&apos; &#125;,</div><div class="line">    &#123; id: 2017003, name: &apos;路人甲&apos; &#125;</div><div class="line">];</div></pre></td></tr></table></figure></p>
+<p>之前我是这么写的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">const male_arr = [];</div><div class="line">people_arr.forEach(people =&gt; </div><div class="line">    people.is_male &amp;&amp; male_arr.push(&#123;</div><div class="line">        id: people.id,</div><div class="line">        name: people.first_name + people.last_name</div><div class="line">    &#125;)</div><div class="line">);</div></pre></td></tr></table></figure></p>
+<p>这里虽然是生成新数组，但用map就需要这样写:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">const male_arr = people_arr.map(people =&gt; &#123;</div><div class="line">    if(people.is_male) &#123;</div><div class="line">        return (&#123;</div><div class="line">            id: people.id,</div><div class="line">            name: people.first_name + people.last_name</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;).filter(o =&gt; !!o);</div></pre></td></tr></table></figure></p>
+<p>因为map的特点，如果不加filter，male_arr会有一项是undefined。</p>
+<p>当用了reduce以后，之前的写法就显得比较low了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">const male_arr = people_arr.reduce((arr, people) =&gt; (</div><div class="line">    people.is_male ? arr.concat(&#123;</div><div class="line">        id: people.id,</div><div class="line">        name: people.first_name + people.last_name</div><div class="line">    &#125;) : arr</div><div class="line">), []);</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -458,15 +466,15 @@ if (i) {
 
   <div class="post-copyright">
     <p class="copyright-item">
-      <span>Author: </span>
+      <span>作者: </span>
       <span>Wang He</span>
     </p>
     <p class="copyright-item">
-      <span>Origin: </span>
+      <span>来源: </span>
       <a href="http://wanghewanghe.github.io">http://wanghewanghe.github.io</a>
     </p>
     <p class="copyright-item">
-      <span>Link: </span>
+      <span>链接: </span>
       <a href="http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/">http://wanghewanghe.github.io/2016/12/25/那些年我们一起学习的js基础/</a>
     </p>
 
@@ -482,7 +490,7 @@ if (i) {
       
   <div class="post-reward">
     <input type="checkbox" name="reward" id="reward" hidden />
-    <label class="reward-button" for="reward">Reward</label>
+    <label class="reward-button" for="reward">赞赏支持</label>
     <div class="qr-code">
       
       
