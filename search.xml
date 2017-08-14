@@ -3,6 +3,58 @@
   
     
     <entry>
+      <title><![CDATA[grid布局笔记]]></title>
+      <url>/2017/08/15/grid%E5%B8%83%E5%B1%80%E7%AC%94%E8%AE%B0/</url>
+      <content type="html"><![CDATA[<p>如今，grid布局已被现代浏览器支持，是时候学一波新姿势了～<br><a id="more"></a></p>
+<hr>
+<h3 id="基本属性"><a href="#基本属性" class="headerlink" title="基本属性"></a>基本属性</h3>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">display: grid | inline-grid | subgrid;</div><div class="line">grid-template-columns:</div><div class="line">grid-template-rows:</div></pre></td></tr></table></figure>
+<ul>
+<li>在父元素分别定义了grid容器，行（rows）与列（columns）的大小。</li>
+<li>这三个属性的作用，可以想像为在白纸上动手画一个表格，首先确定一块表格区域，然后画行线和列线。</li>
+<li>在<code>grid-template-columns</code>和<code>grid-template-rows</code>中，不仅可以定义行线与行线（列线与列线）的间距，还可以为每条线定义一个或多个名字(可以同名)：<code>[line_a] 10px [line_b] 20px [line_c]</code>，这样的形式。从代码层面，是不是就能很形象的看出，这个网格区域，是三条网线（line_a, line_b, line_c）分隔成的，两个可填充网格（一个宽度／高度10px，一个宽度／高度20px）。</li>
+</ul>
+<h3 id="fr和repeat"><a href="#fr和repeat" class="headerlink" title="fr和repeat"></a>fr和repeat</h3><p>  grid布局设计之初就考虑到要声明每个网格的大小是一件繁琐的事情，所以他们提供了两个比较强大的工具–fr和repeat。</p>
+<ul>
+<li>fr是个单位，他相对与整个剩余区域，进行均分。可能感觉一头雾水，直接看代码理解好了。<br><code>grid-template-columns: 1fr 1fr 1fr 100px;</code><br>所谓剩余区域，就是对与整个网格，去掉已经明确大小的区域。所以上面的代码表示，网格第4列宽度是100px，第1～3列每列的宽度是剩下区域的三分之一。<br>比如网格区域总宽度是700px，那这个网格区域被上面的代码分为四列，分别是200px，200px，200px，100px。</li>
+<li>repeat可以认为是个函数，他接受两个参数，第一个参数是重复次数，第二个参数是重复内容。比如上面的代码，用repeat就可以改写成<code>grid-template-columns: repeat(3, 1fr) 100px;</code></li>
+</ul>
+<h3 id="针对每个单元格的属性"><a href="#针对每个单元格的属性" class="headerlink" title="针对每个单元格的属性"></a>针对每个单元格的属性</h3>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">grid-column: grid-column-start / grid-column-end</div><div class="line">grid-row: grid-row-start / grid-row-end</div><div class="line">grid-area: grid-row-start / grid-column-start / grid-row-end / grid-column-end</div></pre></td></tr></table></figure>
+<ul>
+<li>这里主要是介绍7个属性，其中3个属性是另外4个属性的简写形式，上面的写法可以清楚的看清他们的关系，以及3个简写属性的声明规则。</li>
+<li>下面只需要介绍4个基本的属性。显而易见，网格的每个单元格是由4条线围成的，所以他们分别表示单元格开始／结束的行／列线。</li>
+<li>这4个基本属性接受的属性值如下：<blockquote>
+<p><code>&lt;number&gt; || &lt;name&gt;</code>可以直接是一个表示栅格线名字或数字<br><code>span &lt;number&gt;</code>项目将横跨指定数量栅格轨迹<br><code>span &lt;name&gt;</code>项目将横跨至指定名字的栅格线<br><code>auto</code> 自动放置，自动跨越轨迹或者默认跨越轨迹  </p>
+</blockquote>
+</li>
+</ul>
+<h3 id="再谈网格区域grid-area"><a href="#再谈网格区域grid-area" class="headerlink" title="再谈网格区域grid-area"></a>再谈网格区域grid-area</h3><p>  之前提到了<code>grid-area</code>是<code>grid-row-start</code>、<code>grid-column-start</code>、<code>grid-row-end</code>、<code>grid-column-end</code>四个属性的缩写属性，其实<code>grid-area</code>还可以接受一个区域名称来作为属性值。  </p>
+<p>  这样，需要在父级元素中用<code>grid-template-areas</code>属性来定义每个网格区域的名字:<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">display: grid;</div><div class="line">grid-template-columns: 220px 20px 220px 20px 220px;</div><div class="line">grid-template-rows: auto;</div><div class="line">grid-template-areas: &quot;header header header header&quot;</div><div class="line">                     &quot;main main . sidebar&quot;</div><div class="line">                     &quot;footer footer footer footer&quot;</div></pre></td></tr></table></figure></p>
+<p>  相同的名字将会合并网格区域，一个<code>.</code>表示一个空的网格。  </p>
+<p>  值得一提的是，上面的代码用了<code>grid-template-rows: auto;</code>，这样每个网格区域之间垂直的间距就无法通过网格属性进行设置，需要给他们设置<code>margin-bottom</code>来设置垂直间距。如果仍想通过网格属性来设置，需要像下面这样写：<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">display: grid;</div><div class="line">grid-template-columns: 220px 20px 220px 20px 220px;</div><div class="line">grid-template-rows: 100px 20px 100px 20px 100px;</div><div class="line">grid-template-areas: &quot;header header header header&quot;</div><div class="line">                     &quot;. . . .&quot;</div><div class="line">                     &quot;main main . sidebar&quot;</div><div class="line">                     &quot;. . . .&quot;</div><div class="line">                     &quot;footer footer footer footer&quot;</div></pre></td></tr></table></figure></p>
+<h3 id="网格间隙属性"><a href="#网格间隙属性" class="headerlink" title="网格间隙属性"></a>网格间隙属性</h3>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grid-gap: grid-row-gap grid-column-gap</div></pre></td></tr></table></figure>
+<p>  网格间隙仅仅在行/列 之间，不包括最外部的边。</p>
+<h3 id="网格项排列属性"><a href="#网格项排列属性" class="headerlink" title="网格项排列属性"></a>网格项排列属性</h3>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grid-auto-flow: row | column | row dense | column dense</div></pre></td></tr></table></figure>
+<blockquote>
+<p>如果你的栅格项目没有显式地在栅格中设置位置，自动放置算法便会生效。这个属性控制自动放置算法的的运作。</p>
+<p>属性值：<br> row 自动放置算法将按行依次排列，按需添加新行。<br> column 自动放置算法将按列依次排列，按需添加新列。<br> dense 如果较小的项目出现靠后时，自动防止算法将尽可能早地填充栅格的空白格子</p>
+</blockquote>
+<h3 id="对齐属性"><a href="#对齐属性" class="headerlink" title="对齐属性"></a>对齐属性</h3><ul>
+<li>控制整行／整列每格内容的对齐：<code>align-items</code> / <code>justify-items</code>，属性值：<code>start | end | center | stretch</code></li>
+<li>控制整行／整列在网格容器中位置：<code>align-content</code> / <code>justify-content</code>，属性值：<code>start | end | center | stretch | space-around | space-between | space-evenly</code></li>
+<li>控制每个单元格内容和行轴／列轴对齐（即垂直／水平方向）：<code>align-self</code> / <code>justify-self</code>，属性值：<code>start | end | center | stretch</code></li>
+</ul>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> css </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[函数柯里化实现初探]]></title>
       <url>/2017/05/08/%E5%87%BD%E6%95%B0%E6%9F%AF%E9%87%8C%E5%8C%96%E5%88%9D%E6%8E%A2/</url>
       <content type="html"><![CDATA[<p>这篇文章简单实现了curry函数，主要是为了巩固实现过程中用到的js知识，并且更深刻的了解函数柯里化的概念。<br><a id="more"></a></p>

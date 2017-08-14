@@ -632,6 +632,8 @@ h6 {
     margin-right: 5px;
     font-size: 1.1em;
     color: #0047AB; }
+  .post .post-content li {
+    margin-bottom: 10px; }
   .post .post-content a {
     color: #0047AB;
     word-break: break-all; }
