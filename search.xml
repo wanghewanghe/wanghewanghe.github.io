@@ -3,6 +3,161 @@
   
     
     <entry>
+      <title><![CDATA[学习正则表达式]]></title>
+      <url>/2017/10/29/%E5%AD%A6%E4%B9%A0%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+      <content type="html"><![CDATA[<p>正则很强大也很重要。是时候写个笔记整理整理了。<br><a id="more"></a></p>
+<hr>
+<h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>  这篇文章主要是根据老姚的<a href="https://juejin.im/post/59cc61176fb9a00a437b290b" target="_blank" rel="external">《JavaScript正则表达式迷你书（第一版）》</a>所做的笔记，然后根据阮老师的es6教程进行了一些扩展，算是系统的学了一遍正则。</p>
+<h3 id="字符匹配"><a href="#字符匹配" class="headerlink" title="字符匹配"></a>字符匹配</h3><ol>
+<li><p>横向匹配和纵向匹配</p>
+<ol>
+<li>横向匹配 &ensp; —&gt; &ensp; 同一字符，重复出现 &ensp; —&gt; &ensp; 量词<code>{m, n}</code></li>
+<li>纵向匹配 &ensp; —&gt; &ensp; 不同字符，出现一次 &ensp; —&gt; &ensp; 字符组<code>[abc]</code></li>
+</ol>
+</li>
+<li><p>量词</p>
+<ol>
+<li>简写<ul>
+<li><code>{m, }</code> &ensp; —&gt; &ensp; 至少m次</li>
+<li><code>{m}</code> &ensp; —&gt; &ensp; m次</li>
+<li><code>?</code> &ensp; —&gt; &ensp; 出现或不出现（0次或1次）</li>
+<li><code>+</code> &ensp; —&gt; &ensp; 至少1次</li>
+<li><code>*</code> &ensp; —&gt; &ensp; 任意次</li>
+</ul>
+</li>
+<li>贪婪匹配与惰性匹配<br>直接写量词 &ensp; —&gt; &ensp; 贪婪匹配 &ensp; —&gt; &ensp; 匹配出所有满足条件的<br>量词后面加<code>?</code> &ensp; —&gt; &ensp; 惰性匹配 &ensp; —&gt; &ensp; 只匹配出第一次满足条件的</li>
+</ol>
+</li>
+<li><p>字符组</p>
+<ol>
+<li>范围表示 &ensp; —&gt; &ensp; 连字符<code>-</code> &ensp; —&gt; &ensp; <code>[a-z]</code></li>
+<li>排除（不包含）表示 &ensp; —&gt; &ensp; 脱字符<code>^</code> &ensp; —&gt; &ensp; <code>[^a-z]</code></li>
+<li>常见的简写<ul>
+<li><code>\d</code>（<code>\D</code>）&ensp; —&gt; &ensp; 一位（非）数字 &ensp; —&gt; &ensp; <code>[0-9]</code>（<code>[^0-9]</code>）</li>
+<li><code>\w</code>（<code>\W</code>）&ensp; —&gt; &ensp; 一位（非）数字、字母、下划线 &ensp; —&gt; &ensp; <code>[0-9a-zA-z_]</code>（<code>[^0-9a-zA-z_]</code>）</li>
+<li><code>\s</code>（<code>\S</code>）&ensp; —&gt; &ensp; 一位（非）空白符 &ensp; —&gt; &ensp; <code>[ \t\v\n\r\f]</code>（<code>[^ \t\v\n\r\f]</code>）</li>
+<li><code>.</code> &ensp; —&gt; &ensp; 通配符，表示几乎任意字符。换行符、回车符、行分隔符和段分隔符除外。</li>
+<li>任意字符用<code>[\d\D]``[\w\W]``[\s\S]``[^]</code>四者之一</li>
+<li><strong>es6+ 提案</strong>：增加了<code>s</code>修饰符，以支持用<code>.</code>匹配所有字符。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>多选分支<br>用管道符<code>|</code>分割，惰性的（即匹配到一个后，之后的就不匹配）</p>
+</li>
+</ol>
+<h3 id="位置匹配"><a href="#位置匹配" class="headerlink" title="位置匹配"></a>位置匹配</h3><ol>
+<li>锚点<ol>
+<li>匹配开头和结尾<ul>
+<li><code>^</code>和<code>$</code></li>
+<li>多行匹配模式(即有修饰符 m)时，匹配行开头和行结尾</li>
+</ul>
+</li>
+<li>单词边界和非单词边界<ul>
+<li><code>\b</code>和<code>\B</code></li>
+<li>单词边界就是<code>\w</code>和<code>\W</code>之间的位置，以及<code>\w</code>和<code>^</code>之间的位置与<code>\w</code>和<code>$</code>之间的位置</li>
+</ul>
+</li>
+<li>具体位置<ul>
+<li>p 是个子模式。</li>
+<li><code>(?=p)</code> 表示p前的位置，也就是这个位置的后面的字符必须匹配p</li>
+<li><code>(?!p)</code> 表示非/不是／除了p前的位置，也就是这个位置的后面的字符必须不匹配p</li>
+<li><strong>es6+ 提案</strong>：<code>(?&lt;=p)</code>和<code>(?&lt;!p)</code>表示p之后</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>特性<ul>
+<li>位置可理解为空字符“”</li>
+<li>两个字符间的一个位置可以用重复多个锚点表示 &ensp; —&gt; &ensp; 这个特点常用来限定一个位置需要满足一定的条件（比如：<code>(?=.*[0-9])^</code>表示开头之后的字符必须包含一个数字，<code>(?=.*[0-9])</code>和<code>^</code>都表示开头的位置）</li>
+</ul>
+</li>
+</ol>
+<h3 id="关于括号"><a href="#关于括号" class="headerlink" title="关于括号"></a>关于括号</h3><ol>
+<li>分组<br>将一个模式作为整体，以便后面加量词。或者将分支结构作为整体防止歧义</li>
+<li>提取数据和替换<br>分组之后就可以方便的操作每一个分组。全局属性<code>$1</code>至<code>$9</code>的使用</li>
+<li>反向引用<br>在表达式中引用之前出现的分组。<code>\1``\2</code>…的使用<ul>
+<li>括号嵌套 &ensp; —&gt; &ensp; 以左括号为准</li>
+<li><code>\10</code> &ensp; —&gt; &ensp; 表示第10个分组   <em>（表示<code>\1</code>和<code>0</code>，使用<code>(?:\1)0</code>或者<code>\1(?:0)</code>）</em></li>
+<li>引用了不存在的分组 &ensp; —&gt; &ensp; 当作普通字符进行匹配字符本身</li>
+<li>分组后有量词 &ensp; —&gt; &ensp; 分组最终捕获到的数据是最后一次的匹配</li>
+</ul>
+</li>
+<li>非捕获括号<br>单纯使用括号的分组功能，不会涉及引用功能。 &ensp; —&gt; &ensp; 在之前的左括号后加上<code>?:</code>，即<code>(?:p)</code></li>
+<li><strong>es6+ 提案</strong><ul>
+<li>支持为每个分组取别名。之前的用数字表示法依然有效，不冲突。</li>
+<li>语法：<code>(?&lt;groupName&gt;p)</code></li>
+<li>在正则里反向引用的语法：<code>\k&lt;groupName&gt;</code></li>
+<li>在replace替换时引用分组的语法：<code>$&lt;groupName&gt;</code></li>
+<li>此外，可以在<code>exec</code>方法返回结果的<code>groups</code>属性上引用该组名</li>
+</ul>
+</li>
+</ol>
+<h3 id="回溯原理"><a href="#回溯原理" class="headerlink" title="回溯原理"></a>回溯原理</h3><p>  常见的回溯形式</p>
+<ul>
+<li>贪婪量词</li>
+<li>惰性量词</li>
+<li>分支结构</li>
+</ul>
+<h3 id="拆分"><a href="#拆分" class="headerlink" title="拆分"></a>拆分</h3><p>  操作符优先级（由高到低）<br>    转义符、括号、量词、位置和序列、管道符</p>
+<h3 id="构建"><a href="#构建" class="headerlink" title="构建"></a>构建</h3><ol>
+<li>平衡法则<ul>
+<li>匹配预期的字符串</li>
+<li>不匹配非预期的字符串</li>
+<li>可读性和可维护性</li>
+<li>效率</li>
+</ul>
+</li>
+<li>优化方法<ul>
+<li>使用具体型字符组来代替通配符，消除回溯</li>
+<li>使用非捕获型分组</li>
+<li>独立出确定字符</li>
+<li>提取分支公共部分</li>
+<li>减少分支数量，缩小范围</li>
+</ul>
+</li>
+</ol>
+<h3 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h3><ol>
+<li>验证（常用<code>test</code>）<ul>
+<li><code>!!~string.search(regex)</code></li>
+<li><code>regex.test(string)</code></li>
+<li><code>!!string.match(regex)</code></li>
+<li><code>!!regex.exec(string)</code></li>
+</ul>
+</li>
+<li>切分 <code>string.split(regex)</code></li>
+<li>提取（常用<code>match</code>）<ul>
+<li><code>string.match(regex)</code></li>
+<li><code>regex.exec(string)</code></li>
+<li><code>regex.test(string); console.log(RegExp.$1)</code></li>
+<li><code>string.test(regex); console.log(RegExp.$1)</code></li>
+<li>使用replace，将函数作为第二个参数</li>
+</ul>
+</li>
+<li>替换 <code>replace</code></li>
+<li>注意点<ul>
+<li><code>search</code>和<code>match</code>会把字符串转换为正则</li>
+<li><code>match</code>返回结果的格式，与正则对象是否有修饰符<code>g</code>有关。<ul>
+<li>没有<code>g</code>，返回这样的数组：第一个元素是整体匹配的内容，接下来是分组捕获的内容，然后是整体匹配的第一个下标，最后是输入的目标字符串。</li>
+<li>有<code>g</code>，返回所有匹配内容的数组</li>
+</ul>
+</li>
+<li>有<code>g</code>修饰符时，<code>exec</code>比<code>match</code>强大<br><code>exec</code>会记录上次匹配的位置，接着上次匹配后继续匹配。</li>
+</ul>
+</li>
+</ol>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> 正则 js </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[grid布局笔记]]></title>
       <url>/2017/08/15/grid%E5%B8%83%E5%B1%80%E7%AC%94%E8%AE%B0/</url>
       <content type="html"><![CDATA[<p>如今，grid布局已被现代浏览器支持，是时候学一波新姿势了～<br><a id="more"></a></p>
